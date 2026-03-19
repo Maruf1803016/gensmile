@@ -2,44 +2,20 @@
 class Assets {
   Assets._();
 
-  static const String imagesAvatar     = 'assets/images/avatar.png';
-  static const String imagesChest      = 'assets/images/chest.png';
-  static const String imagesSplash1    = 'assets/images/splash1.png';
-  static const String imagesSplash2    = 'assets/images/splash2.png';
-  static const String imagesSplash3    = 'assets/images/splash3.png';
-  static const String imagesSplashLogo = 'assets/images/splash_logo.png';
-
-  static const String svgBack                  = 'assets/svg/back.svg';
-  static const String svgBottomHome            = 'assets/svg/bottomHome.svg';
-  static const String svgBottomHomeActive      = 'assets/svg/bottomHomeActive.svg';
-  static const String svgBottomOrder           = 'assets/svg/bottomOrder.svg';
-  static const String svgBottomOrderActive     = 'assets/svg/bottomOrderActive.svg';
-  static const String svgBottomPayment         = 'assets/svg/bottomPayment.svg';
-  static const String svgBottomPaymentActive   = 'assets/svg/bottomPaymentActive.svg';
-  static const String svgBottomProfile         = 'assets/svg/bottomProfile.svg';
-  static const String svgBottomStaff           = 'assets/svg/bottomStaff.svg';
-  static const String svgBottomStaffActive     = 'assets/svg/bottomStaffActive.svg';
-  static const String svgDelivered             = 'assets/svg/delivered.svg';
-  static const String svgDelivery              = 'assets/svg/delivery.svg';
-  static const String svgFormFile              = 'assets/svg/form_file.svg';
-  static const String svgHomeDuePayment        = 'assets/svg/home_due_payment.svg';
-  static const String svgHomeNewOrder          = 'assets/svg/home_new_order.svg';
-  static const String svgHomePrintMeasurements = 'assets/svg/home_print_measurements.svg';
-  static const String svgHomeStuffList         = 'assets/svg/home_stuff_list.svg';
-  static const String svgHomeUpcomingOrder     = 'assets/svg/home_upcoming_order.svg';
-  static const String svgHomeWorkHistory       = 'assets/svg/home_work_history.svg';
-  static const String svgInProgress            = 'assets/svg/in_progress.svg';
-  static const String svgLogout                = 'assets/svg/logout.svg';
-  static const String svgNewOrders             = 'assets/svg/new_orders.svg';
-  static const String svgOrderDownload         = 'assets/svg/order_download.svg';
-  static const String svgOrderPrint            = 'assets/svg/order_print.svg';
-  static const String svgOrderShare            = 'assets/svg/order_share.svg';
-  static const String svgPaymentPrint          = 'assets/svg/payment_print.svg';
-  static const String svgPaymentShare          = 'assets/svg/payment_share.svg';
-  static const String svgProfileEdit           = 'assets/svg/profile_edit.svg';
-  static const String svgProfileNotification   = 'assets/svg/profile_notification.svg';
-  static const String svgProfilePrivacy        = 'assets/svg/profile_privacy.svg';
-  static const String svgProfileSecurity       = 'assets/svg/profile_security.svg';
-  static const String svgReady                 = 'assets/svg/ready.svg';
-  static const String svgWhatsapp              = 'assets/svg/whatsapp.svg';
+  static const String imagesCardExchange02 =
+      'assets/images/card-exchange-02.png';
+  static const String imagesClinic = 'assets/images/clinic.png';
+  static const String imagesCreditCardPos = 'assets/images/credit-card-pos.png';
+  static const String imagesDentalTooth = 'assets/images/dental-tooth.png';
+  static const String imagesLogo = 'assets/images/Logo.png';
+  static const String imagesPasswordValidation =
+      'assets/images/password-validation.png';
+  static const String imagesResetPassword = 'assets/images/reset-password.png';
+  static const String imagesStethoscope02 = 'assets/images/stethoscope-02.png';
+  static const String imagesUser = 'assets/images/user.png';
+  static const String imagesUserCheck01 = 'assets/images/user-check-01.png';
+  static const String imagesUserEdit01 = 'assets/images/user-edit-01.png';
+  static const String imagesVisa = 'assets/images/Visa.png';
+  static const String imagesVisa1 = 'assets/images/Visa__1_.png';
+  static const String imagesVisa2 = 'assets/images/Visa__2_.png';
 }

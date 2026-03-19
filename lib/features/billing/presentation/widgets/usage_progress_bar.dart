@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/features/billing/data/models/subscription_model.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/billing/data/models/subscription_model.dart';
 
 class UsageProgressBar extends StatelessWidget {
   const UsageProgressBar({super.key, required this.stat});
@@ -10,8 +10,8 @@ class UsageProgressBar extends StatelessWidget {
   final UsageStat stat;
 
   IconData get _icon {
-    if (stat.label == 'Simulation Limit')      return Icons.bolt;
-    if (stat.label == 'Staff Seats')           return Icons.people_outline;
+    if (stat.label == 'Simulation Limit') return Icons.bolt;
+    if (stat.label == 'Staff Seats') return Icons.people_outline;
     return Icons.folder_outlined;
   }
 
@@ -50,10 +50,7 @@ class UsageProgressBar extends StatelessWidget {
             // Value — fixed on the right, never pushed off screen
             Text(
               pctText,
-              style: GoogleFonts.inter(
-                fontSize: 11.sp,
-                color: AppColors.gray,
-              ),
+              style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
             ),
           ],
         ),
@@ -77,9 +74,8 @@ class UsageProgressBar extends StatelessWidget {
   }
 
   /// Formats numbers with commas: 1284 → "1,284"
-  String _fmt(int n) =>
-      n.toString().replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-        (m) => '${m[1]},',
-      );
+  String _fmt(int n) => n.toString().replaceAllMapped(
+    RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+    (m) => '${m[1]},',
+  );
 }

@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/features/billing/states/billing_state.dart';
-import 'package:onboarding/features/billing/presentation/widgets/subscription_overview_tab.dart';
-import 'package:onboarding/features/billing/presentation/widgets/billing_history_tab.dart';
-import 'package:onboarding/features/billing/presentation/widgets/manage_subscription_tab.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/billing/states/billing_state.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/subscription_overview_tab.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/billing_history_tab.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/manage_subscription_tab.dart';
 
 class BillingScreen extends ConsumerWidget {
   const BillingScreen({super.key, this.embedded = false});
@@ -16,8 +14,8 @@ class BillingScreen extends ConsumerWidget {
   final bool embedded;
 
   static const _tabs = [
-    _TabItem(icon: Icons.bolt_outlined,        label: 'Subscription Overview'),
-    _TabItem(icon: Icons.receipt_outlined,     label: 'Billing History'),
+    _TabItem(icon: Icons.bolt_outlined, label: 'Subscription Overview'),
+    _TabItem(icon: Icons.receipt_outlined, label: 'Billing History'),
     _TabItem(icon: Icons.credit_card_outlined, label: 'Manage Subscription'),
   ];
 
@@ -32,14 +30,16 @@ class BillingScreen extends ConsumerWidget {
         if (!embedded)
           Container(
             color: Colors.white,
-            padding:
-                EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 14.h),
             child: Row(
               children: [
                 GestureDetector(
-                  onTap: () => ref.read(navigatorState.notifier).pop(),
-                  child: Icon(Icons.arrow_back,
-                      size: 24.w, color: AppColors.textColor),
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(
+                    Icons.arrow_back,
+                    size: 24.w,
+                    color: AppColors.textColor,
+                  ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
@@ -52,8 +52,11 @@ class BillingScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                Icon(Icons.notifications_outlined,
-                    size: 22.w, color: AppColors.gray),
+                Icon(
+                  Icons.notifications_outlined,
+                  size: 22.w,
+                  color: AppColors.gray,
+                ),
               ],
             ),
           ),
@@ -68,8 +71,11 @@ class BillingScreen extends ConsumerWidget {
               // Title row
               Row(
                 children: [
-                  Icon(Icons.credit_card_outlined,
-                      size: 18.sp, color: AppColors.textColor),
+                  Icon(
+                    Icons.credit_card_outlined,
+                    size: 18.sp,
+                    color: AppColors.textColor,
+                  ),
                   SizedBox(width: 8.w),
                   Expanded(
                     child: Text(
@@ -88,7 +94,9 @@ class BillingScreen extends ConsumerWidget {
               Text(
                 'Manage your plan, credits, and billing history',
                 style: GoogleFonts.inter(
-                    fontSize: 12.sp, color: AppColors.gray),
+                  fontSize: 12.sp,
+                  color: AppColors.gray,
+                ),
               ),
               SizedBox(height: 10.h),
               // Plan badge + Upgrade button row
@@ -96,7 +104,9 @@ class BillingScreen extends ConsumerWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: 10.w, vertical: 5.h),
+                      horizontal: 10.w,
+                      vertical: 5.h,
+                    ),
                     decoration: BoxDecoration(
                       border: Border.all(color: AppColors.inputBorder),
                       borderRadius: BorderRadius.circular(6.r),
@@ -104,7 +114,9 @@ class BillingScreen extends ConsumerWidget {
                     child: Text(
                       'Professional Plan',
                       style: GoogleFonts.inter(
-                          fontSize: 11.sp, color: AppColors.textColor),
+                        fontSize: 11.sp,
+                        color: AppColors.textColor,
+                      ),
                     ),
                   ),
                   SizedBox(width: 8.w),
@@ -115,15 +127,20 @@ class BillingScreen extends ConsumerWidget {
                       label: Text(
                         'Upgrade Plan',
                         style: GoogleFonts.inter(
-                            fontSize: 11.sp, fontWeight: FontWeight.w600),
+                          fontSize: 11.sp,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 8.h),
+                          horizontal: 12.w,
+                          vertical: 8.h,
+                        ),
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r)),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
                         elevation: 0,
                       ),
                     ),
@@ -145,8 +162,7 @@ class BillingScreen extends ConsumerWidget {
               children: List.generate(
                 _tabs.length,
                 (i) => GestureDetector(
-                  onTap: () =>
-                      ref.read(billingTabProvider.notifier).state = i,
+                  onTap: () => ref.read(billingTabProvider.notifier).state = i,
                   child: Container(
                     margin: EdgeInsets.only(right: 20.w),
                     padding: EdgeInsets.only(bottom: 10.h),

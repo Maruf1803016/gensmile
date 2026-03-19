@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/common/widgets/input_fields.dart';
-import 'package:onboarding/features/onboarding/data/models/clinic_model.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/common/widgets/input_fields.dart';
+import 'package:gen_smile/features/onboarding/data/models/clinic_model.dart';
 
 class ClinicCard extends StatefulWidget {
   const ClinicCard({
@@ -30,9 +30,9 @@ class _ClinicCardState extends State<ClinicCard> {
   @override
   void initState() {
     super.initState();
-    nameController    = TextEditingController(text: widget.clinic.name);
+    nameController = TextEditingController(text: widget.clinic.name);
     addressController = TextEditingController(text: widget.clinic.address);
-    phoneController   = TextEditingController(text: widget.clinic.phoneNumber);
+    phoneController = TextEditingController(text: widget.clinic.phoneNumber);
   }
 
   @override
@@ -57,12 +57,10 @@ class _ClinicCardState extends State<ClinicCard> {
         children: [
           // ── Header ──
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: 16.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
             decoration: BoxDecoration(
               color: const Color(0xFFF5F6FA),
-              borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(8.r)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8.r)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,8 +75,7 @@ class _ClinicCardState extends State<ClinicCard> {
                 ),
                 GestureDetector(
                   onTap: widget.onRemove,
-                  child: Icon(Icons.close,
-                      size: 18.w, color: AppColors.gray),
+                  child: Icon(Icons.close, size: 18.w, color: AppColors.gray),
                 ),
               ],
             ),

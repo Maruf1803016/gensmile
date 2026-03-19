@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
-import 'package:onboarding/features/onboarding/presentation/onboarding_states.dart';
-import 'package:onboarding/features/onboarding/presentation/widgets/role_option_card.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/common/widgets/buttons.dart';
+import 'package:gen_smile/features/onboarding/presentation/onboarding_states.dart';
+import 'package:gen_smile/features/onboarding/presentation/widgets/role_option_card.dart';
 
 class OnbEntryScreen extends ConsumerWidget {
   const OnbEntryScreen({super.key});

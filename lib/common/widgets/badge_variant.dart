@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/common/utils/utils.dart';
+import 'package:gen_smile/common/utils/utils.dart';
 
 class BadgeVariant extends StatelessWidget {
   const BadgeVariant({
@@ -30,8 +30,7 @@ class BadgeVariant extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         spacing: 8.w,
         children: [
-          if (prefixIcon != null)
-            SvgPicture.asset(prefixIcon!, width: 16.w),
+          if (prefixIcon != null) SvgPicture.asset(prefixIcon!, width: 16.w),
           Text(
             text,
             style: GoogleFonts.inter(
@@ -40,8 +39,7 @@ class BadgeVariant extends StatelessWidget {
               color: getVariant(variant),
             ),
           ),
-          if (suffixIcon != null)
-            SvgPicture.asset(suffixIcon!, width: 16.w),
+          if (suffixIcon != null) SvgPicture.asset(suffixIcon!, width: 16.w),
         ],
       ),
     );

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/features/billing/data/models/billing_model.dart';
-import 'package:onboarding/features/billing/data/models/subscription_model.dart';
-import 'package:onboarding/features/billing/presentation/widgets/usage_progress_bar.dart';
-import 'package:onboarding/features/billing/presentation/widgets/credit_usage_row.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/billing/data/models/billing_model.dart';
+import 'package:gen_smile/features/billing/data/models/subscription_model.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/usage_progress_bar.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/credit_usage_row.dart';
 
 class SubscriptionOverviewTab extends StatelessWidget {
   const SubscriptionOverviewTab({super.key});
@@ -51,7 +51,9 @@ class SubscriptionOverviewTab extends StatelessWidget {
                             // ── Active badge ──
                             Container(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 8.w, vertical: 3.h),
+                                horizontal: 8.w,
+                                vertical: 3.h,
+                              ),
                               decoration: BoxDecoration(
                                 color: AppColors.success.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(4.r),
@@ -124,10 +126,12 @@ class SubscriptionOverviewTab extends StatelessWidget {
                 Gap(20.h),
 
                 // ── Usage bars ──
-                ...dummyUsageStats.map((stat) => Padding(
-                      padding: EdgeInsets.only(bottom: 14.h),
-                      child: UsageProgressBar(stat: stat),
-                    )),
+                ...dummyUsageStats.map(
+                  (stat) => Padding(
+                    padding: EdgeInsets.only(bottom: 14.h),
+                    child: UsageProgressBar(stat: stat),
+                  ),
+                ),
               ],
             ),
           ),
@@ -188,9 +192,7 @@ class SubscriptionOverviewTab extends StatelessWidget {
           Gap(8.h),
 
           // ── Transaction rows ──
-          ...dummyCreditTransactions.map(
-            (t) => CreditUsageRow(transaction: t),
-          ),
+          ...dummyCreditTransactions.map((t) => CreditUsageRow(transaction: t)),
         ],
       ),
     );
@@ -226,10 +228,7 @@ class _StatCard extends StatelessWidget {
             Gap(8.h),
             Text(
               label,
-              style: GoogleFonts.inter(
-                fontSize: 11.sp,
-                color: AppColors.gray,
-              ),
+              style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
             ),
             Gap(4.h),
             Text(

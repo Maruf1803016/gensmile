@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sized_context/sized_context.dart';
-import 'package:onboarding/common/utils/utils.dart';
+import 'package:gen_smile/common/utils/utils.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/constant/app_text_styles.dart';
+import 'package:gen_smile/core/constant/app_spacing.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String? text;
@@ -26,37 +28,36 @@ class PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final variantColor = getVariant(variant);
+
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         elevation: 0,
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4, // 16
+          vertical: AppSpacing.s3, // 12
+        ),
         shape: RoundedRectangleBorder(
-          side: BorderSide(color: getVariant(variant)),
-          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(color: variantColor),
+          borderRadius: BorderRadius.circular(AppRadius.r2), // 8
         ),
         fixedSize: Size.fromWidth(context.widthPx),
-        backgroundColor: outline ? Colors.transparent : getVariant(variant),
-        textStyle: GoogleFonts.inter(
-          fontSize: 16,
-          fontWeight: FontWeight.w400,
-          color: Colors.white,
-        ),
+        backgroundColor: outline ? Colors.transparent : variantColor,
       ),
       child: Row(
-        spacing: 8.w,
+        spacing: AppSpacing.s2, // 8
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (prefixIcon != null)
             SvgPicture.asset(prefixIcon!, width: outline ? 18.w : 15.w),
           Text(
             text!,
-            style: GoogleFonts.inter(
-              color: outline ? getVariant(variant) : textColor,
+            style: AppTextStyles.lgSemibold(
+              color: outline ? variantColor : textColor,
             ),
           ),
-          if (suffixIcon != null)
-            SvgPicture.asset(suffixIcon!, width: 18.w),
+          if (suffixIcon != null) SvgPicture.asset(suffixIcon!, width: 18.w),
         ],
       ),
     );

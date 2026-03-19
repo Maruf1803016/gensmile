@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/common/widgets/input_fields.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/common/widgets/input_fields.dart';
+import 'package:gen_smile/common/widgets/buttons.dart';
 
 class AddCardSheet extends StatefulWidget {
   const AddCardSheet({super.key});
@@ -14,11 +14,11 @@ class AddCardSheet extends StatefulWidget {
 }
 
 class _AddCardSheetState extends State<AddCardSheet> {
-  final _cardNumberController   = TextEditingController();
-  final _cardholderController   = TextEditingController();
-  final _expiryController       = TextEditingController();
-  final _cvvController          = TextEditingController();
-  final _formKey                = GlobalKey<FormState>();
+  final _cardNumberController = TextEditingController();
+  final _cardholderController = TextEditingController();
+  final _expiryController = TextEditingController();
+  final _cvvController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -69,10 +69,7 @@ class _AddCardSheetState extends State<AddCardSheet> {
             Text(
               'Manage your billing payment method\nand invoice preferences.',
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 13.sp,
-                color: AppColors.gray,
-              ),
+              style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
             ),
 
             Gap(24.h),

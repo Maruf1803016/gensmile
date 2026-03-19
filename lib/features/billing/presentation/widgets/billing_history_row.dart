@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/features/billing/data/models/billing_model.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/billing/data/models/billing_model.dart';
 
 class BillingHistoryRow extends StatelessWidget {
   const BillingHistoryRow({super.key, required this.invoice});
@@ -14,9 +14,7 @@ class BillingHistoryRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 14.h),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: AppColors.inputBorder),
-        ),
+        border: Border(bottom: BorderSide(color: AppColors.inputBorder)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,15 +38,20 @@ class BillingHistoryRow extends StatelessWidget {
                     // ── Paid badge ──
                     Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: 8.w, vertical: 2.h),
+                        horizontal: 8.w,
+                        vertical: 2.h,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(4.r),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle_outline,
-                              size: 10.w, color: AppColors.success),
+                          Icon(
+                            Icons.check_circle_outline,
+                            size: 10.w,
+                            color: AppColors.success,
+                          ),
                           SizedBox(width: 3.w),
                           Text(
                             invoice.status,
@@ -103,7 +106,9 @@ class BillingHistoryRow extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primary,
                   padding: EdgeInsets.symmetric(
-                      horizontal: 16.w, vertical: 6.h),
+                    horizontal: 16.w,
+                    vertical: 6.h,
+                  ),
                   minimumSize: Size.zero,
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                   shape: RoundedRectangleBorder(

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:onboarding/core/constant/app_constants.dart';
-import 'package:onboarding/features/splash/presentation/pages/splash_screen.dart';
+import 'package:gen_smile/core/constant/app_constants.dart';
+import 'package:gen_smile/features/splash/presentation/pages/splash_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -15,7 +15,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ScreenUtilInit(
-      designSize: const Size(390, 812),
+      designSize: const Size(375, 812),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {

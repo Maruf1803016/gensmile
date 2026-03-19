@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
 
 class OnbMobileTopBar extends ConsumerWidget {
   const OnbMobileTopBar({
@@ -41,8 +41,7 @@ class OnbMobileTopBar extends ConsumerWidget {
                 value: currentStep / totalSteps,
                 minHeight: 4.h,
                 backgroundColor: AppColors.inputBorder,
-                valueColor:
-                    AlwaysStoppedAnimation<Color>(AppColors.primary),
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
               ),
             ),
           ),

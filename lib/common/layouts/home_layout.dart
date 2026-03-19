@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/generated/assets.dart';
+
+import '../../core/constant/app_colors.dart';
+import '../../generated/assets.dart';
 
 class HomeLayout extends StatefulWidget {
   const HomeLayout({
@@ -26,10 +27,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       appBar: AppBar(
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 25.r,
-              backgroundImage: AssetImage(Assets.imagesAvatar),
-            ),
+            CircleAvatar(radius: 25.r),
             Gap(8.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,

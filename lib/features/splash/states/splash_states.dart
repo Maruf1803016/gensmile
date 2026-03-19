@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/features/auth/presentation/pages/sign_in_screen.dart';
-import 'package:onboarding/features/splash/presentation/widgets/splash_screen_pages.dart';
-import 'package:onboarding/features/splash/data/models/splash.dart';
-import 'package:onboarding/generated/assets.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
+import 'package:gen_smile/features/splash/presentation/widgets/splash_screen_pages.dart';
+import 'package:gen_smile/features/splash/data/models/splash.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 // ── Page controller for splash PageView ──────────────────────────────────────
 final splashControllerState = Provider<PageController>(
@@ -15,21 +14,20 @@ final splashControllerState = Provider<PageController>(
 final splashDataState = Provider<List<Splash>>(
   (ref) => [
     Splash(
-      image: Assets.imagesSplash1,
+      image: '',
       title: 'Welcome to GenSmile',
       description: 'The ultimate platform for dental clinic management.',
     ),
     Splash(
-      image: Assets.imagesSplash2,
+      image: '',
       title: 'AI-Powered Simulations',
       description:
           'Visualize your dream smile with cutting-edge AI technology.',
     ),
     Splash(
-      image: Assets.imagesSplash3,
+      image: '',
       title: 'Manage Your Clinic',
-      description:
-          'Set up your clinic and manage patient simulations easily.',
+      description: 'Set up your clinic and manage patient simulations easily.',
     ),
   ],
 );

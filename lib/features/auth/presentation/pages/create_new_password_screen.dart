@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
-import 'package:onboarding/common/widgets/input_fields.dart';
-import 'package:onboarding/features/auth/presentation/pages/sign_in_screen.dart';
+import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/constant/app_text_styles.dart';
+import 'package:gen_smile/core/constant/app_spacing.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class CreateNewPasswordScreen extends ConsumerStatefulWidget {
   const CreateNewPasswordScreen({super.key});
@@ -19,209 +19,187 @@ class CreateNewPasswordScreen extends ConsumerStatefulWidget {
 
 class _CreateNewPasswordScreenState
     extends ConsumerState<CreateNewPasswordScreen> {
-  final _passwordController        = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _formKey                   = GlobalKey<FormState>();
-
-  bool _obscurePassword        = true;
-  bool _obscureConfirmPassword = true;
+  final _passwordController = TextEditingController();
+  final _confirmController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
 
   @override
   void dispose() {
     _passwordController.dispose();
-    _confirmPasswordController.dispose();
+    _confirmController.dispose();
     super.dispose();
-  }
-
-  void _onResetPassword() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    // TODO: call reset password API
-    ref.read(navigatorState.notifier).pushReplacementAll(const SignInScreen());
   }
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.sizeOf(context).width >= 600;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
           child: Column(
             children: [
-              // ── Logo ──
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 32.w, height: 32.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Icon(Icons.medical_services_outlined,
-                        color: Colors.white, size: 18.sp),
-                  ),
-                  SizedBox(width: 8.w),
-                  Text('GenSmile',
-                      style: GoogleFonts.inter(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textColor)),
-                ],
-              ),
-
-              Gap(32.h),
-
-              // ── Card ──
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: AppColors.inputBorder),
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s6,
+                  vertical: AppSpacing.s5,
                 ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Icon
-                      Center(
-                        child: Icon(Icons.verified_user_outlined,
-                            size: 48.sp, color: AppColors.primary),
-                      ),
-                      Gap(12.h),
-                      Center(
-                        child: Text('Create new password',
-                            style: GoogleFonts.inter(
-                                fontSize: 22.sp,
-                                fontWeight: FontWeight.w700,
-                                color: AppColors.textColor)),
-                      ),
-                      Gap(4.h),
-                      Center(
-                        child: Text(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: const GenSmileLogo(iconSize: 32),
+                ),
+              ),
+              Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                    horizontal: isWide ? AppSpacing.s6 : AppSpacing.s4,
+                    vertical: AppSpacing.s4,
+                  ),
+                  padding: EdgeInsets.all(
+                    isWide ? AppSpacing.s8 : AppSpacing.s5,
+                  ),
+                  constraints: const BoxConstraints(maxWidth: 480),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(AppRadius.r3),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Icon
+                        Image.asset(
+                          Assets.imagesPasswordValidation,
+                          width: 56.w,
+                          height: 56.w,
+                        ),
+                        Gap(AppSpacing.s3),
+
+                        Text(
+                          'Create new password',
+                          style: AppTextStyles.h5Bold(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        Gap(AppSpacing.s1),
+                        Text(
                           'Please enter your new security credentials below.',
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                              fontSize: 13.sp, color: AppColors.gray),
-                        ),
-                      ),
-                      Gap(24.h),
-
-                      // Password
-                      InputField(
-                        controller: _passwordController,
-                        label: 'Password',
-                        hint: '••••••••',
-                        validator: 'required|min:8',
-                        suffix: GestureDetector(
-                          onTap: () => setState(
-                              () => _obscurePassword = !_obscurePassword),
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 12.w),
-                            child: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: 20.w,
-                              color: AppColors.gray,
-                            ),
+                          style: AppTextStyles.mdRegular(
+                            color: AppColors.textSubTitle,
                           ),
                         ),
-                      ),
-                      Gap(4.h),
-                      Text('Must be at least 8 characters',
-                          style: GoogleFonts.inter(
-                              fontSize: 11.sp, color: AppColors.gray)),
-                      Gap(16.h),
+                        Gap(AppSpacing.s6),
 
-                      // Confirm Password
-                      InputField(
-                        controller: _confirmPasswordController,
-                        label: 'Confirm Password',
-                        hint: '••••••••',
-                        validator: 'required|min:8',
-                        suffix: GestureDetector(
-                          onTap: () => setState(() =>
-                              _obscureConfirmPassword =
-                                  !_obscureConfirmPassword),
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 12.w),
-                            child: Icon(
-                              _obscureConfirmPassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: 20.w,
-                              color: AppColors.gray,
-                            ),
+                        // Password
+                        _PasswordField(
+                          label: 'Password',
+                          controller: _passwordController,
+                          obscure: _obscurePassword,
+                          onToggle: () => setState(
+                            () => _obscurePassword = !_obscurePassword,
                           ),
+                          hint: '••••••••',
+                          helperText: 'Must be at least 8 characters',
                         ),
-                      ),
-                      Gap(16.h),
+                        Gap(AppSpacing.s4),
 
-                      // Password Requirements box
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.all(16.w),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF5F6FA),
-                          borderRadius: BorderRadius.circular(8.r),
-                          border: Border.all(color: AppColors.inputBorder),
+                        // Confirm Password
+                        _PasswordField(
+                          label: 'Confirm Password',
+                          controller: _confirmController,
+                          obscure: _obscureConfirm,
+                          onToggle: () => setState(
+                            () => _obscureConfirm = !_obscureConfirm,
+                          ),
+                          hint: '••••••••',
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Password Requirements:',
-                                style: GoogleFonts.inter(
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppColors.textColor)),
-                            Gap(10.h),
-                            _Requirement('Minimum 8 characters'),
-                            _Requirement('Include one uppercase letter'),
-                            _Requirement('Include one special character'),
-                          ],
-                        ),
-                      ),
-                      Gap(24.h),
+                        Gap(AppSpacing.s4),
 
-                      // Reset password button
-                      PrimaryButton(
-                        text: 'Reset password',
-                        variant: 'primary',
-                        onPressed: _onResetPassword,
-                      ),
-                      Gap(14.h),
-
-                      // Back to sign in
-                      Center(
-                        child: RichText(
-                          text: TextSpan(
-                            style: GoogleFonts.inter(
-                                fontSize: 13.sp, color: AppColors.gray),
+                        // Password requirements
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(AppSpacing.s4),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceMuted,
+                            borderRadius: BorderRadius.circular(AppRadius.r2),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const TextSpan(
-                                  text: 'Remember your password? '),
+                              Text(
+                                'Password Requirements:',
+                                style: AppTextStyles.mdSemibold(
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Gap(AppSpacing.s2),
+                              _Requirement('Minimum 8 characters'),
+                              _Requirement('Include one uppercase letter'),
+                              _Requirement('Include one special character'),
+                            ],
+                          ),
+                        ),
+                        Gap(AppSpacing.s6),
+
+                        // Reset password button
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                // handle reset
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              elevation: 0,
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppSpacing.s4,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.round,
+                                ),
+                              ),
+                            ),
+                            child: Text(
+                              'Reset password',
+                              style: AppTextStyles.lgSemibold(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Gap(AppSpacing.s4),
+
+                        RichText(
+                          text: TextSpan(
+                            style: AppTextStyles.mdRegular(
+                              color: AppColors.textSubTitle,
+                            ),
+                            children: [
+                              const TextSpan(text: 'Remember your password? '),
                               WidgetSpan(
                                 child: GestureDetector(
-                                  onTap: () => ref
-                                      .read(navigatorState.notifier)
-                                      .pushReplacementAll(
-                                          const SignInScreen()),
-                                  child: Text('Sign In',
-                                      style: GoogleFonts.inter(
-                                          fontSize: 13.sp,
-                                          color: AppColors.primary,
-                                          fontWeight: FontWeight.w600)),
+                                  onTap: () =>
+                                      ref.read(navigatorState.notifier).pop(),
+                                  child: Text(
+                                    'Sign In',
+                                    style: AppTextStyles.mdSemibold(
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -233,6 +211,84 @@ class _CreateNewPasswordScreenState
   }
 }
 
+class _PasswordField extends StatelessWidget {
+  const _PasswordField({
+    required this.label,
+    required this.controller,
+    required this.obscure,
+    required this.onToggle,
+    required this.hint,
+    this.helperText,
+  });
+
+  final String label, hint;
+  final TextEditingController controller;
+  final bool obscure;
+  final VoidCallback onToggle;
+  final String? helperText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
+        ),
+        Gap(4.h),
+        TextFormField(
+          controller: controller,
+          obscureText: obscure,
+          style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: AppTextStyles.mdRegular(color: AppColors.textDisable),
+            filled: true,
+            fillColor: AppColors.surfaceMuted,
+            isDense: true,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.s3,
+              vertical: AppSpacing.s3,
+            ),
+            suffixIcon: GestureDetector(
+              onTap: onToggle,
+              child: Padding(
+                padding: EdgeInsets.only(right: AppSpacing.s3),
+                child: Icon(
+                  obscure
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  size: 18.sp,
+                  color: AppColors.gray400,
+                ),
+              ),
+            ),
+            suffixIconConstraints: const BoxConstraints(
+              minWidth: 0,
+              minHeight: 0,
+            ),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.borderDefault),
+              borderRadius: BorderRadius.circular(AppRadius.r2),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.borderDefault),
+              borderRadius: BorderRadius.circular(AppRadius.r2),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary),
+              borderRadius: BorderRadius.circular(AppRadius.r2),
+            ),
+            helperText: helperText,
+            helperStyle: AppTextStyles.smRegular(color: AppColors.textSubTitle),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _Requirement extends StatelessWidget {
   const _Requirement(this.text);
   final String text;
@@ -240,14 +296,15 @@ class _Requirement extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 6.h),
+      padding: EdgeInsets.only(bottom: 4.h),
       child: Row(
         children: [
-          Icon(Icons.circle, size: 6.sp, color: AppColors.primary),
-          SizedBox(width: 8.w),
-          Text(text,
-              style: GoogleFonts.inter(
-                  fontSize: 12.sp, color: AppColors.textColor)),
+          Icon(Icons.circle, size: 8.sp, color: AppColors.primary),
+          SizedBox(width: AppSpacing.s2),
+          Text(
+            text,
+            style: AppTextStyles.smRegular(color: AppColors.textPrimary),
+          ),
         ],
       ),
     );

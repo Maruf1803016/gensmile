@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
 
 class RoleOptionCard extends StatelessWidget {
   const RoleOptionCard({
@@ -93,11 +93,7 @@ class RoleOptionCard extends StatelessWidget {
                   color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 14.w,
-                ),
+                child: Icon(Icons.check, color: Colors.white, size: 14.w),
               ),
           ],
         ),

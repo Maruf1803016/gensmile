@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/features/onboarding/data/models/plan_model.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/onboarding/data/models/plan_model.dart';
 
 class PlanCard extends StatelessWidget {
   const PlanCard({
@@ -48,8 +48,9 @@ class PlanCard extends StatelessWidget {
                 padding: EdgeInsets.symmetric(vertical: 5.h),
                 decoration: BoxDecoration(
                   color: const Color(0xFF6B46C1),
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(6.r)),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(6.r),
+                  ),
                 ),
                 child: Text(
                   'POPULAR',
@@ -110,8 +111,11 @@ class PlanCard extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 8.h),
                       child: Row(
                         children: [
-                          Icon(Icons.check_circle_outline,
-                              color: AppColors.primary, size: 16.w),
+                          Icon(
+                            Icons.check_circle_outline,
+                            color: AppColors.primary,
+                            size: 16.w,
+                          ),
                           SizedBox(width: 8.w),
                           Expanded(
                             child: Text(
@@ -153,9 +157,7 @@ class PlanCard extends StatelessWidget {
                         style: GoogleFonts.inter(
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w600,
-                          color: isSelected
-                              ? Colors.white
-                              : AppColors.gray,
+                          color: isSelected ? Colors.white : AppColors.gray,
                         ),
                       ),
                     ),

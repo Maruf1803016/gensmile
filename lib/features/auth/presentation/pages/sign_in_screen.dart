@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
-import 'package:onboarding/common/widgets/input_fields.dart';
-import 'package:onboarding/features/auth/presentation/pages/forget_password_screen.dart';
-import 'package:onboarding/features/onboarding/presentation/pages/onb_entry_screen.dart';
-import 'package:onboarding/features/dashboard/presentation/pages/dashboard_screen.dart';
+import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/constant/app_text_styles.dart';
+import 'package:gen_smile/core/constant/app_spacing.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
+import 'package:gen_smile/features/auth/presentation/pages/forget_password_screen.dart';
+import 'package:gen_smile/features/onboarding/presentation/pages/onb_entry_screen.dart';
+import 'package:gen_smile/features/dashboard/presentation/pages/dashboard_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -19,12 +20,11 @@ class SignInScreen extends ConsumerStatefulWidget {
 }
 
 class _SignInScreenState extends ConsumerState<SignInScreen> {
-  final _emailController    = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey            = GlobalKey<FormState>();
-
   bool _obscurePassword = true;
-  bool _rememberMe      = false;
+  bool _rememberMe = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -34,174 +34,424 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   void _onContinue() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-    ref.read(navigatorState.notifier).pushReplacementAll(const DashboardScreen());
+    if (_formKey.currentState?.validate() ?? false) {
+      ref.read(navigatorState.notifier).push(const DashboardScreen());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.sizeOf(context).width >= 600;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
-          child: Column(
-            children: [
-              // ── Logo ──
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 32.w, height: 32.w,
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      borderRadius: BorderRadius.circular(8.r),
-                    ),
-                    child: Icon(Icons.medical_services_outlined,
-                        color: Colors.white, size: 18.sp),
-                  ),
-                  SizedBox(width: 8.w),
-                  Text('GenSmile',
-                      style: GoogleFonts.inter(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.textColor)),
-                ],
-              ),
-
-              Gap(32.h),
-
-              // ── Card ──
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(24.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: Border.all(color: AppColors.inputBorder),
+          child: isWide
+              ? _DesktopLayout(
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  obscurePassword: _obscurePassword,
+                  rememberMe: _rememberMe,
+                  formKey: _formKey,
+                  onTogglePassword: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
+                  onToggleRemember: (v) => setState(() => _rememberMe = v),
+                  onContinue: _onContinue,
+                  onForgotPassword: () => ref
+                      .read(navigatorState.notifier)
+                      .push(const ForgetPasswordScreen()),
+                  onSignUp: () => ref
+                      .read(navigatorState.notifier)
+                      .push(const OnbEntryScreen()),
+                )
+              : _MobileLayout(
+                  emailController: _emailController,
+                  passwordController: _passwordController,
+                  obscurePassword: _obscurePassword,
+                  rememberMe: _rememberMe,
+                  formKey: _formKey,
+                  onTogglePassword: () =>
+                      setState(() => _obscurePassword = !_obscurePassword),
+                  onToggleRemember: (v) => setState(() => _rememberMe = v),
+                  onContinue: _onContinue,
+                  onForgotPassword: () => ref
+                      .read(navigatorState.notifier)
+                      .push(const ForgetPasswordScreen()),
+                  onSignUp: () => ref
+                      .read(navigatorState.notifier)
+                      .push(const OnbEntryScreen()),
                 ),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      // Icon
-                      Icon(Icons.person_outline,
-                          size: 48.sp, color: AppColors.primary),
-                      Gap(12.h),
-                      Text('Sign In',
-                          style: GoogleFonts.inter(
-                              fontSize: 22.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textColor)),
-                      Gap(4.h),
-                      Text('Welcome back! Sign in to continue',
-                          style: GoogleFonts.inter(
-                              fontSize: 13.sp, color: AppColors.gray)),
-                      Gap(24.h),
+        ),
+      ),
+    );
+  }
+}
 
-                      // Email
-                      InputField(
-                        controller: _emailController,
-                        label: 'Email Address',
-                        hint: 'your.email@example.com',
-                        validator: 'required|email',
-                      ),
-                      Gap(16.h),
+// ── Desktop layout ────────────────────────────────────────────────────────────
 
-                      // Password
-                      InputField(
-                        controller: _passwordController,
-                        label: 'Password',
-                        hint: '••••••••',
-                        validator: 'required|min:8',
-                        suffix: GestureDetector(
-                          onTap: () => setState(
-                              () => _obscurePassword = !_obscurePassword),
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 12.w),
-                            child: Icon(
-                              _obscurePassword
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              size: 20.w,
-                              color: AppColors.gray,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Gap(12.h),
+class _DesktopLayout extends StatelessWidget {
+  const _DesktopLayout({
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.rememberMe,
+    required this.formKey,
+    required this.onTogglePassword,
+    required this.onToggleRemember,
+    required this.onContinue,
+    required this.onForgotPassword,
+    required this.onSignUp,
+  });
 
-                      // Remember me + Forget password
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 20.w,
-                            height: 20.w,
-                            child: Checkbox(
-                              value: _rememberMe,
-                              activeColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4.r)),
-                              onChanged: (v) =>
-                                  setState(() => _rememberMe = v ?? false),
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Text('Remember me',
-                              style: GoogleFonts.inter(
-                                  fontSize: 13.sp,
-                                  color: AppColors.textColor)),
-                          const Spacer(),
-                          GestureDetector(
-                            onTap: () => ref
-                                .read(navigatorState.notifier)
-                                .push(const ForgetPasswordScreen()),
-                            child: Text('Forget password?',
-                                style: GoogleFonts.inter(
-                                    fontSize: 13.sp,
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.w600)),
-                          ),
-                        ],
-                      ),
-                      Gap(24.h),
+  final TextEditingController emailController, passwordController;
+  final bool obscurePassword, rememberMe;
+  final GlobalKey<FormState> formKey;
+  final VoidCallback onTogglePassword, onContinue, onForgotPassword, onSignUp;
+  final ValueChanged<bool> onToggleRemember;
 
-                      // Continue button
-                      PrimaryButton(
-                        text: 'Continue →',
-                        variant: 'primary',
-                        onPressed: _onContinue,
-                      ),
-                      Gap(14.h),
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.s6,
+            vertical: AppSpacing.s5,
+          ),
+          child: const Align(
+            alignment: Alignment.centerLeft,
+            child: GenSmileLogo(iconSize: 32),
+          ),
+        ),
+        Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: AppSpacing.s6,
+              vertical: AppSpacing.s6,
+            ),
+            padding: EdgeInsets.all(AppSpacing.s8),
+            constraints: const BoxConstraints(maxWidth: 480),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(AppRadius.r3),
+            ),
+            child: _FormContent(
+              emailController: emailController,
+              passwordController: passwordController,
+              obscurePassword: obscurePassword,
+              rememberMe: rememberMe,
+              formKey: formKey,
+              onTogglePassword: onTogglePassword,
+              onToggleRemember: onToggleRemember,
+              onContinue: onContinue,
+              onForgotPassword: onForgotPassword,
+              onSignUp: onSignUp,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
-                      // Sign Up link
-                      RichText(
-                        text: TextSpan(
-                          style: GoogleFonts.inter(
-                              fontSize: 13.sp, color: AppColors.gray),
-                          children: [
-                            const TextSpan(text: "Don't have an account? "),
-                            WidgetSpan(
-                              child: GestureDetector(
-                                onTap: () => ref
-                                    .read(navigatorState.notifier)
-                                    .push(const OnbEntryScreen()),
-                                child: Text('Sign Up',
-                                    style: GoogleFonts.inter(
-                                        fontSize: 13.sp,
-                                        color: AppColors.primary,
-                                        fontWeight: FontWeight.w600)),
-                              ),
-                            ),
-                          ],
-                        ),
+// ── Mobile layout ─────────────────────────────────────────────────────────────
+
+class _MobileLayout extends StatelessWidget {
+  const _MobileLayout({
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.rememberMe,
+    required this.formKey,
+    required this.onTogglePassword,
+    required this.onToggleRemember,
+    required this.onContinue,
+    required this.onForgotPassword,
+    required this.onSignUp,
+  });
+
+  final TextEditingController emailController, passwordController;
+  final bool obscurePassword, rememberMe;
+  final GlobalKey<FormState> formKey;
+  final VoidCallback onTogglePassword, onContinue, onForgotPassword, onSignUp;
+  final ValueChanged<bool> onToggleRemember;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.s4,
+            vertical: AppSpacing.s4,
+          ),
+          child: const GenSmileLogo(iconSize: 28),
+        ),
+        Container(
+          margin: EdgeInsets.all(AppSpacing.s4),
+          padding: EdgeInsets.all(AppSpacing.s5),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(AppRadius.r3),
+          ),
+          child: _FormContent(
+            emailController: emailController,
+            passwordController: passwordController,
+            obscurePassword: obscurePassword,
+            rememberMe: rememberMe,
+            formKey: formKey,
+            onTogglePassword: onTogglePassword,
+            onToggleRemember: onToggleRemember,
+            onContinue: onContinue,
+            onForgotPassword: onForgotPassword,
+            onSignUp: onSignUp,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// ── Shared form content ───────────────────────────────────────────────────────
+
+class _FormContent extends StatelessWidget {
+  const _FormContent({
+    required this.emailController,
+    required this.passwordController,
+    required this.obscurePassword,
+    required this.rememberMe,
+    required this.formKey,
+    required this.onTogglePassword,
+    required this.onToggleRemember,
+    required this.onContinue,
+    required this.onForgotPassword,
+    required this.onSignUp,
+  });
+
+  final TextEditingController emailController, passwordController;
+  final bool obscurePassword, rememberMe;
+  final GlobalKey<FormState> formKey;
+  final VoidCallback onTogglePassword, onContinue, onForgotPassword, onSignUp;
+  final ValueChanged<bool> onToggleRemember;
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          // Icon
+          Image.asset(Assets.imagesUserCheck01, width: 56.w, height: 56.w),
+          Gap(AppSpacing.s3),
+
+          // Title
+          Text(
+            'Sign In',
+            style: AppTextStyles.h5Bold(color: AppColors.textPrimary),
+          ),
+          Gap(AppSpacing.s1),
+          Text(
+            'Welcome back! Sign in to continue',
+            style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
+          ),
+          Gap(AppSpacing.s6),
+
+          // Email
+          _FieldLabel('Email Address'),
+          Gap(AppSpacing.s1),
+          _InputBox(
+            controller: emailController,
+            hint: 'your.email@example.com',
+            keyboardType: TextInputType.emailAddress,
+          ),
+          Gap(AppSpacing.s4),
+
+          // Password
+          _FieldLabel('Password'),
+          Gap(AppSpacing.s1),
+          _InputBox(
+            controller: passwordController,
+            hint: '••••••••',
+            obscureText: obscurePassword,
+            suffix: GestureDetector(
+              onTap: onTogglePassword,
+              child: Icon(
+                obscurePassword
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                size: 18.sp,
+                color: AppColors.gray400,
+              ),
+            ),
+          ),
+          Gap(AppSpacing.s3),
+
+          // Remember me + Forgot password
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () => onToggleRemember(!rememberMe),
+                child: Row(
+                  children: [
+                    Checkbox(
+                      value: rememberMe,
+                      onChanged: (v) => onToggleRemember(v ?? false),
+                      activeColor: AppColors.primary,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    SizedBox(width: AppSpacing.s1),
+                    Text(
+                      'Remember me',
+                      style: AppTextStyles.smRegular(
+                        color: AppColors.textSubTitle,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              GestureDetector(
+                onTap: onForgotPassword,
+                child: Text(
+                  'Forget password?',
+                  style: AppTextStyles.smSemibold(color: AppColors.primary),
                 ),
               ),
             ],
           ),
+          Gap(AppSpacing.s6),
+
+          // Continue button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: onContinue,
+              icon: const SizedBox.shrink(),
+              label: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Continue',
+                    style: AppTextStyles.lgSemibold(color: AppColors.white),
+                  ),
+                  SizedBox(width: AppSpacing.s2),
+                  Icon(
+                    Icons.arrow_forward,
+                    size: 18.sp,
+                    color: AppColors.white,
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.round),
+                ),
+              ),
+            ),
+          ),
+          Gap(AppSpacing.s4),
+
+          // Sign up link
+          RichText(
+            text: TextSpan(
+              style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
+              children: [
+                const TextSpan(text: "Don't have an account? "),
+                WidgetSpan(
+                  child: GestureDetector(
+                    onTap: onSignUp,
+                    child: Text(
+                      'Sign Up',
+                      style: AppTextStyles.mdSemibold(color: AppColors.primary),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Shared field helpers ──────────────────────────────────────────────────────
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        text,
+        style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
+      ),
+    );
+  }
+}
+
+class _InputBox extends StatelessWidget {
+  const _InputBox({
+    required this.controller,
+    required this.hint,
+    this.obscureText = false,
+    this.suffix,
+    this.keyboardType,
+  });
+
+  final TextEditingController controller;
+  final String hint;
+  final bool obscureText;
+  final Widget? suffix;
+  final TextInputType? keyboardType;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: AppTextStyles.mdRegular(color: AppColors.textDisable),
+        filled: true,
+        fillColor: AppColors.surfaceMuted,
+        isDense: true,
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.s3,
+          vertical: AppSpacing.s3,
+        ),
+        suffixIcon: suffix != null
+            ? Padding(
+                padding: EdgeInsets.only(right: AppSpacing.s3),
+                child: suffix,
+              )
+            : null,
+        suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.borderDefault),
+          borderRadius: BorderRadius.circular(AppRadius.r2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.borderDefault),
+          borderRadius: BorderRadius.circular(AppRadius.r2),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(AppRadius.r2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.error),
+          borderRadius: BorderRadius.circular(AppRadius.r2),
         ),
       ),
     );

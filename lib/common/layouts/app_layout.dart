@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/generated/assets.dart';
+
+import '../../core/constant/app_colors.dart';
+import '../../core/states/navigator_state.dart';
+import '../../generated/assets.dart';
 
 class AppLayout extends ConsumerWidget {
   const AppLayout({
@@ -36,11 +37,12 @@ class AppLayout extends ConsumerWidget {
         centerTitle: true,
         title: Text(title),
         leading: IconButton(
-          onPressed: onBackPressed ??
+          onPressed:
+              onBackPressed ??
               () {
                 ref.read(navigatorState.notifier).pop();
               },
-          icon: SvgPicture.asset(Assets.svgBack),
+          icon: Icon(Icons.chevron_left),
         ),
         actions: [Gap(16.w)],
       ),

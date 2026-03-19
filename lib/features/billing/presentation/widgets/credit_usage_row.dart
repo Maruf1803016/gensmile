@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/features/billing/data/models/billing_model.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/features/billing/data/models/billing_model.dart';
 
 class CreditUsageRow extends StatelessWidget {
   const CreditUsageRow({super.key, required this.transaction});

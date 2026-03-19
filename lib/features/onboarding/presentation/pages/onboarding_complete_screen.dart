@@ -3,22 +3,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-//import 'package:onboarding/core/states/navigator_state.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
-import 'package:onboarding/features/onboarding/presentation/widgets/onb_mobile_top_bar.dart';
-import 'package:onboarding/features/onboarding/presentation/widgets/onb_mobile_step_header.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
+import 'package:gen_smile/common/widgets/buttons.dart';
+import 'package:gen_smile/features/onboarding/presentation/widgets/onb_mobile_top_bar.dart';
+import 'package:gen_smile/features/onboarding/presentation/widgets/onb_mobile_step_header.dart';
+import 'package:gen_smile/features/dashboard/presentation/pages/dashboard_screen.dart';
 
 class OnboardingCompleteScreen extends ConsumerWidget {
   const OnboardingCompleteScreen({super.key});
 
   static const _steps = [
-    _Step('1', 'Explore your dashboard',
-        'Get familiar with all features and tools'),
-    _Step('2', 'Add your first patient',
-        'Start creating smile simulations'),
-    _Step('3', 'Customize your settings',
-        'Fine-tune preferences and notifications'),
+    _Step(
+      '1',
+      'Explore your dashboard',
+      'Get familiar with all features and tools',
+    ),
+    _Step('2', 'Add your first patient', 'Start creating smile simulations'),
+    _Step(
+      '3',
+      'Customize your settings',
+      'Fine-tune preferences and notifications',
+    ),
   ];
 
   @override
@@ -32,8 +38,7 @@ class OnboardingCompleteScreen extends ConsumerWidget {
 
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                    horizontal: 20.w, vertical: 8.h),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                 child: Column(
                   children: [
                     const OnbMobileStepHeader(),
@@ -46,8 +51,7 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                         color: AppColors.primary,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(Icons.check,
-                          color: Colors.white, size: 36.w),
+                      child: Icon(Icons.check, color: Colors.white, size: 36.w),
                     ),
 
                     Gap(20.h),
@@ -67,7 +71,9 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                       'Your GenSmile clinic account is ready to use',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.inter(
-                          fontSize: 13.sp, color: AppColors.gray),
+                        fontSize: 13.sp,
+                        color: AppColors.gray,
+                      ),
                     ),
 
                     Gap(28.h),
@@ -82,27 +88,31 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Next Steps:',
-                              style: GoogleFonts.inter(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.textColor,
-                              )),
+                          Text(
+                            'Next Steps:',
+                            style: GoogleFonts.inter(
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textColor,
+                            ),
+                          ),
                           Gap(16.h),
                           ..._steps.map(
                             (s) => Padding(
                               padding: EdgeInsets.only(bottom: 16.h),
                               child: Row(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(
                                     width: 20.w,
-                                    child: Text(s.number,
-                                        style: GoogleFonts.inter(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.gray)),
+                                    child: Text(
+                                      s.number,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.gray,
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(width: 8.w),
                                   Expanded(
@@ -110,18 +120,22 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(s.title,
-                                            style: GoogleFonts.inter(
-                                                fontSize: 14.sp,
-                                                fontWeight:
-                                                    FontWeight.w600,
-                                                color:
-                                                    AppColors.textColor)),
+                                        Text(
+                                          s.title,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppColors.textColor,
+                                          ),
+                                        ),
                                         Gap(2.h),
-                                        Text(s.subtitle,
-                                            style: GoogleFonts.inter(
-                                                fontSize: 12.sp,
-                                                color: AppColors.gray)),
+                                        Text(
+                                          s.subtitle,
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12.sp,
+                                            color: AppColors.gray,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
@@ -147,9 +161,9 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                     text: 'Go to Dashboard',
                     variant: 'primary',
                     onPressed: () {
-                      // TODO: Navigate to Dashboard
-                      // ref.read(navigatorState.notifier)
-                      //    .pushReplacementAll(const DashboardScreen());
+                      ref
+                          .read(navigatorState.notifier)
+                          .pushReplacementAll(const DashboardScreen());
                     },
                   ),
                   Gap(12.h),
@@ -158,7 +172,9 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                     child: RichText(
                       text: TextSpan(
                         style: GoogleFonts.inter(
-                            fontSize: 13.sp, color: AppColors.gray),
+                          fontSize: 13.sp,
+                          color: AppColors.gray,
+                        ),
                         children: [
                           const TextSpan(text: 'Need help? '),
                           TextSpan(

@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
-import 'package:onboarding/core/constant/app_colors.dart';
-import 'package:onboarding/common/widgets/buttons.dart';
-import 'package:onboarding/features/billing/data/models/subscription_model.dart';
-import 'package:onboarding/features/billing/states/billing_state.dart';
-import 'package:onboarding/features/billing/presentation/widgets/add_card_sheet.dart';
+import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/common/widgets/buttons.dart';
+import 'package:gen_smile/features/billing/data/models/subscription_model.dart';
+import 'package:gen_smile/features/billing/states/billing_state.dart';
+import 'package:gen_smile/features/billing/presentation/widgets/add_card_sheet.dart';
 
 class ManageSubscriptionTab extends ConsumerWidget {
   const ManageSubscriptionTab({super.key});
@@ -26,8 +26,9 @@ class ManageSubscriptionTab extends ConsumerWidget {
             final isExpanded = expandedPlan == plan.id;
             return GestureDetector(
               onTap: () {
-                ref.read(expandedPlanProvider.notifier).state =
-                    isExpanded ? null : plan.id;
+                ref.read(expandedPlanProvider.notifier).state = isExpanded
+                    ? null
+                    : plan.id;
               },
               child: Container(
                 margin: EdgeInsets.only(bottom: 12.h),
@@ -92,15 +93,15 @@ class ManageSubscriptionTab extends ConsumerWidget {
                         ),
                       ),
                       Gap(8.h),
+                      _FeatureItem(icon: Icons.bolt, text: plan.simulations),
                       _FeatureItem(
-                          icon: Icons.bolt,
-                          text: plan.simulations),
+                        icon: Icons.people_outline,
+                        text: plan.staffSeats,
+                      ),
                       _FeatureItem(
-                          icon: Icons.people_outline,
-                          text: plan.staffSeats),
-                      _FeatureItem(
-                          icon: Icons.folder_outlined,
-                          text: plan.patients),
+                        icon: Icons.folder_outlined,
+                        text: plan.patients,
+                      ),
                       Gap(16.h),
                       PrimaryButton(
                         text: plan.isActive ? 'Activated' : 'Upgrade',
@@ -150,50 +151,52 @@ class ManageSubscriptionTab extends ConsumerWidget {
                 Gap(16.h),
 
                 // ── Credit packs ──
-                ...availableCreditPacks.map((pack) => Container(
-                      margin: EdgeInsets.only(bottom: 12.h),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16.w, vertical: 14.h),
-                      decoration: BoxDecoration(
-                        border:
-                            Border.all(color: AppColors.inputBorder),
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${pack.credits} Credits',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.textColor,
-                                ),
+                ...availableCreditPacks.map(
+                  (pack) => Container(
+                    margin: EdgeInsets.only(bottom: 12.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: AppColors.inputBorder),
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${pack.credits} Credits',
+                              style: GoogleFonts.inter(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textColor,
                               ),
-                              Text(
-                                '\$${pack.pricePerCredit.toStringAsFixed(2)} per credit',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Text(
-                            '\$${pack.totalPrice.toStringAsFixed(2)}',
-                            style: GoogleFonts.inter(
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textColor,
                             ),
+                            Text(
+                              '\$${pack.pricePerCredit.toStringAsFixed(2)} per credit',
+                              style: GoogleFonts.inter(
+                                fontSize: 12.sp,
+                                color: AppColors.gray,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          '\$${pack.totalPrice.toStringAsFixed(2)}',
+                          style: GoogleFonts.inter(
+                            fontSize: 15.sp,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textColor,
                           ),
-                        ],
-                      ),
-                    )),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
 
                 Gap(8.h),
 
@@ -244,7 +247,9 @@ class ManageSubscriptionTab extends ConsumerWidget {
                 // ── Visa card ──
                 Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: 14.w, vertical: 12.h),
+                    horizontal: 14.w,
+                    vertical: 12.h,
+                  ),
                   decoration: BoxDecoration(
                     border: Border.all(color: AppColors.inputBorder),
                     borderRadius: BorderRadius.circular(8.r),
@@ -254,7 +259,9 @@ class ManageSubscriptionTab extends ConsumerWidget {
                       // ── Visa badge ──
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 8.w, vertical: 4.h),
+                          horizontal: 8.w,
+                          vertical: 4.h,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF1A1F71),
                           borderRadius: BorderRadius.circular(4.r),
@@ -293,10 +300,11 @@ class ManageSubscriptionTab extends ConsumerWidget {
                       ),
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 4.h),
+                          horizontal: 10.w,
+                          vertical: 4.h,
+                        ),
                         decoration: BoxDecoration(
-                          border:
-                              Border.all(color: AppColors.inputBorder),
+                          border: Border.all(color: AppColors.inputBorder),
                           borderRadius: BorderRadius.circular(4.r),
                         ),
                         child: Text(
@@ -322,8 +330,7 @@ class ManageSubscriptionTab extends ConsumerWidget {
                       backgroundColor: Colors.transparent,
                       builder: (_) => Padding(
                         padding: EdgeInsets.only(
-                          bottom:
-                              MediaQuery.of(context).viewInsets.bottom,
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
                         ),
                         child: const AddCardSheet(),
                       ),
@@ -338,8 +345,11 @@ class ManageSubscriptionTab extends ConsumerWidget {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.credit_card_outlined,
-                            size: 18.w, color: AppColors.gray),
+                        Icon(
+                          Icons.credit_card_outlined,
+                          size: 18.w,
+                          color: AppColors.gray,
+                        ),
                         SizedBox(width: 10.w),
                         Text(
                           'Add Payment Method',
@@ -358,8 +368,11 @@ class ManageSubscriptionTab extends ConsumerWidget {
                   padding: EdgeInsets.symmetric(vertical: 14.h),
                   child: Row(
                     children: [
-                      Icon(Icons.receipt_outlined,
-                          size: 18.w, color: AppColors.gray),
+                      Icon(
+                        Icons.receipt_outlined,
+                        size: 18.w,
+                        color: AppColors.gray,
+                      ),
                       SizedBox(width: 10.w),
                       Text(
                         'Auto Email Invoice',
@@ -426,10 +439,7 @@ class _FeatureItem extends StatelessWidget {
           SizedBox(width: 8.w),
           Text(
             text,
-            style: GoogleFonts.inter(
-              fontSize: 13.sp,
-              color: AppColors.gray,
-            ),
+            style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
           ),
         ],
       ),
