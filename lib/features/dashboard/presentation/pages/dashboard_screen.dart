@@ -14,6 +14,7 @@ import 'package:gen_smile/features/patients/presentation/pages/patients_screen.d
 import 'package:gen_smile/features/patients/presentation/pages/new_simulation_screen.dart';
 import 'package:gen_smile/features/settings/presentation/pages/settings_screen.dart'; // ← added
 import 'package:gen_smile/features/splash/presentation/pages/splash_screen.dart';
+import 'package:gen_smile/features/staff/presentation/pages/staff_screen.dart';
 
 final dashboardIndexProvider = StateProvider<int>((ref) => 0);
 
@@ -86,7 +87,7 @@ class DashboardScreen extends ConsumerWidget {
       case 5:
         return BillingScreen(embedded: embedded);
       case 6:
-        return _PlaceholderBody(index: index); // Staff
+  return StaffScreen(embedded: embedded); // Staff
       case 7:
         return const SettingsScreen(); // ← fixed: was _PlaceholderBody
       default:
