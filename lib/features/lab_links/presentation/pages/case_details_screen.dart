@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
 import 'package:gen_smile/features/lab_links/presentation/pages/simulation_details_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class CaseDetailsScreen extends ConsumerWidget {
   const CaseDetailsScreen({super.key, required this.patient});
@@ -20,32 +21,39 @@ class CaseDetailsScreen extends ConsumerWidget {
           Container(
             color: Colors.white,
             child: SafeArea(
-              bottom: false,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // Back arrow
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
                       child: Icon(
                         Icons.arrow_back,
                         size: 22.sp,
-                        color: AppColors.textColor,
+                        color: AppColors
+                            .textColor, // Make sure this contrasts with background
                       ),
                     ),
                     SizedBox(width: 12.w),
+
+                    // Optional icon (Patient / People)
                     Icon(
                       Icons.people_outline,
                       size: 20.sp,
                       color: AppColors.textColor,
                     ),
                     SizedBox(width: 8.w),
+
+                    // Title & Subtitle
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Case History Details of Full Smile Makeover',
+                            'Case Details',
                             style: GoogleFonts.inter(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
@@ -86,10 +94,15 @@ class CaseDetailsScreen extends ConsumerWidget {
                             width: 64.w,
                             height: 64.w,
                             color: AppColors.primary.withOpacity(0.1),
-                            child: Icon(
-                              Icons.person,
-                              size: 32.sp,
-                              color: AppColors.primary,
+                            child: Image.asset(
+                              Assets
+                                  .imagesProfileAvatar, // your asset image path
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => Icon(
+                                Icons.person,
+                                size: 32.sp,
+                                color: AppColors.primary,
+                              ),
                             ),
                           ),
                         ),
@@ -346,6 +359,7 @@ class _SimulationCard extends StatelessWidget {
                       child: _SimImage(
                         label: 'Before',
                         caption: 'Current Condition',
+                        imagePath: Assets.imagesImageBefore, // asset image
                       ),
                     ),
                     SizedBox(width: 12.w),
@@ -353,6 +367,7 @@ class _SimulationCard extends StatelessWidget {
                       child: _SimImage(
                         label: 'After Simulation',
                         caption: 'Expected Result',
+                        imagePath: Assets.imagesImageAfter, // asset image
                       ),
                     ),
                   ],
@@ -363,6 +378,7 @@ class _SimulationCard extends StatelessWidget {
                       child: _SimImage(
                         label: 'Before',
                         caption: 'Current Condition',
+                        imagePath: Assets.imagesImageBefore, // asset image
                       ),
                     ),
                     SizedBox(width: 8.w),
@@ -370,6 +386,7 @@ class _SimulationCard extends StatelessWidget {
                       child: _SimImage(
                         label: 'After Simulation',
                         caption: 'Expected Result',
+                        imagePath: Assets.imagesImageAfter, // asset image
                       ),
                     ),
                   ],
@@ -433,44 +450,61 @@ class _SimulationCard extends StatelessWidget {
 
 // ── Small Helpers ─────────────────────────────────────────────────────────────
 class _SimImage extends StatelessWidget {
-  const _SimImage({required this.label, required this.caption});
-  final String label, caption;
+  const _SimImage({
+    super.key,
+    required this.label,
+    required this.caption,
+    this.imagePath, // optional asset image
+  });
+
+  final String label;
+  final String caption;
+  final String? imagePath;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
-      ),
-      Gap(4.h),
-      ClipRRect(
-        borderRadius: BorderRadius.circular(8.r),
-        child: Container(
-          height: 100.h,
-          color: Colors.black87,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              const ColoredBox(color: Color(0xFF1a1a1a)),
-              Positioned(
-                bottom: 8.h,
-                left: 8.w,
-                child: Text(
-                  caption,
-                  style: GoogleFonts.inter(
-                    fontSize: 10.sp,
-                    color: Colors.white70,
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Label
+        Text(
+          label,
+          style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
+        ),
+        Gap(4.h),
+        // Image container
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8.r),
+          child: Container(
+            height: 100.h,
+            color: Colors.black87,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Asset image if provided, otherwise dark placeholder
+                if (imagePath != null)
+                  Image.asset(imagePath!, fit: BoxFit.cover)
+                else
+                  const ColoredBox(color: Color(0xFF1a1a1a)),
+                // Caption overlay
+                Positioned(
+                  bottom: 8.h,
+                  left: 8.w,
+                  child: Text(
+                    caption,
+                    style: GoogleFonts.inter(
+                      fontSize: 10.sp,
+                      color: Colors.white70,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    ],
-  );
+      ],
+    );
+  }
 }
 
 class _OverviewStat extends StatelessWidget {

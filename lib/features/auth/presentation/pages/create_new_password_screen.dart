@@ -8,6 +8,8 @@ import 'package:gen_smile/core/constant/app_text_styles.dart';
 import 'package:gen_smile/core/constant/app_spacing.dart';
 import 'package:gen_smile/core/states/navigator_state.dart';
 import 'package:gen_smile/generated/assets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class CreateNewPasswordScreen extends ConsumerStatefulWidget {
   const CreateNewPasswordScreen({super.key});
@@ -71,8 +73,8 @@ class _CreateNewPasswordScreenState
                     child: Column(
                       children: [
                         // Icon
-                        Image.asset(
-                          Assets.imagesPasswordValidation,
+                        SvgPicture.asset(
+                          Assets.iconsPasswordValidation,
                           width: 56.w,
                           height: 56.w,
                         ),

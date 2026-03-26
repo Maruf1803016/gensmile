@@ -6,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
 import 'package:gen_smile/core/states/navigator_state.dart';
 import 'package:gen_smile/features/dashboard/presentation/pages/notifications_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class DashboardHome extends ConsumerWidget {
   const DashboardHome({super.key, this.embedded = false});
@@ -166,14 +167,8 @@ class _TopBar extends ConsumerWidget {
               CircleAvatar(
                 radius: 16.r,
                 backgroundColor: AppColors.primary,
-                child: Text(
-                  'DS',
-                  style: GoogleFonts.inter(
-                    fontSize: 10.sp,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
+                backgroundImage: AssetImage(Assets.imagesProfileAvatar),
+                onBackgroundImageError: (_, __) {},
               ),
             ],
           ),
@@ -275,6 +270,7 @@ class _MobileLayout extends StatelessWidget {
             status: 'Completed',
             statusColor: AppColors.success,
             time: '2 hours ago',
+            avatar: Assets.imagesAvatarMale,
           ),
           _CaseRow(
             name: 'Sarah Davis',
@@ -282,6 +278,7 @@ class _MobileLayout extends StatelessWidget {
             status: 'In Progress',
             statusColor: AppColors.info,
             time: '5 hours ago',
+            avatar: Assets.imagesAvatarFemale,
           ),
           _CaseRow(
             name: 'Michael Tan',
@@ -289,6 +286,7 @@ class _MobileLayout extends StatelessWidget {
             status: 'Pending',
             statusColor: AppColors.gray,
             time: 'Yesterday',
+            avatar: Assets.imagesDoctorMale,
           ),
         ],
         Gap(20.h),
@@ -321,19 +319,23 @@ class _MobileLayout extends StatelessWidget {
         Gap(10.h),
         ...[
           _AppointmentRow(
+
             name: 'John Williams',
             treatment: 'Teeth Whitening',
             date: 'Oct 24, 10:30 AM',
+            avatar: Assets.imagesAvatarMale,
           ),
           _AppointmentRow(
             name: 'John Williams',
             treatment: 'Teeth Whitening',
             date: 'Oct 24, 10:30 AM',
+            avatar: Assets.imagesAvatarMale,
           ),
           _AppointmentRow(
             name: 'John Williams',
             treatment: 'Teeth Whitening',
             date: 'Oct 24, 10:30 AM',
+            avatar: Assets.imagesAvatarMale,
           ),
         ],
         Gap(20.h),
@@ -680,9 +682,14 @@ class _CaseRow extends StatelessWidget {
     required this.status,
     required this.statusColor,
     required this.time,
+    this.avatar, // optional path to image
   });
-  final String name, type, status, time;
+  final String name;
+  final String type;
+  final String status;
   final Color statusColor;
+  final String time;
+  final String? avatar;
 
   @override
   Widget build(BuildContext context) => Container(
@@ -695,17 +702,12 @@ class _CaseRow extends StatelessWidget {
     ),
     child: Row(
       children: [
+        // Avatar before name
         CircleAvatar(
           radius: 16.r,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: Text(
-            name[0],
-            style: GoogleFonts.inter(
-              fontSize: 12.sp,
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          backgroundColor: AppColors.primary,
+          backgroundImage: avatar != null ? AssetImage(avatar!) : null,
+          child: avatar == null ? Text(name.substring(0, 1)) : null,
         ),
         SizedBox(width: 10.w),
         Expanded(
@@ -810,7 +812,9 @@ class _AppointmentRow extends StatelessWidget {
     required this.name,
     required this.treatment,
     required this.date,
+    this.avatar,
   });
+  final String? avatar;
   final String name, treatment, date;
 
   @override
@@ -824,17 +828,12 @@ class _AppointmentRow extends StatelessWidget {
     ),
     child: Row(
       children: [
+        // Avatar before name
         CircleAvatar(
           radius: 16.r,
-          backgroundColor: AppColors.primary.withOpacity(0.1),
-          child: Text(
-            name[0],
-            style: GoogleFonts.inter(
-              fontSize: 12.sp,
-              color: AppColors.primary,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          backgroundColor: AppColors.primary,
+          backgroundImage: avatar != null ? AssetImage(avatar!) : null,
+          child: avatar == null ? Text(name.substring(0, 1)) : null,
         ),
         SizedBox(width: 10.w),
         Expanded(

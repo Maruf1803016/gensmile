@@ -1,11 +1,6 @@
-// lib/features/auth/presentation/pages/sign_in_screen.dart
-// FIX: replaced Image.asset(Assets.imagesUserCheck01) with SvgPicture.asset(Assets.iconsUserCheck01)
-//      GenSmileLogo already uses SVG internally — no change needed there.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -16,6 +11,7 @@ import 'package:gen_smile/features/auth/presentation/pages/forget_password_scree
 import 'package:gen_smile/features/onboarding/presentation/pages/onb_entry_screen.dart';
 import 'package:gen_smile/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:gen_smile/generated/assets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -93,7 +89,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 }
 
-// ── Desktop layout ─────────────────────────────────────────────────────────────
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout({
     required this.emailController,
@@ -125,7 +120,8 @@ class _DesktopLayout extends StatelessWidget {
           ),
           child: const Align(
             alignment: Alignment.centerLeft,
-            child: GenSmileLogo(iconSize: 32),
+            // FIX 1: showText:true is fine here — no AppBar title alongside
+            child: GenSmileLogo(iconSize: 32, showText: true),
           ),
         ),
         Center(
@@ -159,7 +155,6 @@ class _DesktopLayout extends StatelessWidget {
   }
 }
 
-// ── Mobile layout ──────────────────────────────────────────────────────────────
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout({
     required this.emailController,
@@ -189,7 +184,10 @@ class _MobileLayout extends StatelessWidget {
             horizontal: AppSpacing.s4,
             vertical: AppSpacing.s4,
           ),
-          child: const GenSmileLogo(iconSize: 28),
+          // FIX 1: showText:false — AppBar/Scaffold title not present here,
+          // but this logo sits above the card; a plain logo-only looks cleaner
+          // and prevents the visual double on screens that show both.
+          child: const GenSmileLogo(iconSize: 28, showText: false),
         ),
         Container(
           margin: EdgeInsets.all(AppSpacing.s4),
@@ -216,7 +214,6 @@ class _MobileLayout extends StatelessWidget {
   }
 }
 
-// ── Shared form ────────────────────────────────────────────────────────────────
 class _FormContent extends StatelessWidget {
   const _FormContent({
     required this.emailController,
@@ -243,7 +240,6 @@ class _FormContent extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          // ── Icon: SVG user-check ─────────────────────────────────────────
           SvgPicture.asset(
             Assets.iconsUserCheck01,
             width: 56.w,
@@ -261,8 +257,6 @@ class _FormContent extends StatelessWidget {
             style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
           ),
           Gap(AppSpacing.s6),
-
-          // Email
           _FieldLabel('Email Address'),
           Gap(AppSpacing.s1),
           _InputBox(
@@ -271,8 +265,6 @@ class _FormContent extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
           ),
           Gap(AppSpacing.s4),
-
-          // Password
           _FieldLabel('Password'),
           Gap(AppSpacing.s1),
           _InputBox(
@@ -291,8 +283,6 @@ class _FormContent extends StatelessWidget {
             ),
           ),
           Gap(AppSpacing.s3),
-
-          // Remember me + Forgot
           Row(
             children: [
               GestureDetector(
@@ -327,21 +317,12 @@ class _FormContent extends StatelessWidget {
             ],
           ),
           Gap(AppSpacing.s6),
-
-          // Continue button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: ElevatedButton.icon(
               onPressed: onContinue,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
-              ),
-              child: Row(
+              icon: const SizedBox.shrink(),
+              label: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -356,11 +337,17 @@ class _FormContent extends StatelessWidget {
                   ),
                 ],
               ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.round),
+                ),
+              ),
             ),
           ),
           Gap(AppSpacing.s4),
-
-          // Sign up link
           RichText(
             text: TextSpan(
               style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),

@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
 import 'package:gen_smile/features/lab_links/presentation/pages/case_details_screen.dart';
 import 'package:gen_smile/features/lab_links/presentation/pages/generate_lab_link_screen.dart';
+import 'package:gen_smile/features/dashboard/presentation/pages/notifications_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 // ── Providers ─────────────────────────────────────────────────────────────────
 final labLinkFilterProvider = StateProvider<String>((ref) => 'All');
@@ -107,61 +109,73 @@ class LabLinksScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ── Top bar ──
+        // ── Top Bar ──
         Container(
           color: Colors.white,
-          child: SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
-              child: Row(
-                children: [
-                  if (!embedded) ...[
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Icon(
-                        Icons.arrow_back,
-                        size: 22.sp,
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          child: Row(
+            children: [
+              // Back arrow
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Icon(
+                  Icons.arrow_back,
+                  size: 22.sp,
+                  color: AppColors.textColor, // adjust for visibility
+                ),
+              ),
+              SizedBox(width: 12.w),
+
+              // Optional icon before title
+              Icon(
+                Icons.people_outline,
+                size: 20.sp,
+                color: AppColors.textColor,
+              ),
+              SizedBox(width: 8.w),
+
+              // Title & subtitle
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Lab Links', // Replace with your screen title
+                      style: GoogleFonts.inter(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.textColor,
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                  ],
-                  Icon(
-                    Icons.people_outline,
-                    size: 20.sp,
-                    color: AppColors.textColor,
-                  ),
-                  SizedBox(width: 8.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Lab Links',
-                          style: GoogleFonts.inter(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w700,
-                            color: AppColors.textColor,
-                          ),
-                        ),
-                        Text(
-                          'Manage lab-ready cases and track production status',
-                          style: GoogleFonts.inter(
-                            fontSize: 11.sp,
-                            color: AppColors.gray,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      'Manage lab-ready cases and track production status', // Optional subtitle
+                      style: GoogleFonts.inter(
+                        fontSize: 11.sp,
+                        color: AppColors.gray,
+                      ),
                     ),
-                  ),
-                  Icon(
-                    Icons.notifications_outlined,
-                    size: 22.sp,
-                    color: AppColors.gray,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+
+              // Notification bell
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) =>
+                          const NotificationsScreen(), // Make sure this exists
+                    ),
+                  );
+                },
+                child: Icon(
+                  Icons.notifications_outlined,
+                  size: 22.sp,
+                  color: AppColors.gray,
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -386,17 +400,15 @@ class _PatientRow extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
+                      // Avatar from assets
                       CircleAvatar(
                         radius: 14.r,
-                        backgroundColor: patient.color,
-                        child: Text(
-                          patient.initials,
-                          style: GoogleFonts.inter(
-                            fontSize: 10.sp,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
+                        backgroundColor: AppColors.primary.withOpacity(
+                          0.1,
+                        ), // optional background
+                        backgroundImage: AssetImage(Assets.imagesProfileAvatar),
+                        onBackgroundImageError:
+                            (_, __) {}, // optional error handling
                       ),
                       SizedBox(width: 10.w),
                       Text(
@@ -452,17 +464,14 @@ class _PatientRow extends StatelessWidget {
             )
           : Row(
               children: [
+                // Avatar from assets
                 CircleAvatar(
-                  radius: 16.r,
-                  backgroundColor: patient.color,
-                  child: Text(
-                    patient.initials,
-                    style: GoogleFonts.inter(
-                      fontSize: 11.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  radius: 14.r,
+                  backgroundColor: AppColors.primary.withOpacity(
+                    0.1,
+                  ), // optional background
+                  backgroundImage: AssetImage(Assets.imagesProfileAvatar),
+                  onBackgroundImageError: (_, __) {}, // optional error handling
                 ),
                 SizedBox(width: 10.w),
                 Expanded(

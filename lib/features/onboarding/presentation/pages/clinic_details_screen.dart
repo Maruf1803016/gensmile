@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/buttons.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
@@ -100,10 +101,14 @@ class _ClinicDetailsScreenState extends ConsumerState<ClinicDetailsScreen> {
                         Center(
                           child: Column(
                             children: [
-                              Image.asset(
-                                Assets.imagesClinic,
+                              SvgPicture.asset(
+                                Assets.iconsClinic,
                                 width: 56.w,
                                 height: 56.w,
+                                colorFilter: ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                               Gap(AppSpacing.s3),
                               Text(

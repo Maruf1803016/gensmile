@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
-import 'package:gen_smile/common/widgets/buttons.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
-import 'package:gen_smile/common/widgets/input_fields.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
 import 'package:gen_smile/core/constant/app_text_styles.dart';
 import 'package:gen_smile/core/constant/app_spacing.dart';
@@ -16,8 +15,8 @@ import 'package:gen_smile/generated/assets.dart';
 class PaymentInfoScreen extends ConsumerStatefulWidget {
   const PaymentInfoScreen({
     super.key,
-    this.selectedPlanName = 'Growth',
-    this.monthlyCost = 249,
+    required this.selectedPlanName,
+    required this.monthlyCost,
   });
 
   final String selectedPlanName;
@@ -28,23 +27,22 @@ class PaymentInfoScreen extends ConsumerStatefulWidget {
 }
 
 class _PaymentInfoScreenState extends ConsumerState<PaymentInfoScreen> {
-  final _cardNumberController = TextEditingController();
-  final _expiryController = TextEditingController();
-  final _cvvController = TextEditingController();
-  final _cardholderController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _cardNumberCtrl = TextEditingController();
+  final _expiryCtrl = TextEditingController();
+  final _cvvCtrl = TextEditingController();
+  final _nameCtrl = TextEditingController();
+  String _selectedMethod = 'visa';
 
   @override
   void dispose() {
-    _cardNumberController.dispose();
-    _expiryController.dispose();
-    _cvvController.dispose();
-    _cardholderController.dispose();
+    _cardNumberCtrl.dispose();
+    _expiryCtrl.dispose();
+    _cvvCtrl.dispose();
+    _nameCtrl.dispose();
     super.dispose();
   }
 
   void _onContinue() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
     ref.read(navigatorState.notifier).push(const ClinicDetailsScreen());
   }
 
@@ -57,8 +55,7 @@ class _PaymentInfoScreenState extends ConsumerState<PaymentInfoScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── Header ──────────────────────────────────────────────────────
-            if (isWide)
+            if (isWide) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: AppSpacing.s6,
@@ -66,7 +63,7 @@ class _PaymentInfoScreenState extends ConsumerState<PaymentInfoScreen> {
                 ),
                 child: Row(
                   children: [
-                    const GenSmileLogo(iconSize: 32),
+                    const GenSmileLogo(iconSize: 32, showText: true),
                     SizedBox(width: AppSpacing.s3),
                     Text(
                       'Account Setup',
@@ -74,540 +71,460 @@ class _PaymentInfoScreenState extends ConsumerState<PaymentInfoScreen> {
                     ),
                   ],
                 ),
-              )
-            else
-              OnbMobileTopBar(currentStep: 3, totalSteps: 5),
+              ),
+              _StepIndicator(currentStep: 3),
+            ] else
+              const OnbMobileTopBar(currentStep: 3, totalSteps: 5),
 
-            // ── Body ─────────────────────────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(isWide ? AppSpacing.s6 : AppSpacing.s4),
-                child: Form(
-                  key: _formKey,
-                  child: isWide
-                      ? _DesktopLayout(
-                          cardNumberController: _cardNumberController,
-                          expiryController: _expiryController,
-                          cvvController: _cvvController,
-                          cardholderController: _cardholderController,
-                          planName: widget.selectedPlanName,
-                          monthlyCost: widget.monthlyCost,
-                        )
-                      : _MobileLayout(
-                          cardNumberController: _cardNumberController,
-                          expiryController: _expiryController,
-                          cvvController: _cvvController,
-                          cardholderController: _cardholderController,
-                          planName: widget.selectedPlanName,
-                          monthlyCost: widget.monthlyCost,
+                child: Center(
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 560),
+                    padding: EdgeInsets.all(AppSpacing.s6),
+                    decoration: isWide
+                        ? BoxDecoration(
+                            color: AppColors.white,
+                            borderRadius: BorderRadius.circular(AppRadius.r3),
+                          )
+                        : null,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // FIX 3: SVG from assets/icons/ instead of broken PNG
+                        Center(
+                          child: SvgPicture.asset(
+                            Assets.iconsCreditCardPos,
+                            width: 56.w,
+                            height: 56.w,
+                            colorFilter: ColorFilter.mode(
+                              AppColors.primary,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                         ),
-                ),
-              ),
-            ),
+                        Gap(AppSpacing.s3),
+                        Center(
+                          child: Text(
+                            'Payment Information',
+                            style: AppTextStyles.h5Bold(
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ),
+                        Gap(AppSpacing.s1),
+                        Center(
+                          child: Text(
+                            'Secure payment processing',
+                            style: AppTextStyles.mdRegular(
+                              color: AppColors.textSubTitle,
+                            ),
+                          ),
+                        ),
+                        Gap(AppSpacing.s6),
 
-            // ── Bottom nav ────────────────────────────────────────────────────
-            _BottomNav(
-              onContinue: _onContinue,
-              onBack: () => ref.read(navigatorState.notifier).pop(),
-              isWide: isWide,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+                        // Payment method selector
+                        Text(
+                          'How would you like to pay?',
+                          style: AppTextStyles.mdMedium(
+                            color: AppColors.textPrimary,
+                          ),
+                        ),
+                        Gap(AppSpacing.s3),
+                        Row(
+                          children: [
+                            _PayMethodChip(
+                              label: 'VISA',
+                              svgPath: null, // text fallback
+                              imagePath: Assets.imagesVisa,
+                              isSelected: _selectedMethod == 'visa',
+                              onTap: () =>
+                                  setState(() => _selectedMethod = 'visa'),
+                            ),
+                            SizedBox(width: AppSpacing.s3),
+                            _PayMethodChip(
+                              label: 'masterCard',
+                              svgPath: Assets.imagesVisa1,
+                              imagePath: Assets.imagesVisa1,
+                              isSelected:  _selectedMethod == 'masterCard',
+                              onTap: () =>
+                                 setState(() => _selectedMethod = 'masterCard'),
+                              
+                            ),
+                            SizedBox(width: AppSpacing.s3),
+                            _PayMethodChip(
+                              label: 'PayPal',
+                              svgPath: null, // text fallback
+                              imagePath: Assets.imagesVisa2,
+                              isSelected: _selectedMethod == 'PayPal',
+                              onTap: () =>
+                                  setState(() => _selectedMethod = 'PayPal'),
+                            ),
+                          ],
+                        ),
+                        Gap(AppSpacing.s4),
 
-// ── Desktop layout ────────────────────────────────────────────────────────────
+                        // Card Number
+                        _FieldLabel('Card Number'),
+                        Gap(AppSpacing.s1),
+                        _InputBox(
+                          ctrl: _cardNumberCtrl,
+                          hint: '1234 5678 9012 3456',
+                          keyboardType: TextInputType.number,
+                        ),
+                        Gap(AppSpacing.s4),
 
-class _DesktopLayout extends StatelessWidget {
-  const _DesktopLayout({
-    required this.cardNumberController,
-    required this.expiryController,
-    required this.cvvController,
-    required this.cardholderController,
-    required this.planName,
-    required this.monthlyCost,
-  });
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _FieldLabel('Expiry Date'),
+                                  Gap(AppSpacing.s1),
+                                  _InputBox(ctrl: _expiryCtrl, hint: 'MM/YY'),
+                                ],
+                              ),
+                            ),
+                            SizedBox(width: AppSpacing.s3),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _FieldLabel('CVV'),
+                                  Gap(AppSpacing.s1),
+                                  _InputBox(
+                                    ctrl: _cvvCtrl,
+                                    hint: '123',
+                                    obscureText: true,
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Gap(AppSpacing.s4),
 
-  final TextEditingController cardNumberController,
-      expiryController,
-      cvvController,
-      cardholderController;
-  final String planName;
-  final int monthlyCost;
+                        _FieldLabel('Cardholder Name'),
+                        Gap(AppSpacing.s1),
+                        _InputBox(ctrl: _nameCtrl, hint: 'John Doe'),
+                        Gap(AppSpacing.s6),
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 760),
-        padding: EdgeInsets.all(AppSpacing.s6),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(AppRadius.r3),
-        ),
-        child: Column(
-          children: [
-            // Icon + title
-            Image.asset(Assets.imagesCreditCardPos, width: 56.w, height: 56.w),
-            Gap(AppSpacing.s3),
-            Text(
-              'Payment Information',
-              style: AppTextStyles.h5Bold(color: AppColors.textPrimary),
-            ),
-            Gap(AppSpacing.s1),
-            Text(
-              'Secure payment processing',
-              style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
-            ),
-            Gap(AppSpacing.s6),
-
-            // Two column: form + order summary
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: _PaymentForm(
-                    cardNumberController: cardNumberController,
-                    expiryController: expiryController,
-                    cvvController: cvvController,
-                    cardholderController: cardholderController,
-                  ),
-                ),
-                SizedBox(width: AppSpacing.s6),
-                SizedBox(
-                  width: 260.w,
-                  child: _OrderSummary(
-                    planName: planName,
-                    monthlyCost: monthlyCost,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Mobile layout ─────────────────────────────────────────────────────────────
-
-class _MobileLayout extends StatelessWidget {
-  const _MobileLayout({
-    required this.cardNumberController,
-    required this.expiryController,
-    required this.cvvController,
-    required this.cardholderController,
-    required this.planName,
-    required this.monthlyCost,
-  });
-
-  final TextEditingController cardNumberController,
-      expiryController,
-      cvvController,
-      cardholderController;
-  final String planName;
-  final int monthlyCost;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Icon + title
-        Image.asset(Assets.imagesCreditCardPos, width: 56.w, height: 56.w),
-        Gap(AppSpacing.s3),
-        Text(
-          'Payment Information',
-          style: AppTextStyles.h5Bold(color: AppColors.textPrimary),
-        ),
-        Gap(AppSpacing.s1),
-        Text(
-          'Secure payment processing',
-          style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
-        ),
-        Gap(AppSpacing.s6),
-
-        _PaymentForm(
-          cardNumberController: cardNumberController,
-          expiryController: expiryController,
-          cvvController: cvvController,
-          cardholderController: cardholderController,
-        ),
-        Gap(AppSpacing.s6),
-
-        _OrderSummary(planName: planName, monthlyCost: monthlyCost),
-      ],
-    );
-  }
-}
-
-// ── Payment form ──────────────────────────────────────────────────────────────
-
-class _PaymentForm extends StatelessWidget {
-  const _PaymentForm({
-    required this.cardNumberController,
-    required this.expiryController,
-    required this.cvvController,
-    required this.cardholderController,
-  });
-
-  final TextEditingController cardNumberController,
-      expiryController,
-      cvvController,
-      cardholderController;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'How would you like to pay?',
-          style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
-        ),
-        Gap(AppSpacing.s3),
-
-        // Payment method logos
-        Row(
-          children: [
-            _PaymentLogo(Assets.imagesVisa),
-            SizedBox(width: AppSpacing.s2),
-            _PaymentLogo(Assets.imagesVisa1),
-            SizedBox(width: AppSpacing.s2),
-            _PaymentLogo(Assets.imagesVisa2),
-          ],
-        ),
-        Gap(AppSpacing.s3),
-        Center(
-          child: Text(
-            'Or',
-            style: AppTextStyles.smRegular(color: AppColors.textSubTitle),
-          ),
-        ),
-        Gap(AppSpacing.s3),
-
-        // Card number
-        InputField(
-          controller: cardNumberController,
-          label: 'Card Number',
-          hint: '1234 5678 9012 3456',
-          validator: 'required',
-        ),
-        Gap(AppSpacing.s3),
-
-        // Expiry + CVV
-        Row(
-          children: [
-            Expanded(
-              child: InputField(
-                controller: expiryController,
-                label: 'Expiry Date',
-                hint: 'MM/YY',
-                validator: 'required',
-              ),
-            ),
-            SizedBox(width: AppSpacing.s3),
-            Expanded(
-              child: InputField(
-                controller: cvvController,
-                label: 'CVV',
-                hint: '123',
-                validator: 'required',
-              ),
-            ),
-          ],
-        ),
-        Gap(AppSpacing.s3),
-
-        // Cardholder name
-        InputField(
-          controller: cardholderController,
-          label: 'Cardholder Name',
-          hint: 'John Doe',
-          validator: 'required',
-        ),
-      ],
-    );
-  }
-}
-
-// ── Order summary ─────────────────────────────────────────────────────────────
-
-class _OrderSummary extends StatelessWidget {
-  const _OrderSummary({required this.planName, required this.monthlyCost});
-
-  final String planName;
-  final int monthlyCost;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(AppSpacing.s4),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceMuted,
-        borderRadius: BorderRadius.circular(AppRadius.r2),
-        border: Border.all(color: AppColors.borderDefault),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Order Summary',
-            style: AppTextStyles.lgSemibold(color: AppColors.textPrimary),
-          ),
-          Gap(AppSpacing.s4),
-
-          _SummaryRow(
-            label: 'Selected Plan',
-            value: planName,
-            valueColor: AppColors.textPrimary,
-          ),
-          Gap(AppSpacing.s2),
-          _SummaryRow(
-            label: 'Monthly Cost',
-            value: '\$$monthlyCost',
-            valueColor: AppColors.textPrimary,
-          ),
-          Gap(AppSpacing.s2),
-          _SummaryRow(
-            label: 'Free Trial',
-            value: '14 days',
-            valueColor: AppColors.primary,
-          ),
-
-          Divider(height: AppSpacing.s6, color: AppColors.borderDefault),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Due Today',
-                style: AppTextStyles.lgSemibold(color: AppColors.textPrimary),
-              ),
-              Text(
-                '\$0.00',
-                style: AppTextStyles.h4Bold(color: AppColors.textPrimary),
-              ),
-            ],
-          ),
-          Gap(AppSpacing.s2),
-          Text(
-            "You'll be charged after 14 days",
-            style: AppTextStyles.smRegular(color: AppColors.textSubTitle),
-          ),
-          Gap(AppSpacing.s4),
-
-          // SSL badge
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.s3,
-              vertical: AppSpacing.s2,
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(AppRadius.r2),
-              border: Border.all(color: AppColors.borderDefault),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.lock_outline,
-                  size: 14.sp,
-                  color: AppColors.textSubTitle,
-                ),
-                SizedBox(width: AppSpacing.s2),
-                Flexible(
-                  child: Text(
-                    'Secured with 256-bit SSL encryption',
-                    style: AppTextStyles.smRegular(
-                      color: AppColors.textSubTitle,
+                        // Order Summary
+                        Container(
+                          padding: EdgeInsets.all(AppSpacing.s4),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceSecondary,
+                            borderRadius: BorderRadius.circular(AppRadius.r2),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                'Order Summary',
+                                style: AppTextStyles.mdSemibold(
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              Gap(AppSpacing.s3),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '${widget.selectedPlanName} Plan (Monthly)',
+                                    style: AppTextStyles.smRegular(
+                                      color: AppColors.textSubTitle,
+                                    ),
+                                  ),
+                                  Text(
+                                    '\$${widget.monthlyCost}/mo',
+                                    style: AppTextStyles.smSemibold(
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Gap(AppSpacing.s2),
+                              Divider(color: AppColors.borderDefault),
+                              Gap(AppSpacing.s2),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Total today',
+                                    style: AppTextStyles.mdSemibold(
+                                      color: AppColors.textPrimary,
+                                    ),
+                                  ),
+                                  Text(
+                                    '\$0 (Free trial)',
+                                    style: AppTextStyles.mdSemibold(
+                                      color: AppColors.success,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
+
+            _BottomNav(
+              onContinue: _onContinue,
+              onBack: () => ref.read(navigatorState.notifier).pop(),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class _SummaryRow extends StatelessWidget {
-  const _SummaryRow({
+// ── Helpers ───────────────────────────────────────────────────────────────────
+class _PayMethodChip extends StatelessWidget {
+  const _PayMethodChip({
     required this.label,
-    required this.value,
-    required this.valueColor,
+    required this.svgPath,
+    required this.imagePath,
+    required this.isSelected,
+    required this.onTap,
+    this.isLabel = false,
   });
 
-  final String label, value;
-  final Color valueColor;
+  final String label;
+  final String? svgPath, imagePath;
+  final bool isSelected, isLabel;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
+    if (isLabel) {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: AppSpacing.s2),
+        child: Text(
           label,
           style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
         ),
-        Text(value, style: AppTextStyles.mdSemibold(color: valueColor)),
-      ],
+      );
+    }
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4,
+          vertical: AppSpacing.s3,
+        ),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.r2),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : AppColors.borderDefault,
+            width: isSelected ? 1.5 : 1,
+          ),
+        ),
+        child: imagePath != null
+            ? Image.asset(
+                imagePath!,
+                width: 40.w,
+                height: 24.w,
+                fit: BoxFit.contain,
+              )
+            : Text(
+                label,
+                style: AppTextStyles.mdSemibold(color: AppColors.textPrimary),
+              ),
+      ),
     );
   }
 }
 
-class _PaymentLogo extends StatelessWidget {
-  const _PaymentLogo(this.assetPath);
-  final String assetPath;
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) =>
+      Text(text, style: AppTextStyles.mdMedium(color: AppColors.textPrimary));
+}
+
+class _InputBox extends StatelessWidget {
+  const _InputBox({
+    required this.ctrl,
+    required this.hint,
+    this.obscureText = false,
+    this.keyboardType,
+  });
+
+  final TextEditingController ctrl;
+  final String hint;
+  final bool obscureText;
+  final TextInputType? keyboardType;
+
+  @override
+  Widget build(BuildContext context) => TextField(
+    controller: ctrl,
+    obscureText: obscureText,
+    keyboardType: keyboardType,
+    style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
+    decoration: InputDecoration(
+      hintText: hint,
+      hintStyle: AppTextStyles.mdRegular(color: AppColors.textDisable),
+      filled: true,
+      fillColor: AppColors.white,
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.s3,
+        vertical: AppSpacing.s3,
+      ),
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderDefault),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderDefault),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.primary),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+    ),
+  );
+}
+
+class _StepIndicator extends StatelessWidget {
+  const _StepIndicator({required this.currentStep});
+  final int currentStep;
+  static const _steps = [
+    'Create Account',
+    'Choose Plan',
+    'Payment Info',
+    'Clinic Details',
+    'Complete',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.s6,
+        vertical: AppSpacing.s3,
+      ),
+      child: Row(
+        children: List.generate(_steps.length, (i) {
+          final isCompleted = i < currentStep - 1;
+          final isCurrent = i == currentStep - 1;
+          return Expanded(
+            child: Row(
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      width: 24.w,
+                      height: 24.w,
+                      decoration: BoxDecoration(
+                        color: isCompleted || isCurrent
+                            ? AppColors.primary
+                            : AppColors.borderDefault,
+                        shape: BoxShape.circle,
+                      ),
+                      child: isCompleted
+                          ? Icon(
+                              Icons.check,
+                              color: AppColors.white,
+                              size: 14.sp,
+                            )
+                          : Center(
+                              child: Container(
+                                width: 8.w,
+                                height: 8.w,
+                                decoration: BoxDecoration(
+                                  color: isCurrent
+                                      ? AppColors.white
+                                      : AppColors.gray300,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                            ),
+                    ),
+                    Gap(4.h),
+                    Text(
+                      _steps[i],
+                      style: AppTextStyles.xsRegular(
+                        color: isCurrent
+                            ? AppColors.primary
+                            : AppColors.textSubTitle,
+                      ),
+                    ),
+                  ],
+                ),
+                if (i < _steps.length - 1)
+                  Expanded(
+                    child: Container(
+                      height: 1.5,
+                      margin: EdgeInsets.only(bottom: 20.h),
+                      color: isCompleted
+                          ? AppColors.primary
+                          : AppColors.borderDefault,
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }),
+      ),
+    );
+  }
+}
+
+class _BottomNav extends StatelessWidget {
+  const _BottomNav({required this.onContinue, required this.onBack});
+  final VoidCallback onContinue, onBack;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.s2,
-        vertical: AppSpacing.s1,
+        horizontal: AppSpacing.s6,
+        vertical: AppSpacing.s4,
       ),
       decoration: BoxDecoration(
         color: AppColors.white,
-        border: Border.all(color: AppColors.borderDefault),
-        borderRadius: BorderRadius.circular(AppRadius.r1),
+        border: Border(top: BorderSide(color: AppColors.borderDefault)),
       ),
-      child: Image.asset(assetPath, height: 24.h, fit: BoxFit.contain),
-    );
-  }
-}
-
-// ── Bottom nav ────────────────────────────────────────────────────────────────
-
-class _BottomNav extends StatelessWidget {
-  const _BottomNav({
-    required this.onContinue,
-    required this.onBack,
-    required this.isWide,
-  });
-
-  final VoidCallback onContinue, onBack;
-  final bool isWide;
-
-  @override
-  Widget build(BuildContext context) {
-    if (isWide) {
-      return Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.s6,
-          vertical: AppSpacing.s4,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: Border(top: BorderSide(color: AppColors.borderDefault)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton.icon(
-              onPressed: onBack,
-              icon: Icon(
-                Icons.arrow_back,
-                size: 16.sp,
-                color: AppColors.textSubTitle,
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: onContinue,
+          icon: const SizedBox.shrink(),
+          label: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Continue',
+                style: AppTextStyles.lgSemibold(color: AppColors.white),
               ),
-              label: Text(
-                'Back',
-                style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: onContinue,
-              icon: const SizedBox.shrink(),
-              label: Row(
-                children: [
-                  Text(
-                    'Continue',
-                    style: AppTextStyles.lgSemibold(color: AppColors.white),
-                  ),
-                  SizedBox(width: AppSpacing.s2),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 16.sp,
-                    color: AppColors.white,
-                  ),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s6,
-                  vertical: AppSpacing.s3,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.s4,
-        0,
-        AppSpacing.s4,
-        AppSpacing.s6,
-      ),
-      child: Column(
-        children: [
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: onContinue,
-              icon: const SizedBox.shrink(),
-              label: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Continue',
-                    style: AppTextStyles.lgSemibold(color: AppColors.white),
-                  ),
-                  SizedBox(width: AppSpacing.s2),
-                  Icon(
-                    Icons.arrow_forward,
-                    size: 16.sp,
-                    color: AppColors.white,
-                  ),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
-              ),
+              SizedBox(width: AppSpacing.s2),
+              Icon(Icons.arrow_forward, size: 16.sp, color: AppColors.white),
+            ],
+          ),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+            padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.round),
             ),
           ),
-          Gap(AppSpacing.s3),
-          TextButton.icon(
-            onPressed: onBack,
-            icon: Icon(
-              Icons.arrow_back,
-              size: 14.sp,
-              color: AppColors.textSubTitle,
-            ),
-            label: Text(
-              'Back',
-              style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -105,7 +106,8 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                 ),
                 child: Row(
                   children: [
-                    const GenSmileLogo(iconSize: 32),
+                    // FIX 1: showText:true fine here (standalone header)
+                    const GenSmileLogo(iconSize: 32, showText: true),
                     SizedBox(width: AppSpacing.s3),
                     Text(
                       'Account Setup',
@@ -116,7 +118,7 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
               ),
               _StepIndicator(currentStep: 2),
             ] else
-              OnbMobileTopBar(currentStep: 2, totalSteps: 5),
+              const OnbMobileTopBar(currentStep: 2, totalSteps: 5),
 
             Expanded(
               child: SingleChildScrollView(
@@ -133,10 +135,15 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                         : null,
                     child: Column(
                       children: [
-                        Image.asset(
-                          Assets.imagesCardExchange02,
+                        // FIX 2: SVG from assets/icons/ instead of broken PNG
+                        SvgPicture.asset(
+                          Assets.iconsCardExchange02,
                           width: 56.w,
                           height: 56.w,
+                          colorFilter: ColorFilter.mode(
+                            AppColors.primary,
+                            BlendMode.srcIn,
+                          ),
                         ),
                         Gap(AppSpacing.s3),
                         Text(
@@ -154,8 +161,6 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                           ),
                         ),
                         Gap(AppSpacing.s6),
-
-                        // Plan cards
                         isWide
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +201,6 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                                     )
                                     .toList(),
                               ),
-
                         Gap(AppSpacing.s4),
                         RichText(
                           textAlign: TextAlign.center,
@@ -225,7 +229,6 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
               ),
             ),
 
-            // Bottom nav
             _BottomNav(
               onContinue: _onContinue,
               onBack: () => ref.read(navigatorState.notifier).pop(),
@@ -244,7 +247,6 @@ class _PlanCard extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
-
   final _Plan plan;
   final bool isSelected;
   final VoidCallback onTap;
@@ -390,7 +392,6 @@ class _PlanCard extends StatelessWidget {
 class _StepIndicator extends StatelessWidget {
   const _StepIndicator({required this.currentStep});
   final int currentStep;
-
   static const _steps = [
     'Create Account',
     'Choose Plan',
@@ -479,7 +480,6 @@ class _BottomNav extends StatelessWidget {
     required this.onBack,
     required this.isWide,
   });
-
   final VoidCallback onContinue, onBack;
   final bool isWide;
 

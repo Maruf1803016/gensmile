@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
@@ -181,18 +182,12 @@ class _NotifTile extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar
+          // Avatar with image from assets
           CircleAvatar(
             radius: 18.r,
             backgroundColor: AppColors.primary.withOpacity(0.1),
-            child: Text(
-              notif.name[0],
-              style: GoogleFonts.inter(
-                fontSize: 13.sp,
-                color: AppColors.primary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            backgroundImage: AssetImage(Assets.imagesProfileAvatar),
+            onBackgroundImageError: (_, __) {}, // optional error handling
           ),
           SizedBox(width: 12.w),
           // Content

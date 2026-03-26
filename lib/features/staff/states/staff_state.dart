@@ -1,15 +1,14 @@
 // lib/features/staff/states/staff_state.dart
-// FIX: RangeError in _PlaceholderBody was caused by staff_screen calling
-//      _PlaceholderBody(index: index) with index=6, but _kSectionLabels only
-//      has entries 0-8. The real fix is wiring StaffScreen at case 6 in
-//      dashboard_screen.dart (already done). This file is unchanged from before
-//      but reproduced here for completeness.
+//
+// FIX 5: RangeError (end): Invalid value when a newly-added staff member has
+// a name shorter than 2 characters, or initials are generated with substring()
+// on an empty string. Fixed by adding a safe `initials` getter on StaffMember
+// and removing all raw substring(0,2) calls in the UI.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/staff_model.dart';
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
-
 final _mockStaff = <StaffMember>[
   StaffMember(
     id: '1',
@@ -52,21 +51,6 @@ final _mockStaff = <StaffMember>[
         description: 'Updated patient record for Michael Davis',
         timeAgo: '5 hours ago',
         type: StaffActivityType.patient,
-      ),
-      StaffActivity(
-        description: 'Generated lab link for Case #C123',
-        timeAgo: '1 day ago',
-        type: StaffActivityType.labLink,
-      ),
-      StaffActivity(
-        description: 'Reviewed treatment plan for Emily Chen',
-        timeAgo: '2 days ago',
-        type: StaffActivityType.treatment,
-      ),
-      StaffActivity(
-        description: 'Sent simulation results to patient',
-        timeAgo: '3 days ago',
-        type: StaffActivityType.email,
       ),
     ],
   ),
@@ -206,12 +190,12 @@ final _mockStaff = <StaffMember>[
 ];
 
 // ── Providers ─────────────────────────────────────────────────────────────────
-
 enum StaffFilterTab { all, active, pending, inactive }
 
 final staffFilterProvider = StateProvider<StaffFilterTab>(
   (ref) => StaffFilterTab.all,
 );
+
 final staffSearchProvider = StateProvider<String>((ref) => '');
 
 final staffListProvider =
@@ -221,9 +205,16 @@ final staffListProvider =
 
 class StaffNotifier extends StateNotifier<List<StaffMember>> {
   StaffNotifier(super.state);
-  void addStaff(StaffMember m) => state = [...state, m];
+
+  // FIX 5: auto-generate a safe ID so there's no collision
+  void addStaff(StaffMember m) {
+    final id = DateTime.now().millisecondsSinceEpoch.toString();
+    state = [...state, m.copyWith(id: id)];
+  }
+
   void removeStaff(String id) =>
       state = state.where((s) => s.id != id).toList();
+
   void updateStaff(StaffMember updated) =>
       state = state.map((s) => s.id == updated.id ? updated : s).toList();
 }
@@ -284,3 +275,23 @@ final seatUsageProvider = Provider<String>((ref) {
   final all = ref.watch(staffListProvider);
   return '${all.where((s) => s.status != StaffStatus.inactive).length}/10';
 });
+
+// ── Safe initials helper (FIX 5) ──────────────────────────────────────────────
+/// Returns up to 2 uppercase initials from [name].
+/// Guards against empty strings and single-word names safely.
+String safeInitials(String name) {
+  if (name.trim().isEmpty) return '?';
+  final parts = name
+      .trim()
+      .split(RegExp(r'\s+'))
+      .where((p) => p.isNotEmpty)
+      .toList();
+  if (parts.isEmpty) return '?';
+  if (parts.length == 1) {
+    final w = parts[0];
+    return w.length >= 2
+        ? w.substring(0, 2).toUpperCase()
+        : w.substring(0, 1).toUpperCase();
+  }
+  return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
+}

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
-import 'package:gen_smile/features/lab_links/presentation/pages/generate_lab_link_screen.dart';
+import 'generate_lab_link_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class SimulationDetailsScreen extends ConsumerWidget {
   const SimulationDetailsScreen({super.key});
@@ -29,7 +29,7 @@ class SimulationDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isWide = MediaQuery.sizeOf(context).width >= 600;
+    final isWide = MediaQuery.of(context).size.width >= 600;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF4F5F7),
@@ -41,24 +41,24 @@ class SimulationDetailsScreen extends ConsumerWidget {
             child: SafeArea(
               bottom: false,
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                 child: Row(
                   children: [
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
                       child: Icon(
                         Icons.arrow_back,
-                        size: 22.sp,
+                        size: 22,
                         color: AppColors.textColor,
                       ),
                     ),
-                    SizedBox(width: 12.w),
+                    const SizedBox(width: 12),
                     Icon(
                       Icons.people_outline,
-                      size: 20.sp,
+                      size: 20,
                       color: AppColors.textColor,
                     ),
-                    SizedBox(width: 8.w),
+                    const SizedBox(width: 8),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +66,7 @@ class SimulationDetailsScreen extends ConsumerWidget {
                           Text(
                             'Simulation History of Simulation #1',
                             style: GoogleFonts.inter(
-                              fontSize: 14.sp,
+                              fontSize: 14,
                               fontWeight: FontWeight.w700,
                               color: AppColors.textColor,
                             ),
@@ -74,7 +74,7 @@ class SimulationDetailsScreen extends ConsumerWidget {
                           Text(
                             'View all generated versions and analysis results for this simulation',
                             style: GoogleFonts.inter(
-                              fontSize: 11.sp,
+                              fontSize: 11,
                               color: AppColors.gray,
                             ),
                           ),
@@ -84,24 +84,24 @@ class SimulationDetailsScreen extends ConsumerWidget {
                     if (isWide)
                       ElevatedButton.icon(
                         onPressed: () {},
-                        icon: Icon(Icons.refresh, size: 14.sp),
+                        icon: const Icon(Icons.refresh, size: 14),
                         label: Text(
                           'Run New Simulation',
                           style: GoogleFonts.inter(
-                            fontSize: 12.sp,
+                            fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 14.w,
-                            vertical: 10.h,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
                           ),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.r),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                       ),
@@ -114,38 +114,34 @@ class SimulationDetailsScreen extends ConsumerWidget {
           // ── Content ──
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16.w),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Patient info card
                   Container(
-                    padding: EdgeInsets.all(16.w),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.inputBorder),
                     ),
                     child: Row(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8.r),
-                          child: Container(
-                            width: 56.w,
-                            height: 56.w,
-                            color: AppColors.primary.withOpacity(0.1),
-                            child: Icon(
-                              Icons.person,
-                              size: 28.sp,
-                              color: AppColors.primary,
-                            ),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.asset(
+                            Assets.imagesAvatarFemale,
+                            width: 56,
+                            height: 56,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        SizedBox(width: 14.w),
+                        const SizedBox(width: 14),
                         Expanded(
                           child: Wrap(
-                            spacing: 20.w,
-                            runSpacing: 4.h,
+                            spacing: 20,
+                            runSpacing: 4,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,33 +151,33 @@ class SimulationDetailsScreen extends ConsumerWidget {
                                       Text(
                                         'Sarah Johnson',
                                         style: GoogleFonts.inter(
-                                          fontSize: 16.sp,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.textColor,
                                         ),
                                       ),
-                                      SizedBox(width: 8.w),
+                                      const SizedBox(width: 8),
                                       _Badge('In Treatment', AppColors.info),
                                     ],
                                   ),
                                   Text(
                                     'ID: P001',
                                     style: GoogleFonts.inter(
-                                      fontSize: 11.sp,
+                                      fontSize: 11,
                                       color: AppColors.gray,
                                     ),
                                   ),
                                   Text(
                                     '28 years • Female',
                                     style: GoogleFonts.inter(
-                                      fontSize: 11.sp,
+                                      fontSize: 11,
                                       color: AppColors.gray,
                                     ),
                                   ),
                                   Text(
                                     'Last Visit: Mar 5, 2026',
                                     style: GoogleFonts.inter(
-                                      fontSize: 11.sp,
+                                      fontSize: 11,
                                       color: AppColors.gray,
                                     ),
                                   ),
@@ -189,7 +185,7 @@ class SimulationDetailsScreen extends ConsumerWidget {
                               ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                children: const [
                                   _StatItem(
                                     icon: Icons.bolt,
                                     label: 'Total Simulations',
@@ -213,14 +209,14 @@ class SimulationDetailsScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  Gap(16.h),
+                  const SizedBox(height: 16),
 
-                  // Simulation History header
+                  // Simulation History
                   Container(
-                    padding: EdgeInsets.all(16.w),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.inputBorder),
                     ),
                     child: Column(
@@ -231,43 +227,15 @@ class SimulationDetailsScreen extends ConsumerWidget {
                               child: Text(
                                 'Simulation History',
                                 style: GoogleFonts.inter(
-                                  fontSize: 16.sp,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w700,
                                   color: AppColors.textColor,
                                 ),
                               ),
                             ),
-                            if (isWide) ...[
-                              _OutlineActionBtn(
-                                icon: Icons.link,
-                                label: 'Generate Lab Link',
-                                color: AppColors.primary,
-                                filled: true,
-                                onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (_) =>
-                                        const GenerateLabLinkScreen(),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 8.w),
-                              _OutlineActionBtn(
-                                icon: Icons.share_outlined,
-                                label: 'Share',
-                                color: AppColors.gray,
-                                onTap: () {},
-                              ),
-                              SizedBox(width: 8.w),
-                              _OutlineActionBtn(
-                                icon: Icons.download_outlined,
-                                label: 'Download',
-                                color: AppColors.gray,
-                                onTap: () {},
-                              ),
-                            ],
                           ],
                         ),
-                        Gap(16.h),
+                        const SizedBox(height: 16),
 
                         // Simulation entries
                         ..._simulations.map(
@@ -294,423 +262,346 @@ class SimulationDetailsScreen extends ConsumerWidget {
   }
 }
 
-// ── Simulation Entry ──────────────────────────────────────────────────────────
+// ── Simulation Entry ──
 class _SimulationEntry extends StatelessWidget {
+  final _Sim sim;
+  final bool isWide;
+  final VoidCallback onGenerateLink;
+
   const _SimulationEntry({
     required this.sim,
     required this.isWide,
     required this.onGenerateLink,
   });
-  final _Sim sim;
-  final bool isWide;
-  final VoidCallback onGenerateLink;
 
   @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Divider(height: 1, color: AppColors.inputBorder),
-      Gap(14.h),
-      Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sim.title,
-                  style: GoogleFonts.inter(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textColor,
-                  ),
-                ),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today_outlined,
-                      size: 10.sp,
-                      color: AppColors.gray,
-                    ),
-                    SizedBox(width: 4.w),
-                    Text(
-                      sim.date,
-                      style: GoogleFonts.inter(
-                        fontSize: 11.sp,
-                        color: AppColors.gray,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF5F6FA),
-              borderRadius: BorderRadius.circular(6.r),
-              border: Border.all(color: AppColors.inputBorder),
-            ),
-            child: Text(
-              sim.id,
-              style: GoogleFonts.inter(
-                fontSize: 11.sp,
-                color: AppColors.gray,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-      Gap(12.h),
-
-      // Before / After
-      isWide
-          ? Row(
-              children: [
-                Expanded(
-                  child: _SimImg(label: 'Before', caption: 'Current Condition'),
-                ),
-                SizedBox(width: 12.w),
-                Expanded(
-                  child: _SimImg(
-                    label: 'After Simulation',
-                    caption: 'Expected Result',
-                  ),
-                ),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(
-                  child: _SimImg(label: 'Before', caption: 'Current Condition'),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: _SimImg(
-                    label: 'After Simulation',
-                    caption: 'Expected Result',
-                  ),
-                ),
-              ],
-            ),
-      Gap(14.h),
-
-      // Analysis Summary
-      Text(
-        'Analysis Summary',
-        style: GoogleFonts.inter(
-          fontSize: 14.sp,
-          fontWeight: FontWeight.w600,
-          color: AppColors.textColor,
-        ),
-      ),
-      Gap(10.h),
-      isWide
-          ? Row(
-              children: [
-                _AnalysisCard(label: 'Alignment Correction', value: '85%'),
-                SizedBox(width: 12.w),
-                _AnalysisCard(label: 'Whitening Level', value: '3 shades'),
-                SizedBox(width: 12.w),
-                _AnalysisCard(label: 'Smile Balance', value: '92%'),
-              ],
-            )
-          : Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: _AnalysisCard(
-                        label: 'Alignment Correction',
-                        value: '85%',
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: _AnalysisCard(
-                        label: 'Whitening Level',
-                        value: '3 shades',
-                      ),
-                    ),
-                  ],
-                ),
-                Gap(8.h),
-                _AnalysisCard(label: 'Smile Balance', value: '92%'),
-              ],
-            ),
-      Gap(14.h),
-
-      // Action buttons
-      isWide
-          ? Row(
-              children: [
-                _OutlineActionBtn(
-                  icon: Icons.link,
-                  label: 'Generate Lab Link',
-                  color: AppColors.primary,
-                  filled: true,
-                  onTap: onGenerateLink,
-                ),
-                SizedBox(width: 8.w),
-                _OutlineActionBtn(
-                  icon: Icons.share_outlined,
-                  label: 'Share',
-                  color: AppColors.gray,
-                  onTap: () {},
-                ),
-                SizedBox(width: 8.w),
-                _OutlineActionBtn(
-                  icon: Icons.download_outlined,
-                  label: 'Download',
-                  color: AppColors.gray,
-                  onTap: () {},
-                ),
-                SizedBox(width: 8.w),
-                _OutlineActionBtn(
-                  icon: Icons.visibility_outlined,
-                  label: 'View Result',
-                  color: AppColors.gray,
-                  onTap: () {},
-                ),
-              ],
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _IconOnlyBtn(
-                  icon: Icons.link,
-                  color: AppColors.primary,
-                  filled: true,
-                  onTap: onGenerateLink,
-                ),
-                _IconOnlyBtn(
-                  icon: Icons.visibility_outlined,
-                  color: AppColors.gray,
-                  filled: false,
-                  onTap: () {},
-                ),
-                _IconOnlyBtn(
-                  icon: Icons.download_outlined,
-                  color: AppColors.gray,
-                  filled: false,
-                  onTap: () {},
-                ),
-                _IconOnlyBtn(
-                  icon: Icons.share_outlined,
-                  color: AppColors.gray,
-                  filled: false,
-                  onTap: () {},
-                ),
-              ],
-            ),
-      Gap(16.h),
-    ],
-  );
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-class _SimImg extends StatelessWidget {
-  const _SimImg({required this.label, required this.caption});
-  final String label, caption;
-  @override
-  Widget build(BuildContext context) => Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        label,
-        style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
-      ),
-      Gap(4.h),
-      ClipRRect(
-        borderRadius: BorderRadius.circular(8.r),
-        child: Container(
-          height: 110.h,
-          color: Colors.black87,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              const ColoredBox(color: Color(0xFF1a1a1a)),
-              Positioned(
-                bottom: 8.h,
-                left: 8.w,
-                child: Text(
-                  caption,
-                  style: GoogleFonts.inter(
-                    fontSize: 10.sp,
-                    color: Colors.white70,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-class _AnalysisCard extends StatelessWidget {
-  const _AnalysisCard({required this.label, required this.value});
-  final String label, value;
-  @override
-  Widget build(BuildContext context) => Expanded(
-    child: Container(
-      padding: EdgeInsets.all(12.w),
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF9FAFB),
-        borderRadius: BorderRadius.circular(8.r),
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.inputBorder),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
-            style: GoogleFonts.inter(fontSize: 10.sp, color: AppColors.gray),
+            sim.title,
+            style: GoogleFonts.inter(fontWeight: FontWeight.w600),
           ),
-          Gap(4.h),
+          const SizedBox(height: 8),
           Text(
-            value,
-            style: GoogleFonts.inter(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textColor,
-            ),
+            sim.date,
+            style: GoogleFonts.inter(fontSize: 11, color: AppColors.gray),
           ),
+          const SizedBox(height: 12),
+
+          // Images Row
+          Row(
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    Assets.imagesImageBefore,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    Assets.imagesImageAfter,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Analysis Summary
+          _AnalysisSummary(isWide: isWide),
+
+          const SizedBox(height: 14),
+
+          // Action Buttons
+          isWide
+              ? Row(
+                  children: [
+                    _OutlineActionBtn(
+                      icon: Icons.link,
+                      label: 'Generate Lab Link',
+                      color: AppColors.primary,
+                      filled: true,
+                      onTap: onGenerateLink,
+                    ),
+                    const SizedBox(width: 8),
+                    _OutlineActionBtn(
+                      icon: Icons.share_outlined,
+                      label: 'Share',
+                      color: AppColors.gray,
+                      onTap: () {},
+                    ),
+                    const SizedBox(width: 8),
+                    _OutlineActionBtn(
+                      icon: Icons.download_outlined,
+                      label: 'Download',
+                      color: AppColors.gray,
+                      onTap: () {},
+                    ),
+                    const SizedBox(width: 8),
+                    _OutlineActionBtn(
+                      icon: Icons.visibility_outlined,
+                      label: 'View Result',
+                      color: AppColors.gray,
+                      onTap: () {},
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _IconOnlyBtn(
+                      icon: Icons.link,
+                      color: AppColors.primary,
+                      filled: true,
+                      onTap: onGenerateLink,
+                    ),
+                    _IconOnlyBtn(
+                      icon: Icons.visibility_outlined,
+                      color: AppColors.gray,
+                      filled: false,
+                      onTap: () {},
+                    ),
+                    _IconOnlyBtn(
+                      icon: Icons.download_outlined,
+                      color: AppColors.gray,
+                      filled: false,
+                      onTap: () {},
+                    ),
+                    _IconOnlyBtn(
+                      icon: Icons.share_outlined,
+                      color: AppColors.gray,
+                      filled: false,
+                      onTap: () {},
+                    ),
+                  ],
+                ),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
-class _OutlineActionBtn extends StatelessWidget {
-  const _OutlineActionBtn({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-    this.filled = false,
-  });
-  final IconData icon;
-  final String label;
-  final Color color;
-  final bool filled;
-  final VoidCallback onTap;
+// ── Analysis Summary ──
+class _AnalysisSummary extends StatelessWidget {
+  final bool isWide;
+  const _AnalysisSummary({required this.isWide});
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Analysis Summary',
+          style: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppColors.textColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        isWide
+            ? Row(
+                children: const [
+                  _AnalysisCard(label: 'Alignment Correction', value: '85%'),
+                  SizedBox(width: 12),
+                  _AnalysisCard(label: 'Whitening Level', value: '3 shades'),
+                  SizedBox(width: 12),
+                  _AnalysisCard(label: 'Smile Balance', value: '92%'),
+                ],
+              )
+            : Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: const [
+                  _AnalysisCard(label: 'Alignment Correction', value: '85%'),
+                  _AnalysisCard(label: 'Whitening Level', value: '3 shades'),
+                  _AnalysisCard(label: 'Smile Balance', value: '92%'),
+                ],
+              ),
+      ],
+    );
+  }
+}
+
+// ── Analysis Card ──
+class _AnalysisCard extends StatelessWidget {
+  final String label;
+  final String value;
+  const _AnalysisCard({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 120,
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: filled ? color : Colors.transparent,
-        borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: filled ? color : AppColors.inputBorder),
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppColors.inputBorder),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 13.sp, color: filled ? Colors.white : color),
-          SizedBox(width: 5.w),
-          Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 12.sp,
-              color: filled ? Colors.white : color,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+          Text(label,
+              style: GoogleFonts.inter(fontSize: 11, color: AppColors.gray)),
+          const SizedBox(height: 4),
+          Text(value, style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
         ],
       ),
-    ),
-  );
+    );
+  }
 }
 
-class _IconOnlyBtn extends StatelessWidget {
-  const _IconOnlyBtn({
-    required this.icon,
-    required this.color,
-    required this.filled,
-    required this.onTap,
-  });
-  final IconData icon;
-  final Color color;
-  final bool filled;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Container(
-      width: 40.w,
-      height: 40.w,
-      decoration: BoxDecoration(
-        color: filled ? color : Colors.transparent,
-        shape: BoxShape.circle,
-        border: Border.all(color: filled ? color : AppColors.inputBorder),
-      ),
-      child: Icon(icon, size: 18.sp, color: filled ? Colors.white : color),
-    ),
-  );
-}
-
+// ── Badge ──
 class _Badge extends StatelessWidget {
-  const _Badge(this.label, this.color);
-  final String label;
+  final String text;
   final Color color;
+  const _Badge(this.text, this.color);
+
   @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
-    decoration: BoxDecoration(
-      color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(20.r),
-    ),
-    child: Text(
-      label,
-      style: GoogleFonts.inter(
-        fontSize: 10.sp,
-        color: color,
-        fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(4),
       ),
-    ),
-  );
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
 }
 
+// ── Stat Item ──
 class _StatItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
   const _StatItem({
     required this.icon,
     required this.label,
     required this.value,
   });
-  final IconData icon;
-  final String label, value;
+
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: EdgeInsets.only(bottom: 4.h),
-    child: Row(
+  Widget build(BuildContext context) {
+    return Row(
       children: [
-        Icon(icon, size: 12.sp, color: AppColors.gray),
-        SizedBox(width: 6.w),
+        Icon(icon, size: 14, color: AppColors.gray),
+        const SizedBox(width: 4),
         Text(
-          '$label  ',
-          style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
-        ),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 11.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textColor,
-          ),
+          '$label: $value',
+          style: GoogleFonts.inter(fontSize: 11, color: AppColors.gray),
         ),
       ],
-    ),
-  );
+    );
+  }
 }
 
+// ── Outline Action Button ──
+class _OutlineActionBtn extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _OutlineActionBtn({
+    required this.icon,
+    required this.label,
+    required this.color,
+    this.filled = false,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return filled
+        ? ElevatedButton.icon(
+            onPressed: onTap,
+            icon: Icon(icon, size: 14),
+            label: Text(label, style: const TextStyle(fontSize: 12)),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
+          )
+        : OutlinedButton.icon(
+            onPressed: onTap,
+            icon: Icon(icon, size: 14, color: color),
+            label: Text(label, style: TextStyle(fontSize: 12, color: color)),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            ),
+          );
+  }
+}
+
+// ── Icon Only Button ──
+class _IconOnlyBtn extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final bool filled;
+  final VoidCallback onTap;
+
+  const _IconOnlyBtn({
+    required this.icon,
+    required this.color,
+    this.filled = false,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return filled
+        ? ElevatedButton(
+            onPressed: onTap,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              padding: const EdgeInsets.all(8),
+            ),
+            child: Icon(icon, size: 16, color: Colors.white),
+          )
+        : OutlinedButton(
+            onPressed: onTap,
+            style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(8)),
+            child: Icon(icon, size: 16, color: color),
+          );
+  }
+}
+
+// ── Simulation Model ──
 class _Sim {
+  final String id;
+  final String title;
+  final String date;
   const _Sim({required this.id, required this.title, required this.date});
-  final String id, title, date;
 }

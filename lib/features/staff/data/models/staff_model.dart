@@ -27,16 +27,15 @@ class StaffPermissions {
     bool? viewReports,
     bool? manageBilling,
     bool? manageStaff,
-  }) =>
-      StaffPermissions(
-        viewPatients: viewPatients ?? this.viewPatients,
-        editPatients: editPatients ?? this.editPatients,
-        deletePatients: deletePatients ?? this.deletePatients,
-        runSimulations: runSimulations ?? this.runSimulations,
-        viewReports: viewReports ?? this.viewReports,
-        manageBilling: manageBilling ?? this.manageBilling,
-        manageStaff: manageStaff ?? this.manageStaff,
-      );
+  }) => StaffPermissions(
+    viewPatients: viewPatients ?? this.viewPatients,
+    editPatients: editPatients ?? this.editPatients,
+    deletePatients: deletePatients ?? this.deletePatients,
+    runSimulations: runSimulations ?? this.runSimulations,
+    viewReports: viewReports ?? this.viewReports,
+    manageBilling: manageBilling ?? this.manageBilling,
+    manageStaff: manageStaff ?? this.manageStaff,
+  );
 }
 
 class ModuleAccess {
@@ -50,7 +49,8 @@ class ModuleAccess {
 
   // per-module CRUD flags (desktop view shows Create/Edit/Remove/View)
   // mobile view shows Edit/View only
-  final Map<String, Set<String>> crudMap; // module -> {'create','edit','remove','view'}
+  final Map<String, Set<String>>
+  crudMap; // module -> {'create','edit','remove','view'}
 
   const ModuleAccess({
     this.dashboard = false,
@@ -72,17 +72,16 @@ class ModuleAccess {
     bool? billing,
     bool? settings,
     Map<String, Set<String>>? crudMap,
-  }) =>
-      ModuleAccess(
-        dashboard: dashboard ?? this.dashboard,
-        patients: patients ?? this.patients,
-        simulation: simulation ?? this.simulation,
-        results: results ?? this.results,
-        labLinks: labLinks ?? this.labLinks,
-        billing: billing ?? this.billing,
-        settings: settings ?? this.settings,
-        crudMap: crudMap ?? this.crudMap,
-      );
+  }) => ModuleAccess(
+    dashboard: dashboard ?? this.dashboard,
+    patients: patients ?? this.patients,
+    simulation: simulation ?? this.simulation,
+    results: results ?? this.results,
+    labLinks: labLinks ?? this.labLinks,
+    billing: billing ?? this.billing,
+    settings: settings ?? this.settings,
+    crudMap: crudMap ?? this.crudMap,
+  );
 }
 
 enum StaffStatus { active, pending, inactive }
@@ -126,10 +125,66 @@ class StaffMember {
     this.recentActivity = const [],
   });
 
+  // ✅ Proper copyWith
+  StaffMember copyWith({
+    String? id,
+    String? employeeId,
+    String? name,
+    String? role,
+    String? department,
+    String? email,
+    String? phone,
+    String? address,
+    DateTime? joinedDate,
+    StaffStatus? status,
+    StaffPermissions? permissions,
+    ModuleAccess? moduleAccess,
+    int? totalPatients,
+    int? activeCases,
+    int? completed,
+    double? avgRating,
+    List<StaffActivity>? recentActivity,
+  }) {
+    return StaffMember(
+      id: id ?? this.id,
+      employeeId: employeeId ?? this.employeeId,
+      name: name ?? this.name,
+      role: role ?? this.role,
+      department: department ?? this.department,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
+      joinedDate: joinedDate ?? this.joinedDate,
+      status: status ?? this.status,
+      permissions: permissions ?? this.permissions,
+      moduleAccess: moduleAccess ?? this.moduleAccess,
+      totalPatients: totalPatients ?? this.totalPatients,
+      activeCases: activeCases ?? this.activeCases,
+      completed: completed ?? this.completed,
+      avgRating: avgRating ?? this.avgRating,
+      recentActivity: recentActivity ?? this.recentActivity,
+    );
+  }
+
   String get initials {
-    final parts = name.trim().split(' ');
-    if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-    return name.substring(0, 2).toUpperCase();
+    if (name.trim().isEmpty) return '?';
+
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) return '?';
+
+    if (parts.length == 1) {
+      final w = parts[0];
+      return w.length >= 2
+          ? w.substring(0, 2).toUpperCase()
+          : w.substring(0, 1).toUpperCase();
+    }
+
+    return '${parts.first[0]}${parts.last[0]}'.toUpperCase();
   }
 }
 
@@ -145,10 +200,4 @@ class StaffActivity {
   });
 }
 
-enum StaffActivityType {
-  simulation,
-  patient,
-  labLink,
-  treatment,
-  email,
-}
+enum StaffActivityType { simulation, patient, labLink, treatment, email }

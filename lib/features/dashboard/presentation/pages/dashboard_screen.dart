@@ -422,21 +422,41 @@ class _MoreSheet extends StatelessWidget {
   final void Function(int) onSelect;
   final VoidCallback onNotification, onLogout;
 
-  static const _mainItems = [
-    _NavItem(icon: Icons.dashboard_outlined, label: 'Dashboard', index: 0),
-    _NavItem(icon: Icons.person_outline, label: 'Patients', index: 1),
-    _NavItem(icon: Icons.science_outlined, label: 'Lab Links', index: 2),
+  static final _mainItems = [
     _NavItem(
-      icon: Icons.folder_outlined,
+      icon: SvgPicture.asset(Assets.iconsDashboardSquare01, width: 22),
+      label: 'Dashboard',
+      index: 0,
+    ),
+    _NavItem(
+      icon: SvgPicture.asset(Assets.iconsPatient, width: 22),
+      label: 'Patients',
+      index: 1,
+    ),
+    _NavItem(
+      icon: SvgPicture.asset(Assets.iconsTestTube01, width: 22),
+      label: 'Lab Links',
+      index: 2,
+    ),
+    _NavItem(
+      icon: SvgPicture.asset(Assets.iconsDocumentValidation, width: 22),
       label: 'Documents & Records',
       index: 3,
     ),
-    _NavItem(icon: Icons.bar_chart_outlined, label: 'Analytics', index: 4),
+    _NavItem(
+      icon: SvgPicture.asset(Assets.iconsAnalyticsUp, width: 22),
+      label: 'Analytics',
+      index: 4,
+    ),
   ];
   static const _moreItems = [
-    _NavItem(icon: Icons.receipt_long_outlined, label: 'Billing', index: 5),
-    _NavItem(icon: Icons.group_outlined, label: 'Staff', index: 6),
-    _NavItem(icon: Icons.settings_outlined, label: 'Settings', index: 7),
+    _NavItem(
+      icon: Icon(Icons.receipt_long_outlined),
+      label: 'Billing',
+      index: 5,
+    ),
+    _NavItem(icon: Icon(Icons.group_outlined), label: 'Staff', index: 6),
+    _NavItem(icon: Icon(Icons.settings_outlined), label: 'Settings', index: 7),
   ];
 
   @override
@@ -525,8 +545,8 @@ class _MoreSheet extends StatelessWidget {
             ),
           ),
           _SheetTile(
-            item: const _NavItem(
-              icon: Icons.help_outline,
+            item: _NavItem(
+              icon: const Icon(Icons.help_outline, size: 22),
               label: 'Help Center',
               index: -1,
             ),
@@ -603,11 +623,7 @@ class _SheetTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            item.icon,
-            size: 18.sp,
-            color: isSelected ? AppColors.primary : AppColors.gray,
-          ),
+          SizedBox(width: 18.sp, height: 18.sp, child: item.icon),
           SizedBox(width: 10.w),
           Text(
             item.label,
@@ -630,20 +646,33 @@ class _SidebarContent extends ConsumerWidget {
   final double width;
 
   static const _mainItems = [
-    _NavItem(icon: Icons.dashboard_outlined, label: 'Dashboard', index: 0),
-    _NavItem(icon: Icons.person_outline, label: 'Patients', index: 1),
-    _NavItem(icon: Icons.science_outlined, label: 'Lab Links', index: 2),
     _NavItem(
-      icon: Icons.folder_outlined,
+      icon: Icon(Icons.dashboard_outlined),
+      label: 'Dashboard',
+      index: 0,
+    ),
+    _NavItem(icon: Icon(Icons.person_outline), label: 'Patients', index: 1),
+    _NavItem(icon: Icon(Icons.science_outlined), label: 'Lab Links', index: 2),
+    _NavItem(
+      icon: Icon(Icons.folder_outlined),
       label: 'Documents & Records',
       index: 3,
     ),
-    _NavItem(icon: Icons.bar_chart_outlined, label: 'Analytics', index: 4),
+    _NavItem(
+      icon: Icon(Icons.bar_chart_outlined),
+      label: 'Analytics',
+      index: 4,
+    ),
   ];
+
   static const _moreItems = [
-    _NavItem(icon: Icons.receipt_long_outlined, label: 'Billing', index: 5),
-    _NavItem(icon: Icons.group_outlined, label: 'Staff', index: 6),
-    _NavItem(icon: Icons.settings_outlined, label: 'Settings', index: 7),
+    _NavItem(
+      icon: Icon(Icons.receipt_long_outlined),
+      label: 'Billing',
+      index: 5,
+    ),
+    _NavItem(icon: Icon(Icons.group_outlined), label: 'Staff', index: 6),
+    _NavItem(icon: Icon(Icons.settings_outlined), label: 'Settings', index: 7),
   ];
 
   @override
@@ -666,14 +695,14 @@ class _SidebarContent extends ConsumerWidget {
                   height: 32.w,
                 ),
                 SizedBox(width: 8.w),
-                Text(
-                  'GenSmile',
-                  style: GoogleFonts.inter(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textColor,
-                  ),
-                ),
+                //Text(
+                //'GenSmile',
+                ///style: GoogleFonts.inter(
+                //  fontSize: 16.sp,
+                //  fontWeight: FontWeight.w700,
+                //  color: AppColors.textColor,
+                // ),
+                //),
               ],
             ),
           ),
@@ -699,10 +728,9 @@ class _SidebarContent extends ConsumerWidget {
             ),
           ),
           const Spacer(),
-          // ── Notifications ─────────────────────────────────────────────────
           _SidebarTile(
-            item: const _NavItem(
-              icon: Icons.notifications_outlined,
+            item: _NavItem(
+              icon: Icon(Icons.notifications_outlined),
               label: 'Notifications',
               index: -1,
             ),
@@ -712,8 +740,8 @@ class _SidebarContent extends ConsumerWidget {
                 .push(const NotificationsScreen()),
           ),
           _SidebarTile(
-            item: const _NavItem(
-              icon: Icons.help_outline,
+            item: _NavItem(
+              icon: Icon(Icons.help_outline), // ✅ wrap in Icon()
               label: 'Help Center',
               index: -1,
             ),
@@ -792,10 +820,10 @@ class _SidebarTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(
-            item.icon,
-            size: 16.sp,
-            color: isSelected ? AppColors.primary : AppColors.gray,
+          SizedBox(
+            width: 16.w, // control size if needed
+            height: 16.w,
+            child: item.icon, // ✅ directly use the widget
           ),
           SizedBox(width: 10.w),
           Text(
@@ -818,7 +846,7 @@ class _NavItem {
     required this.label,
     required this.index,
   });
-  final IconData icon;
+  final Widget icon;
   final String label;
   final int index;
 }
