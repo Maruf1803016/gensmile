@@ -2,20 +2,55 @@
 class Assets {
   Assets._();
 
-  static const String imagesCardExchange02 =
-      'assets/images/card-exchange-02.png';
-  static const String imagesClinic = 'assets/images/clinic.png';
-  static const String imagesCreditCardPos = 'assets/images/credit-card-pos.png';
-  static const String imagesDentalTooth = 'assets/images/dental-tooth.png';
-  static const String imagesLogo = 'assets/images/Logo.png';
-  static const String imagesPasswordValidation =
-      'assets/images/password-validation.png';
-  static const String imagesResetPassword = 'assets/images/reset-password.png';
-  static const String imagesStethoscope02 = 'assets/images/stethoscope-02.png';
-  static const String imagesUser = 'assets/images/user.png';
-  static const String imagesUserCheck01 = 'assets/images/user-check-01.png';
-  static const String imagesUserEdit01 = 'assets/images/user-edit-01.png';
-  static const String imagesVisa = 'assets/images/Visa.png';
-  static const String imagesVisa1 = 'assets/images/Visa__1_.png';
-  static const String imagesVisa2 = 'assets/images/Visa__2_.png';
+  // ── Images (PNG) ────────────────────────────────────────────────────────────
+  static const String imagesCardExchange02   = 'assets/images/card-exchange-02.png';
+  static const String imagesClinic           = 'assets/images/clinic.png';
+  static const String imagesCreditCardPos    = 'assets/images/credit-card-pos.png';
+  static const String imagesDentalTooth      = 'assets/images/dental-tooth.png';
+  static const String imagesLogo             = 'assets/images/Logo.png';
+  static const String imagesPasswordValidation = 'assets/images/password-validation.png';
+  static const String imagesResetPassword    = 'assets/images/reset-password.png';
+  static const String imagesStethoscope02    = 'assets/images/stethoscope-02.png';
+  static const String imagesUser             = 'assets/images/user.png';
+  static const String imagesUserCheck01      = 'assets/images/user-check-01.png';
+  static const String imagesUserEdit01       = 'assets/images/user-edit-01.png';
+  static const String imagesVisa             = 'assets/images/Visa.png';
+  static const String imagesVisa1            = 'assets/images/Visa__1_.png';
+  static const String imagesVisa2            = 'assets/images/Visa__2_.png';
+
+  // ── Icons (SVG) ─────────────────────────────────────────────────────────────
+  static const String iconsBarChartHorizontal  = 'assets/icons/Bar chart horizontal.svg';
+  static const String iconsBarChartVertical    = 'assets/icons/Bar chart vertical.svg';
+  static const String iconsBrandLogo           = 'assets/icons/Brand logo.svg';
+  static const String iconsPieChart2           = 'assets/icons/Pie chart 2.svg';
+  static const String iconsPieChart            = 'assets/icons/Pie chart.svg';
+  static const String iconsSmallBarChart       = 'assets/icons/Small bar chart.svg';
+  static const String iconsSuccess             = 'assets/icons/Success.svg';
+  static const String iconsAddTeam             = 'assets/icons/add-team-stroke-rounded.svg';
+  static const String iconsAnalyticsUp         = 'assets/icons/analytics-up-stroke-rounded.svg';
+  static const String iconsCamera01            = 'assets/icons/camera-01-stroke-rounded.svg';
+  static const String iconsCardExchange02      = 'assets/icons/card-exchange-02-stroke-rounded.svg';
+  static const String iconsClinic              = 'assets/icons/clinic-stroke-rounded.svg';
+  static const String iconsCpuCharge           = 'assets/icons/cpu-charge-stroke-rounded.svg';
+  static const String iconsCreditCardPos       = 'assets/icons/credit-card-pos-stroke-rounded.svg';
+  static const String iconsDashboardSquare01   = 'assets/icons/dashboard-square-01-stroke-rounded.svg';
+  static const String iconsDocumentValidation  = 'assets/icons/document-validation-stroke-rounded.svg';
+  static const String iconsGlobe02             = 'assets/icons/globe-02-stroke-rounded.svg';
+  static const String iconsInvoice01           = 'assets/icons/invoice-01-stroke-rounded.svg';
+  static const String iconsMail01              = 'assets/icons/mail-01-stroke-rounded.svg';
+  static const String iconsMessage01           = 'assets/icons/message-01-stroke-rounded.svg';
+  static const String iconsPasswordValidation  = 'assets/icons/password-validation-stroke-rounded.svg';
+  static const String iconsPatient             = 'assets/icons/patient-stroke-rounded.svg';
+  static const String iconsResetPassword       = 'assets/icons/reset-password-stroke-rounded.svg';
+  static const String iconsSettings01          = 'assets/icons/settings-01-stroke-rounded.svg';
+  static const String iconsShield01            = 'assets/icons/shield-01-stroke-rounded.svg';
+  static const String iconsSmile               = 'assets/icons/smile-stroke-rounded.svg';
+  static const String iconsStethoscope02       = 'assets/icons/stethoscope-02-stroke-rounded.svg';
+  static const String iconsTestTube01          = 'assets/icons/test-tube-01-stroke-rounded.svg';
+  static const String iconsUserAdd02           = 'assets/icons/user-add-02-stroke-rounded.svg';
+  static const String iconsUserCheck01         = 'assets/icons/user-check-01-stroke-rounded.svg';
+  static const String iconsUserCircle          = 'assets/icons/user-circle-stroke-rounded.svg';
+  static const String iconsUserEdit01          = 'assets/icons/user-edit-01-stroke-rounded.svg';
+  static const String iconsUserGroup           = 'assets/icons/user-group-stroke-rounded.svg';
+  static const String iconsUser                = 'assets/icons/user-stroke-rounded.svg';
 }

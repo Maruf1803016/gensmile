@@ -1,36 +1,36 @@
+// lib/features/dashboard/presentation/pages/dashboard_screen.dart
+// FIXES:
+//  • case 6 → StaffScreen (no more "Coming soon" placeholder)
+//  • Sidebar logo uses Assets.iconsBrandLogo SVG
+//  • More sheet logo uses Assets.iconsBrandLogo SVG
+//  • Create New sheet uses SVG icons
+//  • Notification bell added to sidebar + more sheet
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
 import 'package:gen_smile/core/states/navigator_state.dart';
 import 'package:gen_smile/features/billing/presentation/pages/billing_screen.dart';
 import 'package:gen_smile/features/dashboard/presentation/pages/dashboard_home.dart';
+import 'package:gen_smile/features/dashboard/presentation/pages/notifications_screen.dart';
 import 'package:gen_smile/features/analytics/presentation/pages/analytics_screen.dart';
 import 'package:gen_smile/features/documents/presentation/pages/documents_screen.dart';
 import 'package:gen_smile/features/lab_links/presentation/pages/lab_links_screen.dart';
 import 'package:gen_smile/features/patients/presentation/pages/patients_screen.dart';
 import 'package:gen_smile/features/patients/presentation/pages/new_simulation_screen.dart';
-import 'package:gen_smile/features/settings/presentation/pages/settings_screen.dart'; // ← added
-import 'package:gen_smile/features/splash/presentation/pages/splash_screen.dart';
+import 'package:gen_smile/features/settings/presentation/pages/settings_screen.dart';
 import 'package:gen_smile/features/staff/presentation/pages/staff_screen.dart';
+import 'package:gen_smile/features/splash/presentation/pages/splash_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 final dashboardIndexProvider = StateProvider<int>((ref) => 0);
 
 const double _kSidebarBreakpoint = 600;
 const double _kSidebarWidth = 200;
-const _kSectionLabels = [
-  'Dashboard',
-  'Patients',
-  'Lab Links',
-  'Documents & Records',
-  'Analytics',
-  'Billing',
-  'Staff',
-  'Settings',
-  'More',
-];
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -87,15 +87,16 @@ class DashboardScreen extends ConsumerWidget {
       case 5:
         return BillingScreen(embedded: embedded);
       case 6:
-  return StaffScreen(embedded: embedded); // Staff
+        return StaffScreen(embedded: embedded); // ← FIXED
       case 7:
-        return const SettingsScreen(); // ← fixed: was _PlaceholderBody
+        return const SettingsScreen();
       default:
-        return _PlaceholderBody(index: index);
+        return const SizedBox.shrink();
     }
   }
 }
 
+// ── Bottom Nav ────────────────────────────────────────────────────────────────
 class _BottomNav extends ConsumerWidget {
   const _BottomNav({required this.selectedIndex});
   final int selectedIndex;
@@ -128,11 +129,7 @@ class _BottomNav extends ConsumerWidget {
               ),
               Expanded(
                 child: GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const NewSimulationScreen(),
-                    ),
-                  ),
+                  onTap: () => _showCreateNewSheet(context, ref),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -190,6 +187,23 @@ class _BottomNav extends ConsumerWidget {
     );
   }
 
+  void _showCreateNewSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _CreateNewSheet(
+        onNewPatient: () => Navigator.pop(context),
+        onNewSimulation: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const NewSimulationScreen()),
+          );
+        },
+      ),
+    );
+  }
+
   void _showMoreSheet(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
@@ -200,6 +214,10 @@ class _BottomNav extends ConsumerWidget {
         onSelect: (i) {
           ref.read(dashboardIndexProvider.notifier).state = i;
           Navigator.pop(context);
+        },
+        onNotification: () {
+          Navigator.pop(context);
+          ref.read(navigatorState.notifier).push(const NotificationsScreen());
         },
         onLogout: () {
           Navigator.pop(context);
@@ -220,7 +238,6 @@ class _BottomNavItem extends ConsumerWidget {
     required this.index,
     required this.selectedIndex,
   });
-
   final IconData icon, activeIcon;
   final String label;
   final int index, selectedIndex;
@@ -255,8 +272,13 @@ class _BottomNavItem extends ConsumerWidget {
   }
 }
 
+// ── Create New Sheet ──────────────────────────────────────────────────────────
 class _CreateNewSheet extends StatelessWidget {
-  const _CreateNewSheet();
+  const _CreateNewSheet({
+    required this.onNewPatient,
+    required this.onNewSimulation,
+  });
+  final VoidCallback onNewPatient, onNewSimulation;
 
   @override
   Widget build(BuildContext context) {
@@ -295,25 +317,21 @@ class _CreateNewSheet extends StatelessWidget {
             style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
           ),
           Gap(20.h),
-          _CreateNewOption(
-            icon: Icons.auto_awesome_outlined,
+          _SheetOption(
+            iconPath: Assets.iconsUserAdd02,
             color: AppColors.primary,
+            title: 'Add New Patient',
+            subtitle: 'Add a new patient profile to the clinic database',
+            onTap: onNewPatient,
+          ),
+          Gap(12.h),
+          _SheetOption(
+            iconPath: Assets.iconsSmile,
+            color: const Color(0xFF7B5EA7),
             title: 'New Simulation',
             subtitle:
                 'Create a new AI smile or orthodontic simulation for a patient',
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          Gap(12.h),
-          _CreateNewOption(
-            icon: Icons.person_add_outlined,
-            color: AppColors.secondary,
-            title: 'New Patient',
-            subtitle: 'Add a new patient profile to the clinic database',
-            onTap: () {
-              Navigator.pop(context);
-            },
+            onTap: onNewSimulation,
           ),
           Gap(8.h),
         ],
@@ -322,83 +340,87 @@ class _CreateNewSheet extends StatelessWidget {
   }
 }
 
-class _CreateNewOption extends StatelessWidget {
-  const _CreateNewOption({
-    required this.icon,
+class _SheetOption extends StatelessWidget {
+  const _SheetOption({
+    required this.iconPath,
     required this.color,
     required this.title,
     required this.subtitle,
     required this.onTap,
   });
-
-  final IconData icon;
+  final String iconPath, title, subtitle;
   final Color color;
-  final String title, subtitle;
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12.r),
-      child: Container(
-        padding: EdgeInsets.all(16.w),
-        decoration: BoxDecoration(
-          color: const Color(0xFFF5F6FA),
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 44.w,
-              height: 44.w,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(12.r),
-              ),
-              child: Icon(icon, color: Colors.white, size: 22.sp),
-            ),
-            SizedBox(width: 14.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: GoogleFonts.inter(
-                      fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  Gap(2.h),
-                  Text(
-                    subtitle,
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      color: AppColors.gray,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(12.r),
+    child: Container(
+      padding: EdgeInsets.all(16.w),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F6FA),
+        borderRadius: BorderRadius.circular(12.r),
       ),
-    );
-  }
+      child: Row(
+        children: [
+          Container(
+            width: 44.w,
+            height: 44.w,
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            padding: EdgeInsets.all(10.w),
+            child: SvgPicture.asset(
+              iconPath,
+              colorFilter: const ColorFilter.mode(
+                Colors.white,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          SizedBox(width: 14.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.inter(
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textColor,
+                  ),
+                ),
+                Gap(2.h),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 12.sp,
+                    color: AppColors.gray,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
+// ── More Sheet ────────────────────────────────────────────────────────────────
 class _MoreSheet extends StatelessWidget {
   const _MoreSheet({
     required this.selectedIndex,
     required this.onSelect,
+    required this.onNotification,
     required this.onLogout,
   });
-
   final int selectedIndex;
   final void Function(int) onSelect;
-  final VoidCallback onLogout;
+  final VoidCallback onNotification, onLogout;
 
   static const _mainItems = [
     _NavItem(icon: Icons.dashboard_outlined, label: 'Dashboard', index: 0),
@@ -411,7 +433,6 @@ class _MoreSheet extends StatelessWidget {
     ),
     _NavItem(icon: Icons.bar_chart_outlined, label: 'Analytics', index: 4),
   ];
-
   static const _moreItems = [
     _NavItem(icon: Icons.receipt_long_outlined, label: 'Billing', index: 5),
     _NavItem(icon: Icons.group_outlined, label: 'Staff', index: 6),
@@ -442,18 +463,10 @@ class _MoreSheet extends StatelessWidget {
           Gap(12.h),
           Row(
             children: [
-              Container(
+              SvgPicture.asset(
+                Assets.iconsBrandLogo,
                 width: 28.w,
                 height: 28.w,
-                decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(6.r),
-                ),
-                child: Icon(
-                  Icons.medical_services_outlined,
-                  color: Colors.white,
-                  size: 16.sp,
-                ),
               ),
               SizedBox(width: 8.w),
               Text(
@@ -487,6 +500,30 @@ class _MoreSheet extends StatelessWidget {
             ),
           ),
           Divider(height: 24.h, color: AppColors.inputBorder),
+          InkWell(
+            onTap: onNotification,
+            borderRadius: BorderRadius.circular(8.r),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.notifications_outlined,
+                    size: 18.sp,
+                    color: AppColors.gray,
+                  ),
+                  SizedBox(width: 10.w),
+                  Text(
+                    'Notifications',
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      color: AppColors.gray,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           _SheetTile(
             item: const _NavItem(
               icon: Icons.help_outline,
@@ -525,7 +562,6 @@ class _MoreSheet extends StatelessWidget {
 class _SheetSectionLabel extends StatelessWidget {
   const _SheetSectionLabel(this.text);
   final String text;
-
   @override
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.only(left: 8.w, bottom: 2.h),
@@ -550,11 +586,9 @@ class _SheetTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
-
   final _NavItem item;
   final bool isSelected;
   final VoidCallback onTap;
-
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: onTap,
@@ -589,38 +623,9 @@ class _SheetTile extends StatelessWidget {
   );
 }
 
-class _PlaceholderBody extends StatelessWidget {
-  const _PlaceholderBody({required this.index});
-  final int index;
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(Icons.construction_outlined, size: 48.sp, color: AppColors.gray),
-        SizedBox(height: 12.h),
-        Text(
-          _kSectionLabels[index],
-          style: GoogleFonts.inter(
-            fontSize: 22.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary,
-          ),
-        ),
-        SizedBox(height: 6.h),
-        Text(
-          'Coming soon',
-          style: GoogleFonts.inter(fontSize: 14.sp, color: AppColors.gray),
-        ),
-      ],
-    ),
-  );
-}
-
+// ── Sidebar ───────────────────────────────────────────────────────────────────
 class _SidebarContent extends ConsumerWidget {
   const _SidebarContent({required this.selectedIndex, required this.width});
-
   final int selectedIndex;
   final double width;
 
@@ -635,7 +640,6 @@ class _SidebarContent extends ConsumerWidget {
     ),
     _NavItem(icon: Icons.bar_chart_outlined, label: 'Analytics', index: 4),
   ];
-
   static const _moreItems = [
     _NavItem(icon: Icons.receipt_long_outlined, label: 'Billing', index: 5),
     _NavItem(icon: Icons.group_outlined, label: 'Staff', index: 6),
@@ -651,22 +655,15 @@ class _SidebarContent extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── Logo ──────────────────────────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 20.h),
             child: Row(
               children: [
-                Container(
+                SvgPicture.asset(
+                  Assets.iconsBrandLogo,
                   width: 32.w,
                   height: 32.w,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Icon(
-                    Icons.medical_services_outlined,
-                    color: Colors.white,
-                    size: 18.sp,
-                  ),
                 ),
                 SizedBox(width: 8.w),
                 Text(
@@ -702,6 +699,18 @@ class _SidebarContent extends ConsumerWidget {
             ),
           ),
           const Spacer(),
+          // ── Notifications ─────────────────────────────────────────────────
+          _SidebarTile(
+            item: const _NavItem(
+              icon: Icons.notifications_outlined,
+              label: 'Notifications',
+              index: -1,
+            ),
+            isSelected: false,
+            onTap: () => ref
+                .read(navigatorState.notifier)
+                .push(const NotificationsScreen()),
+          ),
           _SidebarTile(
             item: const _NavItem(
               icon: Icons.help_outline,
@@ -744,7 +753,6 @@ class _SidebarContent extends ConsumerWidget {
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel(this.text);
   final String text;
-
   @override
   Widget build(BuildContext context) => Padding(
     padding: EdgeInsets.symmetric(horizontal: 18.w),
@@ -766,11 +774,9 @@ class _SidebarTile extends StatelessWidget {
     required this.isSelected,
     required this.onTap,
   });
-
   final _NavItem item;
   final bool isSelected;
   final VoidCallback onTap;
-
   @override
   Widget build(BuildContext context) => InkWell(
     onTap: onTap,

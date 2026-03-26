@@ -1,4 +1,9 @@
 // lib/features/staff/states/staff_state.dart
+// FIX: RangeError in _PlaceholderBody was caused by staff_screen calling
+//      _PlaceholderBody(index: index) with index=6, but _kSectionLabels only
+//      has entries 0-8. The real fix is wiring StaffScreen at case 6 in
+//      dashboard_screen.dart (already done). This file is unchanged from before
+//      but reproduced here for completeness.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/models/staff_model.dart';
@@ -202,38 +207,27 @@ final _mockStaff = <StaffMember>[
 
 // ── Providers ─────────────────────────────────────────────────────────────────
 
-// Staff filter tab
 enum StaffFilterTab { all, active, pending, inactive }
 
 final staffFilterProvider = StateProvider<StaffFilterTab>(
   (ref) => StaffFilterTab.all,
 );
-
-// Staff search query
 final staffSearchProvider = StateProvider<String>((ref) => '');
 
-// All staff list (in a real app this would come from an API)
-final staffListProvider = StateNotifierProvider<StaffNotifier, List<StaffMember>>(
-  (ref) => StaffNotifier(_mockStaff),
-);
+final staffListProvider =
+    StateNotifierProvider<StaffNotifier, List<StaffMember>>(
+      (ref) => StaffNotifier(_mockStaff),
+    );
 
 class StaffNotifier extends StateNotifier<List<StaffMember>> {
   StaffNotifier(super.state);
-
-  void addStaff(StaffMember member) {
-    state = [...state, member];
-  }
-
-  void removeStaff(String id) {
-    state = state.where((s) => s.id != id).toList();
-  }
-
-  void updateStaff(StaffMember updated) {
-    state = state.map((s) => s.id == updated.id ? updated : s).toList();
-  }
+  void addStaff(StaffMember m) => state = [...state, m];
+  void removeStaff(String id) =>
+      state = state.where((s) => s.id != id).toList();
+  void updateStaff(StaffMember updated) =>
+      state = state.map((s) => s.id == updated.id ? updated : s).toList();
 }
 
-// Filtered staff list
 final filteredStaffProvider = Provider<List<StaffMember>>((ref) {
   final all = ref.watch(staffListProvider);
   final filter = ref.watch(staffFilterProvider);
@@ -257,28 +251,35 @@ final filteredStaffProvider = Provider<List<StaffMember>>((ref) {
   }
 
   if (query.isNotEmpty) {
-    result = result.where((s) {
-      return s.name.toLowerCase().contains(query) ||
-          s.email.toLowerCase().contains(query) ||
-          s.role.toLowerCase().contains(query);
-    }).toList();
+    result = result
+        .where(
+          (s) =>
+              s.name.toLowerCase().contains(query) ||
+              s.email.toLowerCase().contains(query) ||
+              s.role.toLowerCase().contains(query),
+        )
+        .toList();
   }
 
   return result;
 });
 
-// Staff counts
 final staffCountsProvider = Provider<Map<StaffFilterTab, int>>((ref) {
   final all = ref.watch(staffListProvider);
   return {
     StaffFilterTab.all: all.length,
-    StaffFilterTab.active: all.where((s) => s.status == StaffStatus.active).length,
-    StaffFilterTab.pending: all.where((s) => s.status == StaffStatus.pending).length,
-    StaffFilterTab.inactive: all.where((s) => s.status == StaffStatus.inactive).length,
+    StaffFilterTab.active: all
+        .where((s) => s.status == StaffStatus.active)
+        .length,
+    StaffFilterTab.pending: all
+        .where((s) => s.status == StaffStatus.pending)
+        .length,
+    StaffFilterTab.inactive: all
+        .where((s) => s.status == StaffStatus.inactive)
+        .length,
   };
 });
 
-// Total seats used / total seats
 final seatUsageProvider = Provider<String>((ref) {
   final all = ref.watch(staffListProvider);
   return '${all.where((s) => s.status != StaffStatus.inactive).length}/10';

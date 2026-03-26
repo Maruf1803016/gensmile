@@ -1,6 +1,11 @@
+// lib/features/auth/presentation/pages/sign_in_screen.dart
+// FIX: replaced Image.asset(Assets.imagesUserCheck01) with SvgPicture.asset(Assets.iconsUserCheck01)
+//      GenSmileLogo already uses SVG internally — no change needed there.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -88,8 +93,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 }
 
-// ── Desktop layout ────────────────────────────────────────────────────────────
-
+// ── Desktop layout ─────────────────────────────────────────────────────────────
 class _DesktopLayout extends StatelessWidget {
   const _DesktopLayout({
     required this.emailController,
@@ -155,8 +159,7 @@ class _DesktopLayout extends StatelessWidget {
   }
 }
 
-// ── Mobile layout ─────────────────────────────────────────────────────────────
-
+// ── Mobile layout ──────────────────────────────────────────────────────────────
 class _MobileLayout extends StatelessWidget {
   const _MobileLayout({
     required this.emailController,
@@ -213,8 +216,7 @@ class _MobileLayout extends StatelessWidget {
   }
 }
 
-// ── Shared form content ───────────────────────────────────────────────────────
-
+// ── Shared form ────────────────────────────────────────────────────────────────
 class _FormContent extends StatelessWidget {
   const _FormContent({
     required this.emailController,
@@ -241,11 +243,14 @@ class _FormContent extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
-          // Icon
-          Image.asset(Assets.imagesUserCheck01, width: 56.w, height: 56.w),
+          // ── Icon: SVG user-check ─────────────────────────────────────────
+          SvgPicture.asset(
+            Assets.iconsUserCheck01,
+            width: 56.w,
+            height: 56.w,
+            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
+          ),
           Gap(AppSpacing.s3),
-
-          // Title
           Text(
             'Sign In',
             style: AppTextStyles.h5Bold(color: AppColors.textPrimary),
@@ -287,7 +292,7 @@ class _FormContent extends StatelessWidget {
           ),
           Gap(AppSpacing.s3),
 
-          // Remember me + Forgot password
+          // Remember me + Forgot
           Row(
             children: [
               GestureDetector(
@@ -326,10 +331,17 @@ class _FormContent extends StatelessWidget {
           // Continue button
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               onPressed: onContinue,
-              icon: const SizedBox.shrink(),
-              label: Row(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.round),
+                ),
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -343,14 +355,6 @@ class _FormContent extends StatelessWidget {
                     color: AppColors.white,
                   ),
                 ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
               ),
             ),
           ),
@@ -380,22 +384,18 @@ class _FormContent extends StatelessWidget {
   }
 }
 
-// ── Shared field helpers ──────────────────────────────────────────────────────
-
 class _FieldLabel extends StatelessWidget {
   const _FieldLabel(this.text);
   final String text;
 
   @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        text,
-        style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      text,
+      style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
+    ),
+  );
 }
 
 class _InputBox extends StatelessWidget {
@@ -414,46 +414,44 @@ class _InputBox extends StatelessWidget {
   final TextInputType? keyboardType;
 
   @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: AppTextStyles.mdRegular(color: AppColors.textDisable),
-        filled: true,
-        fillColor: AppColors.surfaceMuted,
-        isDense: true,
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: AppSpacing.s3,
-          vertical: AppSpacing.s3,
-        ),
-        suffixIcon: suffix != null
-            ? Padding(
-                padding: EdgeInsets.only(right: AppSpacing.s3),
-                child: suffix,
-              )
-            : null,
-        suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.borderDefault),
-          borderRadius: BorderRadius.circular(AppRadius.r2),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.borderDefault),
-          borderRadius: BorderRadius.circular(AppRadius.r2),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.primary),
-          borderRadius: BorderRadius.circular(AppRadius.r2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.error),
-          borderRadius: BorderRadius.circular(AppRadius.r2),
-        ),
+  Widget build(BuildContext context) => TextFormField(
+    controller: controller,
+    obscureText: obscureText,
+    keyboardType: keyboardType,
+    style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
+    decoration: InputDecoration(
+      hintText: hint,
+      hintStyle: AppTextStyles.mdRegular(color: AppColors.textDisable),
+      filled: true,
+      fillColor: AppColors.surfaceMuted,
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.s3,
+        vertical: AppSpacing.s3,
       ),
-    );
-  }
+      suffixIcon: suffix != null
+          ? Padding(
+              padding: EdgeInsets.only(right: AppSpacing.s3),
+              child: suffix,
+            )
+          : null,
+      suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+      border: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderDefault),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.borderDefault),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.primary),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: AppColors.error),
+        borderRadius: BorderRadius.circular(AppRadius.r2),
+      ),
+    ),
+  );
 }

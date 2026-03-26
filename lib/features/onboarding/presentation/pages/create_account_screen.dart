@@ -1,6 +1,10 @@
+// lib/features/onboarding/presentation/pages/create_account_screen.dart
+// FIX: replaced Image.asset(Assets.imagesUserEdit01) → SvgPicture.asset(Assets.iconsUserEdit01)
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -54,7 +58,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // ── Desktop header ─────────────────────────────────────────────
             if (isWide) ...[
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -76,7 +79,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
             ] else
               OnbMobileTopBar(currentStep: 1, totalSteps: 5),
 
-            // ── Content ────────────────────────────────────────────────────
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(isWide ? AppSpacing.s6 : AppSpacing.s4),
@@ -94,10 +96,15 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                       key: _formKey,
                       child: Column(
                         children: [
-                          Image.asset(
-                            Assets.imagesUserEdit01,
+                          // ── FIX: SVG icon ────────────────────────────────
+                          SvgPicture.asset(
+                            Assets.iconsUserEdit01,
                             width: 56.w,
                             height: 56.w,
+                            colorFilter: ColorFilter.mode(
+                              AppColors.primary,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           Gap(AppSpacing.s3),
                           Text(
@@ -115,7 +122,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                           ),
                           Gap(AppSpacing.s6),
 
-                          // Full Name
                           _FormField(
                             label: 'Full Name',
                             required: true,
@@ -123,8 +129,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                             hint: 'Dr. John Doe',
                           ),
                           Gap(AppSpacing.s4),
-
-                          // Email
                           _FormField(
                             label: 'Email Address',
                             required: true,
@@ -133,8 +137,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                             keyboardType: TextInputType.emailAddress,
                           ),
                           Gap(AppSpacing.s4),
-
-                          // Password
                           _PasswordFormField(
                             label: 'Password',
                             required: true,
@@ -146,8 +148,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                             helperText: 'Must be at least 8 characters',
                           ),
                           Gap(AppSpacing.s4),
-
-                          // Confirm Password
                           _PasswordFormField(
                             label: 'Confirm Password',
                             required: true,
@@ -158,8 +158,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                             ),
                           ),
                           Gap(AppSpacing.s4),
-
-                          // Terms checkbox
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -208,7 +206,6 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
               ),
             ),
 
-            // ── Bottom nav ─────────────────────────────────────────────────
             _BottomNav(
               onContinue: _onContinue,
               onBack: () => ref.read(navigatorState.notifier).pop(),
@@ -221,12 +218,10 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   }
 }
 
-// ── Step indicator (desktop) ──────────────────────────────────────────────────
-
+// ── Step indicator ─────────────────────────────────────────────────────────────
 class _StepIndicator extends StatelessWidget {
   const _StepIndicator({required this.currentStep});
   final int currentStep;
-
   static const _steps = [
     'Create Account',
     'Choose Plan',
@@ -309,15 +304,13 @@ class _StepIndicator extends StatelessWidget {
   }
 }
 
-// ── Bottom navigation bar ─────────────────────────────────────────────────────
-
+// ── Bottom nav ─────────────────────────────────────────────────────────────────
 class _BottomNav extends StatelessWidget {
   const _BottomNav({
     required this.onContinue,
     required this.onBack,
     required this.isWide,
   });
-
   final VoidCallback onContinue, onBack;
   final bool isWide;
 
@@ -348,10 +341,20 @@ class _BottomNav extends StatelessWidget {
                 style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
               ),
             ),
-            ElevatedButton.icon(
+            ElevatedButton(
               onPressed: onContinue,
-              icon: const SizedBox.shrink(),
-              label: Row(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s6,
+                  vertical: AppSpacing.s3,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.round),
+                ),
+              ),
+              child: Row(
                 children: [
                   Text(
                     'Continue',
@@ -365,24 +368,11 @@ class _BottomNav extends StatelessWidget {
                   ),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s6,
-                  vertical: AppSpacing.s3,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
-              ),
             ),
           ],
         ),
       );
     }
-
-    // Mobile
     return Padding(
       padding: EdgeInsets.fromLTRB(
         AppSpacing.s4,
@@ -394,10 +384,17 @@ class _BottomNav extends StatelessWidget {
         children: [
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: ElevatedButton(
               onPressed: onContinue,
-              icon: const SizedBox.shrink(),
-              label: Row(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.round),
+                ),
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -411,14 +408,6 @@ class _BottomNav extends StatelessWidget {
                     color: AppColors.white,
                   ),
                 ],
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.s4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
               ),
             ),
           ),
@@ -441,8 +430,7 @@ class _BottomNav extends StatelessWidget {
   }
 }
 
-// ── Form field helpers ────────────────────────────────────────────────────────
-
+// ── Form helpers ──────────────────────────────────────────────────────────────
 class _FormField extends StatelessWidget {
   const _FormField({
     required this.label,
@@ -451,7 +439,6 @@ class _FormField extends StatelessWidget {
     this.required = false,
     this.keyboardType,
   });
-
   final String label, hint;
   final TextEditingController controller;
   final bool required;
@@ -518,7 +505,6 @@ class _PasswordFormField extends StatelessWidget {
     this.required = false,
     this.helperText,
   });
-
   final String label;
   final TextEditingController controller;
   final bool obscure, required;

@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/states/navigator_state.dart';
+import 'package:gen_smile/features/dashboard/presentation/pages/notifications_screen.dart';
 import 'package:gen_smile/features/patients/presentation/pages/patient_details_screen.dart';
 import 'package:gen_smile/features/patients/presentation/pages/new_simulation_screen.dart';
 
@@ -21,34 +23,6 @@ const _kPatients = [
     color: Color(0xFF7C3AED),
   ),
   _Patient(
-    id: 'P001',
-    name: 'Sarah Davis',
-    phone: '+1 (555) 234-5678',
-    initials: 'SD',
-    color: Color(0xFFDB2777),
-  ),
-  _Patient(
-    id: 'P001',
-    name: 'Sarah Davis',
-    phone: '+1 (555) 234-5678',
-    initials: 'SD',
-    color: Color(0xFFDB2777),
-  ),
-  _Patient(
-    id: 'P001',
-    name: 'Sarah Davis',
-    phone: '+1 (555) 234-5678',
-    initials: 'SD',
-    color: Color(0xFFDB2777),
-  ),
-  _Patient(
-    id: 'P001',
-    name: 'Sarah Davis',
-    phone: '+1 (555) 234-5678',
-    initials: 'SD',
-    color: Color(0xFFDB2777),
-  ),
-  _Patient(
     id: 'P002',
     name: 'Sarah Davis',
     phone: '+1 (555) 234-5678',
@@ -62,18 +36,27 @@ const _kPatients = [
     initials: 'MT',
     color: Color(0xFF059669),
   ),
+  _Patient(
+    id: 'P004',
+    name: 'Emily Chen',
+    phone: '+1 (555) 234-5678',
+    initials: 'EC',
+    color: Color(0xFF0284C7),
+  ),
+  _Patient(
+    id: 'P005',
+    name: 'David Brown',
+    phone: '+1 (555) 234-5678',
+    initials: 'DB',
+    color: Color(0xFFD97706),
+  ),
 ];
 
-const _kFilters = [
-  'All',
-  'Active',
-  'Treatment',
-  'Completed',
-  'Next Appointment',
-];
+const _kFilters = ['All', 'Active', 'Treatment', 'Completed'];
 
 class PatientsScreen extends ConsumerWidget {
   const PatientsScreen({super.key, this.embedded = false});
+
   final bool embedded;
 
   @override
@@ -94,7 +77,7 @@ class PatientsScreen extends ConsumerWidget {
 
     final body = Column(
       children: [
-        // ── Top bar ──
+        // ── Top bar ──────────────────────────────────────────────────────────
         Container(
           color: Colors.white,
           child: SafeArea(
@@ -103,18 +86,16 @@ class PatientsScreen extends ConsumerWidget {
               padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 12.h),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.people_outline,
-                    size: 20.sp,
-                    color: AppColors.textColor,
-                  ),
+                  Icon(Icons.people_outline,
+                      size: 20.sp, color: AppColors.textColor),
                   SizedBox(width: 8.w),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // FIX 2: correct page title
                         Text(
-                          'Patient Management',
+                          'Patients',
                           style: GoogleFonts.inter(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
@@ -133,36 +114,47 @@ class PatientsScreen extends ConsumerWidget {
                   ),
                   if (isWide)
                     ElevatedButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => const NewSimulationScreen(),
-                        ),
-                      ),
+                      onPressed: () => _showCreateNewSheet(context, ref),
                       icon: Icon(Icons.add, size: 14.sp),
                       label: Text(
-                        'Add New Patient',
+                        'Create New',
                         style: GoogleFonts.inter(
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
+                            fontSize: 12.sp, fontWeight: FontWeight.w600),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(
-                          horizontal: 14.w,
-                          vertical: 10.h,
-                        ),
+                            horizontal: 14.w, vertical: 10.h),
                         elevation: 0,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
+                            borderRadius: BorderRadius.circular(8.r)),
                       ),
                     ),
-                  Icon(
-                    Icons.notifications_outlined,
-                    size: 22.sp,
-                    color: AppColors.gray,
+                  SizedBox(width: 8.w),
+                  // FIX 4: notification bell navigates to NotificationsScreen
+                  GestureDetector(
+                    onTap: () => ref
+                        .read(navigatorState.notifier)
+                        .push(const NotificationsScreen()),
+                    child: Stack(
+                      children: [
+                        Icon(Icons.notifications_outlined,
+                            size: 22.sp, color: AppColors.gray),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            width: 7.w,
+                            height: 7.w,
+                            decoration: BoxDecoration(
+                              color: AppColors.danger,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -170,7 +162,7 @@ class PatientsScreen extends ConsumerWidget {
           ),
         ),
 
-        // ── Body ──
+        // ── Body ─────────────────────────────────────────────────────────────
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.all(16.w),
@@ -197,36 +189,28 @@ class PatientsScreen extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 color: const Color(0xFFF5F6FA),
                                 borderRadius: BorderRadius.circular(8.r),
-                                border: Border.all(
-                                  color: AppColors.inputBorder,
-                                ),
+                                border:
+                                    Border.all(color: AppColors.inputBorder),
                               ),
                               child: Row(
                                 children: [
                                   SizedBox(width: 10.w),
-                                  Icon(
-                                    Icons.search,
-                                    size: 16.sp,
-                                    color: AppColors.gray,
-                                  ),
+                                  Icon(Icons.search,
+                                      size: 16.sp, color: AppColors.gray),
                                   SizedBox(width: 8.w),
                                   Expanded(
                                     child: TextField(
-                                      onChanged: (v) =>
-                                          ref
-                                                  .read(
-                                                    patientSearchProvider
-                                                        .notifier,
-                                                  )
-                                                  .state =
-                                              v,
-                                      style: GoogleFonts.inter(fontSize: 12.sp),
+                                      onChanged: (v) => ref
+                                          .read(patientSearchProvider.notifier)
+                                          .state = v,
+                                      style:
+                                          GoogleFonts.inter(fontSize: 12.sp),
                                       decoration: InputDecoration(
-                                        hintText: 'Search by Name / Phone / ID',
+                                        hintText:
+                                            'Search by Name / Phone / ID',
                                         hintStyle: GoogleFonts.inter(
-                                          fontSize: 12.sp,
-                                          color: AppColors.gray,
-                                        ),
+                                            fontSize: 12.sp,
+                                            color: AppColors.gray),
                                         border: InputBorder.none,
                                         isDense: true,
                                       ),
@@ -240,52 +224,43 @@ class PatientsScreen extends ConsumerWidget {
                             SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Row(
-                                children: _kFilters
-                                    .map(
-                                      (f) => GestureDetector(
-                                        onTap: () =>
-                                            ref
-                                                    .read(
-                                                      patientFilterProvider
-                                                          .notifier,
-                                                    )
-                                                    .state =
-                                                f,
-                                        child: Container(
-                                          margin: EdgeInsets.only(right: 8.w),
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 14.w,
-                                            vertical: 7.h,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: activeFilter == f
-                                                ? AppColors.primary
-                                                : Colors.transparent,
-                                            borderRadius: BorderRadius.circular(
-                                              20.r,
-                                            ),
-                                            border: Border.all(
-                                              color: activeFilter == f
-                                                  ? AppColors.primary
-                                                  : AppColors.inputBorder,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            f,
-                                            style: GoogleFonts.inter(
-                                              fontSize: 12.sp,
-                                              fontWeight: activeFilter == f
-                                                  ? FontWeight.w600
-                                                  : FontWeight.w400,
-                                              color: activeFilter == f
-                                                  ? Colors.white
-                                                  : AppColors.gray,
-                                            ),
-                                          ),
+                                children: _kFilters.map((f) {
+                                  final active = activeFilter == f;
+                                  return GestureDetector(
+                                    onTap: () => ref
+                                        .read(patientFilterProvider.notifier)
+                                        .state = f,
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 8.w),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 14.w, vertical: 7.h),
+                                      decoration: BoxDecoration(
+                                        color: active
+                                            ? AppColors.primary
+                                            : Colors.transparent,
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
+                                        border: Border.all(
+                                          color: active
+                                              ? AppColors.primary
+                                              : AppColors.inputBorder,
                                         ),
                                       ),
-                                    )
-                                    .toList(),
+                                      child: Text(
+                                        f,
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12.sp,
+                                          fontWeight: active
+                                              ? FontWeight.w600
+                                              : FontWeight.w400,
+                                          color: active
+                                              ? Colors.white
+                                              : AppColors.gray,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
@@ -300,9 +275,7 @@ class PatientsScreen extends ConsumerWidget {
                           child: Text(
                             'Showing ${filtered.length} of ${_kPatients.length} patients',
                             style: GoogleFonts.inter(
-                              fontSize: 12.sp,
-                              color: AppColors.gray,
-                            ),
+                                fontSize: 12.sp, color: AppColors.gray),
                           ),
                         ),
                       ),
@@ -312,9 +285,7 @@ class PatientsScreen extends ConsumerWidget {
                       if (isWide)
                         Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.h,
-                          ),
+                              horizontal: 16.w, vertical: 10.h),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF9FAFB),
                             border: Border(
@@ -324,13 +295,15 @@ class PatientsScreen extends ConsumerWidget {
                           ),
                           child: Row(
                             children: [
-                              SizedBox(width: 80.w, child: _hCell('Serial No')),
+                              SizedBox(
+                                  width: 80.w,
+                                  child: _hCell('Serial No')),
                               Expanded(child: _hCell('Patient Name')),
                               SizedBox(
-                                width: 180.w,
-                                child: _hCell('Phone Number'),
-                              ),
-                              SizedBox(width: 140.w, child: _hCell('Actions')),
+                                  width: 180.w,
+                                  child: _hCell('Phone Number')),
+                              SizedBox(
+                                  width: 140.w, child: _hCell('Actions')),
                             ],
                           ),
                         ),
@@ -355,9 +328,10 @@ class PatientsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+
                 Gap(16.h),
 
-                // Mobile: Patient list section
+                // Mobile: Patient list section header
                 if (!isWide) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -402,23 +376,182 @@ class PatientsScreen extends ConsumerWidget {
       ],
     );
 
-    if (!embedded)
+    if (!embedded) {
       return Scaffold(backgroundColor: const Color(0xFFF4F5F7), body: body);
+    }
     return ColoredBox(color: const Color(0xFFF4F5F7), child: body);
   }
 
   Widget _hCell(String text) => Text(
-    text,
-    style: GoogleFonts.inter(
-      fontSize: 10.sp,
-      fontWeight: FontWeight.w600,
-      color: AppColors.gray,
-      letterSpacing: 0.5,
-    ),
-  );
+        text,
+        style: GoogleFonts.inter(
+          fontSize: 10.sp,
+          fontWeight: FontWeight.w600,
+          color: AppColors.gray,
+          letterSpacing: 0.5,
+        ),
+      );
+
+  // FIX 3: Create New sheet with both options
+  void _showCreateNewSheet(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _CreateNewSheet(
+        onNewPatient: () {
+          Navigator.pop(context);
+          // TODO: navigate to AddNewPatientScreen when ready
+        },
+        onNewSimulation: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const NewSimulationScreen()),
+          );
+        },
+      ),
+    );
+  }
 }
 
-// ── Patient Row (desktop + mobile) ───────────────────────────────────────────
+// ── Create New Bottom Sheet ───────────────────────────────────────────────────
+class _CreateNewSheet extends StatelessWidget {
+  const _CreateNewSheet({
+    required this.onNewPatient,
+    required this.onNewSimulation,
+  });
+
+  final VoidCallback onNewPatient;
+  final VoidCallback onNewSimulation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 32.h),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: AppColors.inputBorder,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+          ),
+          Gap(20.h),
+          Text(
+            'Create New',
+            style: GoogleFonts.inter(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textColor,
+            ),
+          ),
+          Gap(4.h),
+          Text(
+            'Start a new workflow for your clinic',
+            style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
+          ),
+          Gap(20.h),
+          // FIX 3a: Add New Patient option
+          _CreateNewOption(
+            icon: Icons.person_add_outlined,
+            color: AppColors.primary,
+            title: 'Add New Patient',
+            subtitle: 'Add a new patient profile to the clinic database',
+            onTap: onNewPatient,
+          ),
+          Gap(12.h),
+          // FIX 3b: New Simulation option
+          _CreateNewOption(
+            icon: Icons.auto_awesome_outlined,
+            color: const Color(0xFF7B5EA7),
+            title: 'New Simulation',
+            subtitle:
+                'Create a new AI smile or orthodontic simulation for a patient',
+            onTap: onNewSimulation,
+          ),
+          Gap(8.h),
+        ],
+      ),
+    );
+  }
+}
+
+class _CreateNewOption extends StatelessWidget {
+  const _CreateNewOption({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String title, subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12.r),
+      child: Container(
+        padding: EdgeInsets.all(16.w),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F6FA),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 44.w,
+              height: 44.w,
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(icon, color: Colors.white, size: 22.sp),
+            ),
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.inter(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textColor,
+                    ),
+                  ),
+                  Gap(2.h),
+                  Text(
+                    subtitle,
+                    style: GoogleFonts.inter(
+                        fontSize: 12.sp, color: AppColors.gray),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Patient Row (desktop) ─────────────────────────────────────────────────────
 class _PatientRow extends StatelessWidget {
   const _PatientRow({
     required this.patient,
@@ -426,6 +559,7 @@ class _PatientRow extends StatelessWidget {
     required this.onView,
     required this.onSimulate,
   });
+
   final _Patient patient;
   final bool isWide;
   final VoidCallback onView, onSimulate;
@@ -443,54 +577,38 @@ class _PatientRow extends StatelessWidget {
             CircleAvatar(
               radius: 14.r,
               backgroundColor: patient.color,
-              child: Text(
-                patient.initials,
-                style: GoogleFonts.inter(
-                  fontSize: 10.sp,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
+              child: Text(patient.initials,
+                  style: GoogleFonts.inter(
+                      fontSize: 10.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700)),
             ),
             SizedBox(width: 10.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    patient.name,
-                    style: GoogleFonts.inter(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  Text(
-                    patient.phone,
-                    style: GoogleFonts.inter(
-                      fontSize: 11.sp,
-                      color: AppColors.gray,
-                    ),
-                  ),
+                  Text(patient.name,
+                      style: GoogleFonts.inter(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textColor)),
+                  Text(patient.phone,
+                      style: GoogleFonts.inter(
+                          fontSize: 11.sp, color: AppColors.gray)),
                 ],
               ),
             ),
             GestureDetector(
               onTap: onView,
-              child: Icon(
-                Icons.visibility_outlined,
-                size: 18.sp,
-                color: AppColors.primary,
-              ),
+              child: Icon(Icons.visibility_outlined,
+                  size: 18.sp, color: AppColors.primary),
             ),
             SizedBox(width: 12.w),
             GestureDetector(
               onTap: onSimulate,
-              child: Icon(
-                Icons.auto_awesome_outlined,
-                size: 18.sp,
-                color: AppColors.primary,
-              ),
+              child: Icon(Icons.auto_awesome_outlined,
+                  size: 18.sp, color: AppColors.primary),
             ),
           ],
         ),
@@ -506,10 +624,9 @@ class _PatientRow extends StatelessWidget {
         children: [
           SizedBox(
             width: 80.w,
-            child: Text(
-              patient.id,
-              style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
-            ),
+            child: Text(patient.id,
+                style:
+                    GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray)),
           ),
           Expanded(
             child: Row(
@@ -517,33 +634,26 @@ class _PatientRow extends StatelessWidget {
                 CircleAvatar(
                   radius: 14.r,
                   backgroundColor: patient.color,
-                  child: Text(
-                    patient.initials,
-                    style: GoogleFonts.inter(
-                      fontSize: 10.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                  child: Text(patient.initials,
+                      style: GoogleFonts.inter(
+                          fontSize: 10.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700)),
                 ),
                 SizedBox(width: 10.w),
-                Text(
-                  patient.name,
-                  style: GoogleFonts.inter(
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textColor,
-                  ),
-                ),
+                Text(patient.name,
+                    style: GoogleFonts.inter(
+                        fontSize: 13.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppColors.textColor)),
               ],
             ),
           ),
           SizedBox(
             width: 180.w,
-            child: Text(
-              patient.phone,
-              style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
-            ),
+            child: Text(patient.phone,
+                style:
+                    GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray)),
           ),
           SizedBox(
             width: 140.w,
@@ -551,20 +661,18 @@ class _PatientRow extends StatelessWidget {
               children: [
                 Flexible(
                   child: _ActionBtn(
-                    icon: Icons.visibility_outlined,
-                    label: 'View',
-                    color: AppColors.primary,
-                    onTap: onView,
-                  ),
+                      icon: Icons.visibility_outlined,
+                      label: 'View',
+                      color: AppColors.primary,
+                      onTap: onView),
                 ),
                 SizedBox(width: 8.w),
                 Flexible(
                   child: _ActionBtn(
-                    icon: Icons.auto_awesome_outlined,
-                    label: 'Simulate',
-                    color: AppColors.primary,
-                    onTap: onSimulate,
-                  ),
+                      icon: Icons.auto_awesome_outlined,
+                      label: 'Simulate',
+                      color: AppColors.primary,
+                      onTap: onSimulate),
                 ),
               ],
             ),
@@ -578,79 +686,64 @@ class _PatientRow extends StatelessWidget {
 // ── Mobile Row ────────────────────────────────────────────────────────────────
 class _MobilePatientRow extends StatelessWidget {
   const _MobilePatientRow({required this.patient, required this.onView});
+
   final _Patient patient;
   final VoidCallback onView;
 
   @override
   Widget build(BuildContext context) => Container(
-    margin: EdgeInsets.only(bottom: 8.h),
-    padding: EdgeInsets.all(12.w),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10.r),
-      border: Border.all(color: AppColors.inputBorder),
-    ),
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: 16.r,
-          backgroundColor: patient.color,
-          child: Text(
-            patient.initials,
-            style: GoogleFonts.inter(
-              fontSize: 11.sp,
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
+        margin: EdgeInsets.only(bottom: 8.h),
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(color: AppColors.inputBorder),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 16.r,
+              backgroundColor: patient.color,
+              child: Text(patient.initials,
+                  style: GoogleFonts.inter(
+                      fontSize: 11.sp,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700)),
             ),
-          ),
+            SizedBox(width: 10.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(patient.name,
+                      style: GoogleFonts.inter(
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textColor)),
+                  Text(patient.phone,
+                      style: GoogleFonts.inter(
+                          fontSize: 11.sp, color: AppColors.gray)),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: onView,
+              child: Row(
+                children: [
+                  Icon(Icons.visibility_outlined,
+                      size: 16.sp, color: AppColors.primary),
+                  SizedBox(width: 4.w),
+                  Text('View',
+                      style: GoogleFonts.inter(
+                          fontSize: 12.sp,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w500)),
+                ],
+              ),
+            ),
+          ],
         ),
-        SizedBox(width: 10.w),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                patient.name,
-                style: GoogleFonts.inter(
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textColor,
-                ),
-              ),
-              Text(
-                patient.phone,
-                style: GoogleFonts.inter(
-                  fontSize: 11.sp,
-                  color: AppColors.gray,
-                ),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: onView,
-          child: Row(
-            children: [
-              Icon(
-                Icons.visibility_outlined,
-                size: 16.sp,
-                color: AppColors.primary,
-              ),
-              SizedBox(width: 4.w),
-              Text(
-                'View',
-                style: GoogleFonts.inter(
-                  fontSize: 12.sp,
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
+      );
 }
 
 class _ActionBtn extends StatelessWidget {
@@ -660,29 +753,28 @@ class _ActionBtn extends StatelessWidget {
     required this.color,
     required this.onTap,
   });
+
   final IconData icon;
   final String label;
   final Color color;
   final VoidCallback onTap;
+
   @override
   Widget build(BuildContext context) => GestureDetector(
-    onTap: onTap,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 14.sp, color: color),
-        SizedBox(width: 4.w),
-        Text(
-          label,
-          style: GoogleFonts.inter(
-            fontSize: 12.sp,
-            color: color,
-            fontWeight: FontWeight.w500,
-          ),
+        onTap: onTap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14.sp, color: color),
+            SizedBox(width: 4.w),
+            Text(label,
+                style: GoogleFonts.inter(
+                    fontSize: 12.sp,
+                    color: color,
+                    fontWeight: FontWeight.w500)),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }
 
 class _Patient {
@@ -693,6 +785,7 @@ class _Patient {
     required this.initials,
     required this.color,
   });
+
   final String id, name, phone, initials;
   final Color color;
 }

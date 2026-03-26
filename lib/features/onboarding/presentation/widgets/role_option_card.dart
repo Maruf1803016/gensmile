@@ -1,19 +1,23 @@
+// lib/features/onboarding/presentation/widgets/role_option_card.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
+import 'package:gen_smile/core/constant/app_text_styles.dart';
 
+/// Card used on the role-selection screen.
+/// Pass a fully built [iconWidget] (with its own background/padding).
 class RoleOptionCard extends StatelessWidget {
   const RoleOptionCard({
     super.key,
-    required this.icon,
+    required this.iconWidget,
     required this.title,
     required this.subtitle,
     required this.isSelected,
     required this.onTap,
   });
 
-  final IconData icon;
+  final Widget iconWidget;
   final String title;
   final String subtitle;
   final bool isSelected;
@@ -30,7 +34,7 @@ class RoleOptionCard extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.r),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.inputBorder,
+            color: isSelected ? AppColors.primary : AppColors.borderDefault,
             width: isSelected ? 2 : 1,
           ),
           boxShadow: isSelected
@@ -45,46 +49,31 @@ class RoleOptionCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // ── Icon ──
-            Container(
-              width: 40.w,
-              height: 40.w,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              child: Icon(icon, color: AppColors.primary, size: 22.w),
-            ),
-
+            // icon (caller provides the full widget with background)
+            iconWidget,
             SizedBox(width: 14.w),
-
-            // ── Title + Subtitle ──
+            // text
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.inter(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textColor,
+                    style: AppTextStyles.mdSemibold(
+                      color: AppColors.textPrimary,
                     ),
                   ),
                   SizedBox(height: 2.h),
                   Text(
                     subtitle,
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.gray,
+                    style: AppTextStyles.smRegular(
+                      color: AppColors.textSecondary,
                     ),
                   ),
                 ],
               ),
             ),
-
-            // ── Checkmark ──
+            // checkmark
             if (isSelected)
               Container(
                 width: 22.w,
