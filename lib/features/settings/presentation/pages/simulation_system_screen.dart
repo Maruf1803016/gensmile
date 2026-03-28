@@ -1,3 +1,6 @@
+// lib/features/settings/presentation/pages/simulation_system_screen.dart
+// FIX: forceExpanded: true on both sections so mobile always shows content
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
@@ -11,18 +14,15 @@ class SimulationSystemScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Simulation Preferences ───────────────────────────────────────
+        // ── Simulation Preferences ────────────────────────────────────────
         SettingsSection(
           title: 'Simulation Preferences',
           initiallyExpanded: true,
+          forceExpanded: true,         // ← always visible on mobile
           children: [
             SettingsSubLabel('Default Simulation Type'),
             SettingsRadioGroup(
-              options: [
-                'Ortho Simulation',
-                'Smile Enhancement',
-                'Combined Simulation',
-              ],
+              options: ['Ortho Simulation', 'Smile Enhancement', 'Combined Simulation'],
               selected: 'Combined Simulation',
             ),
             Gap(8.h),
@@ -40,16 +40,16 @@ class SimulationSystemScreen extends StatelessWidget {
             Gap(8.h),
             SettingsToggleRow(
               label: 'Auto Save Simulation Results',
-              subtitle:
-                  'Automatically save simulation results to patient record',
+              subtitle: 'Automatically save simulation results to patient record',
               value: true,
             ),
           ],
         ),
 
-        // ── Patient Record Settings ──────────────────────────────────────
+        // ── Patient Record Settings ───────────────────────────────────────
         SettingsSection(
           title: 'Patient Record Settings',
+          forceExpanded: true,         // ← always visible on mobile
           children: [
             SettingsSubLabel('Patient ID Format'),
             SettingsRadioGroup(

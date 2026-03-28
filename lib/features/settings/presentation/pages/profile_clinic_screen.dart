@@ -1,3 +1,6 @@
+// lib/features/settings/presentation/pages/profile_clinic_screen.dart
+// FIX: forceExpanded: true on all sections so mobile always shows content
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,33 +16,28 @@ class ProfileClinicScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // ── Avatar card ──────────────────────────────────────────────────
         _AvatarCard(),
         Gap(16.h),
 
-        // ── Basic Information ────────────────────────────────────────────
+        // ── Basic Information ──────────────────────────────────────────────
         SettingsSection(
           title: 'Basic Information',
           initiallyExpanded: true,
+          forceExpanded: true,          // ← always visible on mobile
           children: [
             SettingsFieldRow(
-              left: SettingsField(
-                label: 'Full Name',
-                value: 'Dr. Smith Johnson',
-              ),
-              right: SettingsField(
-                label: 'Professional Title',
-                value: 'Lead Dentist',
-              ),
+              left: SettingsField(label: 'Full Name', value: 'Dr. Smith Johnson'),
+              right: SettingsField(label: 'Professional Title', value: 'Lead Dentist'),
             ),
             SettingsField(label: 'Email Address', value: 'smith@clinic.com'),
             SettingsField(label: 'Phone Number', value: '+1 (555) 111-2222'),
           ],
         ),
 
-        // ── Professional Details ─────────────────────────────────────────
+        // ── Professional Details ───────────────────────────────────────────
         SettingsSection(
           title: 'Professional Details',
+          forceExpanded: true,
           children: [
             SettingsField(label: 'License Number', value: 'DDS-2019-00842'),
             SettingsField(label: 'Specialization', value: 'Cosmetic Dentistry'),
@@ -47,61 +45,42 @@ class ProfileClinicScreen extends StatelessWidget {
           ],
         ),
 
-        // ── Clinic Details ───────────────────────────────────────────────
+        // ── Clinic Details ─────────────────────────────────────────────────
         SettingsSection(
           title: 'Clinic Details',
+          forceExpanded: true,
           children: [
             SettingsFieldRow(
-              left: SettingsField(
-                label: 'Clinic Name',
-                value: 'SmileCenter Dental Clinic',
-              ),
+              left: SettingsField(label: 'Clinic Name', value: 'SmileCenter Dental Clinic'),
               right: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Clinic Logo',
-                    style: GoogleFonts.inter(
-                      fontSize: 12.sp,
-                      color: AppColors.gray,
-                    ),
-                  ),
+                  Text('Clinic Logo', style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray)),
                   Gap(4.h),
                   SettingsUploadButton(label: 'Upload logo'),
                   Gap(14.h),
                 ],
               ),
             ),
-            SettingsField(
-              label: 'Address',
-              value: '123 Dental Ave, Suite 200, New York, NY 10001',
-            ),
+            SettingsField(label: 'Address', value: '123 Dental Ave, Suite 200, New York, NY 10001'),
             SettingsFieldRow(
-              left: SettingsField(
-                label: 'Phone Number',
-                value: '+1 (555) 000-1111',
-              ),
-              right: SettingsField(
-                label: 'Email',
-                value: 'info@smilecenter.com',
-              ),
+              left: SettingsField(label: 'Phone Number', value: '+1 (555) 000-1111'),
+              right: SettingsField(label: 'Email', value: 'info@smilecenter.com'),
             ),
             SettingsField(label: 'Website', value: 'www.smilecenter.com'),
           ],
         ),
 
-        // ── Business Information ─────────────────────────────────────────
+        // ── Business Information ───────────────────────────────────────────
         SettingsSection(
           title: 'Business Information',
+          forceExpanded: true,
           children: [
             SettingsFieldRow(
               left: SettingsField(label: 'Clinic Type', value: 'Dental'),
               right: SettingsField(label: 'Number of Dentists', value: '3'),
             ),
-            SettingsField(
-              label: 'Working Hours',
-              value: 'Mon–Fri: 9AM–6PM, Sat: 9AM–2PM',
-            ),
+            SettingsField(label: 'Working Hours', value: 'Mon–Fri: 9AM–6PM, Sat: 9AM–2PM'),
           ],
         ),
       ],
@@ -109,8 +88,7 @@ class ProfileClinicScreen extends StatelessWidget {
   }
 }
 
-// ── Avatar card ───────────────────────────────────────────────────────────────
-
+// ── Avatar card ────────────────────────────────────────────────────────────────
 class _AvatarCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -128,11 +106,7 @@ class _AvatarCard extends StatelessWidget {
               CircleAvatar(
                 radius: 36.r,
                 backgroundColor: AppColors.primary.withOpacity(0.15),
-                child: Icon(
-                  Icons.person,
-                  size: 40.sp,
-                  color: AppColors.primary.withOpacity(0.6),
-                ),
+                child: Icon(Icons.person, size: 40.sp, color: AppColors.primary.withOpacity(0.6)),
               ),
               Positioned(
                 bottom: 0,
@@ -145,37 +119,20 @@ class _AvatarCard extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 1.5),
                   ),
-                  child: Icon(
-                    Icons.camera_alt,
-                    size: 11.sp,
-                    color: Colors.white,
-                  ),
+                  child: Icon(Icons.camera_alt, size: 11.sp, color: Colors.white),
                 ),
               ),
             ],
           ),
           Gap(10.h),
-          Text(
-            'Dr. Smith Johnson',
-            style: GoogleFonts.inter(
-              fontSize: 16.sp,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textColor,
-            ),
-          ),
+          Text('Dr. Smith Johnson', style: GoogleFonts.inter(fontSize: 16.sp, fontWeight: FontWeight.w700, color: AppColors.textColor)),
           Gap(4.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.shield_outlined, size: 13.sp, color: AppColors.gray),
               SizedBox(width: 4.w),
-              Text(
-                'smith@clinic.com',
-                style: GoogleFonts.inter(
-                  fontSize: 12.sp,
-                  color: AppColors.gray,
-                ),
-              ),
+              Text('smith@clinic.com', style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray)),
             ],
           ),
         ],
