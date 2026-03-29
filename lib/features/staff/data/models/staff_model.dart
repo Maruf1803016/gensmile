@@ -104,6 +104,7 @@ class StaffMember {
   final int completed;
   final double avgRating;
   final List<StaffActivity> recentActivity;
+  final String? avatarAsset;
 
   const StaffMember({
     required this.id,
@@ -123,6 +124,7 @@ class StaffMember {
     this.completed = 0,
     this.avgRating = 0.0,
     this.recentActivity = const [],
+    this.avatarAsset,
   });
 
   // ✅ Proper copyWith

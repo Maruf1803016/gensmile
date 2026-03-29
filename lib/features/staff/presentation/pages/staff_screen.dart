@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -13,6 +14,7 @@ import '../../states/staff_state.dart';
 import 'staff_details_screen.dart';
 import 'add_staff_screen.dart';
 import 'send_invite_screen.dart';
+import 'package:gen_smile/generated/assets.dart';
 
 class StaffScreen extends ConsumerStatefulWidget {
   const StaffScreen({super.key, this.embedded = false});
@@ -114,14 +116,32 @@ class _DesktopHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        // Add back button here
+        GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            padding: EdgeInsets.all(8.w),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceBrand,
+              borderRadius: BorderRadius.circular(8.r),
+            ),
+            child: Icon(Icons.arrow_back, size: 24.w, color: AppColors.primary),
+          ),
+        ),
+        SizedBox(width: 12.w),
         Container(
           padding: EdgeInsets.all(8.w),
           decoration: BoxDecoration(
             color: AppColors.surfaceBrand,
             borderRadius: BorderRadius.circular(8.r),
           ),
-          child: Icon(Icons.people_outline, size: 20.sp, color: AppColors.primary),
+          child: Icon(
+            Icons.group_outlined,
+            size: 56.w, // Size should be here, not 24.w if you want it big
+            color: AppColors.primary,
+          ),
         ),
+
         SizedBox(width: 12.w),
         Expanded(
           child: Column(
@@ -137,20 +157,26 @@ class _DesktopHeader extends StatelessWidget {
               ),
               Text(
                 'Manage your clinic team members',
-                style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
+                style: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  color: AppColors.gray,
+                ),
               ),
             ],
           ),
         ),
         Consumer(
           builder: (context, ref, _) => ElevatedButton.icon(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const AddStaffScreen()),
-            ),
+            onPressed: () => Navigator.of(
+              context,
+            ).push(MaterialPageRoute(builder: (_) => const AddStaffScreen())),
             icon: Icon(Icons.add, size: 16.sp),
             label: Text(
               'Add Staff',
-              style: GoogleFonts.inter(fontSize: 13.sp, fontWeight: FontWeight.w600),
+              style: GoogleFonts.inter(
+                fontSize: 13.sp,
+                fontWeight: FontWeight.w600,
+              ),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
@@ -178,6 +204,16 @@ class _MobileHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        // Add back button here
+        GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Icon(
+            Icons.arrow_back,
+            size: 22.sp,
+            color: AppColors.textColor,
+          ),
+        ),
+        SizedBox(width: 12.w),
         Expanded(
           child: Text(
             'Staff Directory',
@@ -189,9 +225,9 @@ class _MobileHeader extends StatelessWidget {
           ),
         ),
         GestureDetector(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const AddStaffScreen()),
-          ),
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const AddStaffScreen())),
           child: Icon(Icons.add, size: 22.sp, color: AppColors.textColor),
         ),
       ],
@@ -224,12 +260,20 @@ class _DesktopFilterBar extends ConsumerWidget {
             height: 36.h,
             child: TextField(
               controller: controller,
-              onChanged: (v) => ref.read(staffSearchProvider.notifier).state = v,
+              onChanged: (v) =>
+                  ref.read(staffSearchProvider.notifier).state = v,
               style: GoogleFonts.inter(fontSize: 13.sp),
               decoration: InputDecoration(
                 hintText: 'Search by name, email, or role',
-                hintStyle: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
-                prefixIcon: Icon(Icons.search, size: 16.sp, color: AppColors.gray),
+                hintStyle: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  color: AppColors.gray,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  size: 16.sp,
+                  color: AppColors.gray,
+                ),
                 isDense: true,
                 contentPadding: EdgeInsets.symmetric(vertical: 8.h),
                 border: OutlineInputBorder(
@@ -254,26 +298,30 @@ class _DesktopFilterBar extends ConsumerWidget {
         _FilterChip(
           label: 'All',
           isSelected: filter == StaffFilterTab.all,
-          onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.all,
+          onTap: () =>
+              ref.read(staffFilterProvider.notifier).state = StaffFilterTab.all,
           filled: true,
         ),
         SizedBox(width: 6.w),
         _FilterChip(
           label: 'Active (${counts[StaffFilterTab.active]})',
           isSelected: filter == StaffFilterTab.active,
-          onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.active,
+          onTap: () => ref.read(staffFilterProvider.notifier).state =
+              StaffFilterTab.active,
         ),
         SizedBox(width: 6.w),
         _FilterChip(
           label: 'Pending (${counts[StaffFilterTab.pending]})',
           isSelected: filter == StaffFilterTab.pending,
-          onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.pending,
+          onTap: () => ref.read(staffFilterProvider.notifier).state =
+              StaffFilterTab.pending,
         ),
         SizedBox(width: 6.w),
         _FilterChip(
           label: 'Inactive (${counts[StaffFilterTab.inactive]})',
           isSelected: filter == StaffFilterTab.inactive,
-          onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.inactive,
+          onTap: () => ref.read(staffFilterProvider.notifier).state =
+              StaffFilterTab.inactive,
         ),
         SizedBox(width: 12.w),
         Container(
@@ -284,7 +332,10 @@ class _DesktopFilterBar extends ConsumerWidget {
           ),
           child: Text(
             'Seat Usage: $seatUsage',
-            style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.textColor),
+            style: GoogleFonts.inter(
+              fontSize: 12.sp,
+              color: AppColors.textColor,
+            ),
           ),
         ),
       ],
@@ -318,8 +369,15 @@ class _MobileFilterBar extends ConsumerWidget {
             style: GoogleFonts.inter(fontSize: 13.sp),
             decoration: InputDecoration(
               hintText: 'Search by name, phone, or ID',
-              hintStyle: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
-              prefixIcon: Icon(Icons.search, size: 16.sp, color: AppColors.gray),
+              hintStyle: GoogleFonts.inter(
+                fontSize: 12.sp,
+                color: AppColors.gray,
+              ),
+              prefixIcon: Icon(
+                Icons.search,
+                size: 16.sp,
+                color: AppColors.gray,
+              ),
               isDense: true,
               contentPadding: EdgeInsets.symmetric(vertical: 10.h),
               border: OutlineInputBorder(
@@ -345,26 +403,30 @@ class _MobileFilterBar extends ConsumerWidget {
               _FilterChip(
                 label: 'All',
                 isSelected: filter == StaffFilterTab.all,
-                onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.all,
+                onTap: () => ref.read(staffFilterProvider.notifier).state =
+                    StaffFilterTab.all,
                 filled: true,
               ),
               SizedBox(width: 8.w),
               _FilterChip(
                 label: 'Active (${counts[StaffFilterTab.active]})',
                 isSelected: filter == StaffFilterTab.active,
-                onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.active,
+                onTap: () => ref.read(staffFilterProvider.notifier).state =
+                    StaffFilterTab.active,
               ),
               SizedBox(width: 8.w),
               _FilterChip(
                 label: 'Pending (${counts[StaffFilterTab.pending]})',
                 isSelected: filter == StaffFilterTab.pending,
-                onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.pending,
+                onTap: () => ref.read(staffFilterProvider.notifier).state =
+                    StaffFilterTab.pending,
               ),
               SizedBox(width: 8.w),
               _FilterChip(
                 label: 'Inactive (${counts[StaffFilterTab.inactive]})',
                 isSelected: filter == StaffFilterTab.inactive,
-                onTap: () => ref.read(staffFilterProvider.notifier).state = StaffFilterTab.inactive,
+                onTap: () => ref.read(staffFilterProvider.notifier).state =
+                    StaffFilterTab.inactive,
               ),
             ],
           ),
@@ -433,16 +495,16 @@ class _TableHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-        child: Text(
-          text,
-          style: GoogleFonts.inter(
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w600,
-            color: AppColors.gray,
-          ),
-        ),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+    child: Text(
+      text,
+      style: GoogleFonts.inter(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w600,
+        color: AppColors.gray,
+      ),
+    ),
+  );
 }
 
 class _NameCell extends StatelessWidget {
@@ -451,33 +513,36 @@ class _NameCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Row(
-          children: [
-            _StaffAvatar(member: member, radius: 18),
-            SizedBox(width: 10.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    member.name,
-                    style: GoogleFonts.inter(
-                      fontSize: 13.sp,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-                  Text(
-                    'S00${member.id}',
-                    style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
-                  ),
-                ],
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    child: Row(
+      children: [
+        _StaffAvatar(member: member, radius: 18),
+        SizedBox(width: 10.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                member.name,
+                style: GoogleFonts.inter(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textColor,
+                ),
               ),
-            ),
-          ],
+              Text(
+                'S00${member.id}',
+                style: GoogleFonts.inter(
+                  fontSize: 11.sp,
+                  color: AppColors.gray,
+                ),
+              ),
+            ],
+          ),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _RoleCell extends StatelessWidget {
@@ -486,9 +551,9 @@ class _RoleCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: _RoleBadge(role: role),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    child: _RoleBadge(role: role),
+  );
 }
 
 class _ContactCell extends StatelessWidget {
@@ -497,37 +562,43 @@ class _ContactCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                Icon(Icons.mail_outline, size: 12.sp, color: AppColors.gray),
-                SizedBox(width: 4.w),
-                Flexible(
-                  child: Text(
-                    email,
-                    style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.textColor),
-                    overflow: TextOverflow.ellipsis,
-                  ),
+            Icon(Icons.mail_outline, size: 12.sp, color: AppColors.gray),
+            SizedBox(width: 4.w),
+            Flexible(
+              child: Text(
+                email,
+                style: GoogleFonts.inter(
+                  fontSize: 12.sp,
+                  color: AppColors.textColor,
                 ),
-              ],
-            ),
-            SizedBox(height: 2.h),
-            Row(
-              children: [
-                Icon(Icons.phone_outlined, size: 12.sp, color: AppColors.gray),
-                SizedBox(width: 4.w),
-                Text(
-                  phone,
-                  style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.textColor),
-                ),
-              ],
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
-      );
+        SizedBox(height: 2.h),
+        Row(
+          children: [
+            Icon(Icons.phone_outlined, size: 12.sp, color: AppColors.gray),
+            SizedBox(width: 4.w),
+            Text(
+              phone,
+              style: GoogleFonts.inter(
+                fontSize: 12.sp,
+                color: AppColors.textColor,
+              ),
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
 }
 
 class _StatusCell extends StatelessWidget {
@@ -536,9 +607,9 @@ class _StatusCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: _StatusBadge(status: status),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    child: _StatusBadge(status: status),
+  );
 }
 
 class _ActionsCell extends ConsumerWidget {
@@ -547,36 +618,48 @@ class _ActionsCell extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        child: Row(
-          children: [
-            _ActionBtn(
-              icon: Icons.shield_outlined,
-              label: 'Permissions',
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => StaffDetailsScreen(member: member)),
-              ),
+    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+    child: Row(
+      children: [
+        _ActionBtn(
+          icon: Icons.shield_outlined,
+          label: 'Permissions',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => StaffDetailsScreen(member: member),
             ),
-            if (member.status == StaffStatus.active) ...[
-              SizedBox(width: 8.w),
-              _ActionBtn(
-                icon: Icons.send_outlined,
-                label: 'Send',
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => SendInviteScreen(member: member)),
-                ),
-              ),
-            ],
-            SizedBox(width: 8.w),
-            GestureDetector(
-              onTap: () => _showDeleteDialog(context, ref, member),
-              child: Icon(Icons.delete_outline, size: 16.sp, color: AppColors.error),
-            ),
-          ],
+          ),
         ),
-      );
+        if (member.status == StaffStatus.active) ...[
+          SizedBox(width: 8.w),
+          _ActionBtn(
+            icon: Icons.send_outlined,
+            label: 'Send',
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => SendInviteScreen(member: member),
+              ),
+            ),
+          ),
+        ],
+        SizedBox(width: 8.w),
+        GestureDetector(
+          onTap: () => _showDeleteDialog(context, ref, member),
+          child: Icon(
+            Icons.delete_outline,
+            size: 16.sp,
+            color: AppColors.error,
+          ),
+        ),
+      ],
+    ),
+  );
 
-  void _showDeleteDialog(BuildContext context, WidgetRef ref, StaffMember member) {
+  void _showDeleteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    StaffMember member,
+  ) {
     showDialog(
       context: context,
       builder: (_) => _DeleteStaffDialog(member: member),
@@ -585,25 +668,29 @@ class _ActionsCell extends ConsumerWidget {
 }
 
 class _ActionBtn extends StatelessWidget {
-  const _ActionBtn({required this.icon, required this.label, required this.onTap});
+  const _ActionBtn({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Row(
-          children: [
-            Icon(icon, size: 14.sp, color: AppColors.gray),
-            SizedBox(width: 4.w),
-            Text(
-              label,
-              style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.textColor),
-            ),
-          ],
+    onTap: onTap,
+    child: Row(
+      children: [
+        Icon(icon, size: 14.sp, color: AppColors.gray),
+        SizedBox(width: 4.w),
+        Text(
+          label,
+          style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.textColor),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 // ── Mobile Staff List ──────────────────────────────────────────────────────────
@@ -618,7 +705,8 @@ class _MobileStaffList extends ConsumerWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: staff.length,
-      separatorBuilder: (_, __) => Divider(height: 1, color: AppColors.inputBorder),
+      separatorBuilder: (_, __) =>
+          Divider(height: 1, color: AppColors.inputBorder),
       itemBuilder: (_, i) => _MobileStaffTile(member: staff[i]),
     );
   }
@@ -661,11 +749,17 @@ class _MobileStaffTile extends ConsumerWidget {
                 SizedBox(height: 4.h),
                 Text(
                   member.phone,
-                  style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
+                  style: GoogleFonts.inter(
+                    fontSize: 12.sp,
+                    color: AppColors.gray,
+                  ),
                 ),
                 Text(
                   member.email,
-                  style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
+                  style: GoogleFonts.inter(
+                    fontSize: 12.sp,
+                    color: AppColors.gray,
+                  ),
                 ),
                 SizedBox(height: 8.h),
                 Row(
@@ -732,18 +826,22 @@ class _MobileActionBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => OutlinedButton.icon(
-        onPressed: onTap,
-        icon: Icon(icon, size: 14.sp, color: color),
-        label: Text(
-          label,
-          style: GoogleFonts.inter(fontSize: 12.sp, color: color, fontWeight: FontWeight.w500),
-        ),
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-          side: BorderSide(color: color.withOpacity(0.4)),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-        ),
-      );
+    onPressed: onTap,
+    icon: Icon(icon, size: 14.sp, color: color),
+    label: Text(
+      label,
+      style: GoogleFonts.inter(
+        fontSize: 12.sp,
+        color: color,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+    style: OutlinedButton.styleFrom(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      side: BorderSide(color: color.withOpacity(0.4)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+    ),
+  );
 }
 
 // ── Pagination ─────────────────────────────────────────────────────────────────
@@ -754,58 +852,65 @@ class _Pagination extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Row(
-          children: [
-            Text(
-              'Showing $total of 100 staff members',
-              style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
-            ),
-            const Spacer(),
-            _PageBtn(label: 'Prev', onTap: () {}),
-            SizedBox(width: 4.w),
-            _PageBtn(label: '1', isActive: true, onTap: () {}),
-            SizedBox(width: 4.w),
-            _PageBtn(label: '2', onTap: () {}),
-            SizedBox(width: 4.w),
-            _PageBtn(label: '3', onTap: () {}),
-            SizedBox(width: 4.w),
-            Text('...', style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray)),
-            SizedBox(width: 4.w),
-            _PageBtn(label: '10', onTap: () {}),
-            SizedBox(width: 4.w),
-            _PageBtn(label: 'Next', onTap: () {}),
-          ],
+    padding: EdgeInsets.all(16.w),
+    child: Row(
+      children: [
+        Text(
+          'Showing $total of 100 staff members',
+          style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
         ),
-      );
+        const Spacer(),
+        _PageBtn(label: 'Prev', onTap: () {}),
+        SizedBox(width: 4.w),
+        _PageBtn(label: '1', isActive: true, onTap: () {}),
+        SizedBox(width: 4.w),
+        _PageBtn(label: '2', onTap: () {}),
+        SizedBox(width: 4.w),
+        _PageBtn(label: '3', onTap: () {}),
+        SizedBox(width: 4.w),
+        Text(
+          '...',
+          style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
+        ),
+        SizedBox(width: 4.w),
+        _PageBtn(label: '10', onTap: () {}),
+        SizedBox(width: 4.w),
+        _PageBtn(label: 'Next', onTap: () {}),
+      ],
+    ),
+  );
 }
 
 class _PageBtn extends StatelessWidget {
-  const _PageBtn({required this.label, required this.onTap, this.isActive = false});
+  const _PageBtn({
+    required this.label,
+    required this.onTap,
+    this.isActive = false,
+  });
   final String label;
   final bool isActive;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: isActive ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(4.r),
-            border: isActive ? null : Border.all(color: AppColors.inputBorder),
-          ),
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 12.sp,
-              color: isActive ? Colors.white : AppColors.textColor,
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-            ),
-          ),
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: isActive ? AppColors.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(4.r),
+        border: isActive ? null : Border.all(color: AppColors.inputBorder),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          fontSize: 12.sp,
+          color: isActive ? Colors.white : AppColors.textColor,
+          fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
         ),
-      );
+      ),
+    ),
+  );
 }
 
 // ── Delete Dialog ──────────────────────────────────────────────────────────────
@@ -830,7 +935,11 @@ class _DeleteStaffDialog extends ConsumerWidget {
                 color: Color(0xFFEE6A5F),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.delete_outline, color: Colors.white, size: 30.sp),
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+                size: 30.sp,
+              ),
             ),
             Gap(16.h),
             Text(
@@ -845,7 +954,10 @@ class _DeleteStaffDialog extends ConsumerWidget {
             RichText(
               textAlign: TextAlign.center,
               text: TextSpan(
-                style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
+                style: GoogleFonts.inter(
+                  fontSize: 13.sp,
+                  color: AppColors.gray,
+                ),
                 children: [
                   const TextSpan(text: 'Are you sure you want to delete '),
                   TextSpan(
@@ -887,7 +999,9 @@ class _DeleteStaffDialog extends ConsumerWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      ref.read(staffListProvider.notifier).removeStaff(member.id);
+                      ref
+                          .read(staffListProvider.notifier)
+                          .removeStaff(member.id);
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
@@ -933,24 +1047,24 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(20.r),
-            border: isSelected ? null : Border.all(color: AppColors.inputBorder),
-          ),
-          child: Text(
-            label,
-            style: GoogleFonts.inter(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w500,
-              color: isSelected ? Colors.white : AppColors.textColor,
-            ),
-          ),
+    onTap: onTap,
+    child: Container(
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: isSelected ? AppColors.primary : Colors.transparent,
+        borderRadius: BorderRadius.circular(20.r),
+        border: isSelected ? null : Border.all(color: AppColors.inputBorder),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+          color: isSelected ? Colors.white : AppColors.textColor,
         ),
-      );
+      ),
+    ),
+  );
 }
 
 class _StaffAvatar extends StatelessWidget {
@@ -968,6 +1082,17 @@ class _StaffAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Show asset image if available
+    if (member.avatarAsset != null && member.avatarAsset!.isNotEmpty) {
+      return CircleAvatar(
+        radius: radius.r,
+        backgroundImage: AssetImage(member.avatarAsset!),
+        backgroundColor: Colors.grey[200],
+        child: null,
+      );
+    }
+
+    // Fallback to initials with colored background
     final colorIdx = member.name.codeUnits.first % _colors.length;
     return CircleAvatar(
       radius: radius.r,
@@ -1011,23 +1136,23 @@ class _RoleBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: small ? 6.w : 8.w,
-          vertical: small ? 2.h : 4.h,
-        ),
-        decoration: BoxDecoration(
-          color: _bg(),
-          borderRadius: BorderRadius.circular(20.r),
-        ),
-        child: Text(
-          role,
-          style: GoogleFonts.inter(
-            fontSize: small ? 10.sp : 11.sp,
-            fontWeight: FontWeight.w500,
-            color: _fg(),
-          ),
-        ),
-      );
+    padding: EdgeInsets.symmetric(
+      horizontal: small ? 6.w : 8.w,
+      vertical: small ? 2.h : 4.h,
+    ),
+    decoration: BoxDecoration(
+      color: _bg(),
+      borderRadius: BorderRadius.circular(20.r),
+    ),
+    child: Text(
+      role,
+      style: GoogleFonts.inter(
+        fontSize: small ? 10.sp : 11.sp,
+        fontWeight: FontWeight.w500,
+        color: _fg(),
+      ),
+    ),
+  );
 }
 
 class _StatusBadge extends StatelessWidget {

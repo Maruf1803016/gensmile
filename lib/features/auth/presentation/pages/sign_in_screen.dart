@@ -121,7 +121,7 @@ class _DesktopLayout extends StatelessWidget {
           child: const Align(
             alignment: Alignment.centerLeft,
             // FIX 1: showText:true is fine here — no AppBar title alongside
-            child: GenSmileLogo(iconSize: 32, showText: true),
+            child: GenSmileLogo(iconSize: 32,),
           ),
         ),
         Center(
@@ -187,7 +187,7 @@ class _MobileLayout extends StatelessWidget {
           // FIX 1: showText:false — AppBar/Scaffold title not present here,
           // but this logo sits above the card; a plain logo-only looks cleaner
           // and prevents the visual double on screens that show both.
-          child: const GenSmileLogo(iconSize: 28, showText: false),
+          child: const GenSmileLogo(iconSize: 28, ),
         ),
         Container(
           margin: EdgeInsets.all(AppSpacing.s4),

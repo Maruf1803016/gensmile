@@ -1,3 +1,7 @@
+// lib/features/onboarding/presentation/pages/choose_plan_screen.dart
+// FIX #1: Image.asset(Assets.imagesCardExchange02) for header (not Icon)
+// FIX #3: Plan cards already ARE the specific cards — outer container = card
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -65,26 +69,21 @@ const _plans = [
 
 class ChoosePlanScreen extends ConsumerStatefulWidget {
   const ChoosePlanScreen({super.key});
-
   @override
   ConsumerState<ChoosePlanScreen> createState() => _ChoosePlanScreenState();
 }
 
 class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
-  String _selectedPlanId = 'growth';
+  String _selectedId = 'growth';
 
   void _onContinue() {
-    final selected = _plans.firstWhere((p) => p.id == _selectedPlanId);
+    final p = _plans.firstWhere((p) => p.id == _selectedId);
     ref
         .read(navigatorState.notifier)
         .push(
           PaymentInfoScreen(
-            selectedPlanName: selected.name,
-            monthlyCost:
-                int.tryParse(
-                  selected.price.replaceAll('\$', '').replaceAll(',', ''),
-                ) ??
-                0,
+            selectedPlanName: p.name,
+            monthlyCost: int.tryParse(p.price.replaceAll('\$', '')) ?? 0,
           ),
         );
   }
@@ -106,8 +105,7 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                 ),
                 child: Row(
                   children: [
-                    // FIX 1: showText:true fine here (standalone header)
-                    const GenSmileLogo(iconSize: 32, showText: true),
+                    const GenSmileLogo(iconSize: 32),
                     SizedBox(width: AppSpacing.s3),
                     Text(
                       'Account Setup',
@@ -116,113 +114,108 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
                   ],
                 ),
               ),
-              _StepIndicator(currentStep: 2),
+              _StepBar(current: 2),
             ] else
-              const OnbMobileTopBar(currentStep: 2, totalSteps: 5),
+              OnbMobileTopBar(currentStep: 2, totalSteps: 5),
 
             Expanded(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(isWide ? AppSpacing.s6 : AppSpacing.s4),
                 child: Center(
-                  child: Container(
-                    constraints: const BoxConstraints(maxWidth: 700),
-                    padding: EdgeInsets.all(AppSpacing.s6),
-                    decoration: isWide
-                        ? BoxDecoration(
-                            color: AppColors.white,
-                            borderRadius: BorderRadius.circular(AppRadius.r3),
-                          )
-                        : null,
-                    child: Column(
-                      children: [
-                        // FIX 2: SVG from assets/icons/ instead of broken PNG
-                        SvgPicture.asset(
-                          Assets.iconsCardExchange02,
-                          width: 56.w,
-                          height: 56.w,
-                          colorFilter: ColorFilter.mode(
-                            AppColors.primary,
-                            BlendMode.srcIn,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: _Card(
+                      child: Column(
+                        children: [
+                          // FIX #1: PNG image header
+                          SvgPicture.asset(
+                            Assets.iconsCardExchange02,
+                            width: 56.w,
+                            height: 56.w,
+                            colorFilter: ColorFilter.mode(
+                              AppColors.primary,
+                              BlendMode.srcIn,
+                            ),
                           ),
-                        ),
-                        Gap(AppSpacing.s3),
-                        Text(
-                          'Choose Your Plan',
-                          style: AppTextStyles.h5Bold(
-                            color: AppColors.textPrimary,
+                          Gap(AppSpacing.s3),
+                          Text(
+                            'Choose Your Plan',
+                            style: AppTextStyles.h5Bold(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                        ),
-                        Gap(AppSpacing.s1),
-                        Text(
-                          'Select a plan that fits your needs. Upgrade anytime.',
-                          textAlign: TextAlign.center,
-                          style: AppTextStyles.mdRegular(
-                            color: AppColors.textSubTitle,
+                          Gap(AppSpacing.s1),
+                          Text(
+                            'Select a plan that fits your needs. Upgrade anytime.',
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.mdRegular(
+                              color: AppColors.textSubTitle,
+                            ),
                           ),
-                        ),
-                        Gap(AppSpacing.s6),
-                        isWide
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: _plans
-                                    .map(
-                                      (p) => Expanded(
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: AppSpacing.s2,
-                                          ),
-                                          child: _PlanCard(
-                                            plan: p,
-                                            isSelected: _selectedPlanId == p.id,
-                                            onTap: () => setState(
-                                              () => _selectedPlanId = p.id,
+                          Gap(AppSpacing.s6),
+                          isWide
+                              ? Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: _plans
+                                      .map(
+                                        (p) => Expanded(
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: AppSpacing.s2,
+                                            ),
+                                            child: _PlanCard(
+                                              plan: p,
+                                              isSelected: _selectedId == p.id,
+                                              onTap: () => setState(
+                                                () => _selectedId = p.id,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                    .toList(),
-                              )
-                            : Column(
-                                children: _plans
-                                    .map(
-                                      (p) => Padding(
-                                        padding: EdgeInsets.only(
-                                          bottom: AppSpacing.s3,
-                                        ),
-                                        child: _PlanCard(
-                                          plan: p,
-                                          isSelected: _selectedPlanId == p.id,
-                                          onTap: () => setState(
-                                            () => _selectedPlanId = p.id,
+                                      )
+                                      .toList(),
+                                )
+                              : Column(
+                                  children: _plans
+                                      .map(
+                                        (p) => Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: AppSpacing.s3,
+                                          ),
+                                          child: _PlanCard(
+                                            plan: p,
+                                            isSelected: _selectedId == p.id,
+                                            onTap: () => setState(
+                                              () => _selectedId = p.id,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                    .toList(),
-                              ),
-                        Gap(AppSpacing.s4),
-                        RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: AppTextStyles.smRegular(
-                              color: AppColors.textSubTitle,
-                            ),
-                            children: [
-                              const TextSpan(text: 'All plans include a '),
-                              TextSpan(
-                                text: '14-day free trial',
-                                style: AppTextStyles.smSemibold(
-                                  color: AppColors.primary,
+                                      )
+                                      .toList(),
                                 ),
+                          Gap(AppSpacing.s4),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: AppTextStyles.smRegular(
+                                color: AppColors.textSubTitle,
                               ),
-                              const TextSpan(
-                                text: '. No credit card required.',
-                              ),
-                            ],
+                              children: [
+                                const TextSpan(text: 'All plans include a '),
+                                TextSpan(
+                                  text: '14-day free trial',
+                                  style: AppTextStyles.smSemibold(
+                                    color: AppColors.primary,
+                                  ),
+                                ),
+                                const TextSpan(
+                                  text: '. No credit card required.',
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -241,6 +234,26 @@ class _ChoosePlanScreenState extends ConsumerState<ChoosePlanScreen> {
   }
 }
 
+// ── Shared card wrapper for this screen ──────────────────────────────────────
+class _Card extends StatelessWidget {
+  const _Card({required this.child});
+  final Widget child;
+  @override
+  Widget build(BuildContext context) {
+    final isWide = MediaQuery.sizeOf(context).width >= 600;
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.s6),
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppRadius.r3),
+        border: isWide ? null : Border.all(color: AppColors.borderDefault),
+      ),
+      child: child,
+    );
+  }
+}
+
+// ── Individual plan card ──────────────────────────────────────────────────────
 class _PlanCard extends StatelessWidget {
   const _PlanCard({
     required this.plan,
@@ -252,146 +265,145 @@ class _PlanCard extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: EdgeInsets.all(AppSpacing.s4),
-            decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(AppRadius.r3),
-              border: Border.all(
-                color: isSelected ? AppColors.primary : AppColors.borderDefault,
-                width: isSelected ? 1.5 : 1,
-              ),
+  Widget build(BuildContext context) => Stack(
+    clipBehavior: Clip.none,
+    children: [
+      GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: EdgeInsets.all(AppSpacing.s4),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(AppRadius.r3),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : AppColors.borderDefault,
+              width: isSelected ? 1.5 : 1,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (plan.popular.isNotEmpty) Gap(AppSpacing.s3),
-                Text(
-                  plan.name,
-                  style: AppTextStyles.lgSemibold(color: AppColors.textPrimary),
-                ),
-                Gap(AppSpacing.s1),
-                RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: plan.price,
-                        style: AppTextStyles.h4Bold(color: AppColors.primary),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (plan.popular.isNotEmpty) Gap(AppSpacing.s3),
+              Text(
+                plan.name,
+                style: AppTextStyles.lgSemibold(color: AppColors.textPrimary),
+              ),
+              Gap(AppSpacing.s1),
+              RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: plan.price,
+                      style: AppTextStyles.h4Bold(color: AppColors.primary),
+                    ),
+                    TextSpan(
+                      text: '/month',
+                      style: AppTextStyles.smRegular(
+                        color: AppColors.textSubTitle,
                       ),
-                      TextSpan(
-                        text: '/month',
-                        style: AppTextStyles.smRegular(
-                          color: AppColors.textSubTitle,
+                    ),
+                  ],
+                ),
+              ),
+              Gap(AppSpacing.s4),
+              ...plan.features.map(
+                (f) => Padding(
+                  padding: EdgeInsets.only(bottom: AppSpacing.s2),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.check_circle_outline,
+                        color: Colors
+                            .green, // Use your AppColors.success or similar
+                        size: 24.sp,
+                      ),
+                      SizedBox(width: AppSpacing.s2),
+                      Expanded(
+                        child: Text(
+                          f,
+                          style: AppTextStyles.smRegular(
+                            color: AppColors.textPrimary,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Gap(AppSpacing.s4),
-                ...plan.features.map(
-                  (f) => Padding(
-                    padding: EdgeInsets.only(bottom: AppSpacing.s2),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 16.sp,
-                          color: AppColors.success,
-                        ),
-                        SizedBox(width: AppSpacing.s2),
-                        Expanded(
-                          child: Text(
-                            f,
-                            style: AppTextStyles.smRegular(
-                              color: AppColors.textPrimary,
+              ),
+              Gap(AppSpacing.s4),
+              SizedBox(
+                width: double.infinity,
+                child: isSelected
+                    ? ElevatedButton(
+                        onPressed: onTap,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.round,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                Gap(AppSpacing.s4),
-                SizedBox(
-                  width: double.infinity,
-                  child: isSelected
-                      ? ElevatedButton(
-                          onPressed: onTap,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.round,
-                              ),
-                            ),
+                        child: Text(
+                          'Selected',
+                          style: AppTextStyles.mdSemibold(
+                            color: AppColors.white,
                           ),
-                          child: Text(
-                            'Selected',
-                            style: AppTextStyles.mdSemibold(
-                              color: AppColors.white,
-                            ),
-                          ),
-                        )
-                      : OutlinedButton(
-                          onPressed: onTap,
-                          style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.borderDefault),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                AppRadius.round,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            'Select plan',
-                            style: AppTextStyles.mdRegular(
-                              color: AppColors.textSubTitle,
+                        ),
+                      )
+                    : OutlinedButton(
+                        onPressed: onTap,
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: AppColors.borderDefault),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              AppRadius.round,
                             ),
                           ),
                         ),
-                ),
-              ],
-            ),
+                        child: Text(
+                          'Select plan',
+                          style: AppTextStyles.mdRegular(
+                            color: AppColors.textSubTitle,
+                          ),
+                        ),
+                      ),
+              ),
+            ],
           ),
         ),
-        if (plan.popular.isNotEmpty)
-          Positioned(
-            top: -12.h,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s3,
-                  vertical: 4.h,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.blue600,
-                  borderRadius: BorderRadius.circular(AppRadius.round),
-                ),
-                child: Text(
-                  plan.popular,
-                  style: AppTextStyles.xsSemibold(color: AppColors.white),
-                ),
+      ),
+      if (plan.popular.isNotEmpty)
+        Positioned(
+          top: -12.h,
+          left: 0,
+          right: 0,
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.s3,
+                vertical: 4.h,
+              ),
+              decoration: BoxDecoration(
+                color: AppColors.blue600,
+                borderRadius: BorderRadius.circular(AppRadius.round),
+              ),
+              child: Text(
+                plan.popular,
+                style: AppTextStyles.xsSemibold(color: AppColors.white),
               ),
             ),
           ),
-      ],
-    );
-  }
+        ),
+    ],
+  );
 }
 
-class _StepIndicator extends StatelessWidget {
-  const _StepIndicator({required this.currentStep});
-  final int currentStep;
+class _StepBar extends StatelessWidget {
+  const _StepBar({required this.current});
+  final int current;
   static const _steps = [
     'Create Account',
     'Choose Plan',
@@ -399,79 +411,67 @@ class _StepIndicator extends StatelessWidget {
     'Clinic Details',
     'Complete',
   ];
-
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.s6,
-        vertical: AppSpacing.s3,
-      ),
-      child: Row(
-        children: List.generate(_steps.length, (i) {
-          final isCompleted = i < currentStep - 1;
-          final isCurrent = i == currentStep - 1;
-          return Expanded(
-            child: Row(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 24.w,
-                      height: 24.w,
-                      decoration: BoxDecoration(
-                        color: isCompleted || isCurrent
-                            ? AppColors.primary
-                            : AppColors.borderDefault,
-                        shape: BoxShape.circle,
-                      ),
-                      child: isCompleted
-                          ? Icon(
-                              Icons.check,
-                              color: AppColors.white,
-                              size: 14.sp,
-                            )
-                          : Center(
-                              child: Container(
-                                width: 8.w,
-                                height: 8.w,
-                                decoration: BoxDecoration(
-                                  color: isCurrent
-                                      ? AppColors.white
-                                      : AppColors.gray300,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            ),
-                    ),
-                    Gap(4.h),
-                    Text(
-                      _steps[i],
-                      style: AppTextStyles.xsRegular(
-                        color: isCurrent
-                            ? AppColors.primary
-                            : AppColors.textSubTitle,
-                      ),
-                    ),
-                  ],
-                ),
-                if (i < _steps.length - 1)
-                  Expanded(
-                    child: Container(
-                      height: 1.5,
-                      margin: EdgeInsets.only(bottom: 20.h),
-                      color: isCompleted
+  Widget build(BuildContext context) => Padding(
+    padding: EdgeInsets.symmetric(
+      horizontal: AppSpacing.s6,
+      vertical: AppSpacing.s3,
+    ),
+    child: Row(
+      children: List.generate(_steps.length, (i) {
+        final done = i < current - 1, cur = i == current - 1;
+        return Expanded(
+          child: Row(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    width: 24.w,
+                    height: 24.w,
+                    decoration: BoxDecoration(
+                      color: done || cur
                           ? AppColors.primary
                           : AppColors.borderDefault,
+                      shape: BoxShape.circle,
+                    ),
+                    child: done
+                        ? Icon(Icons.check, color: AppColors.white, size: 14.sp)
+                        : Center(
+                            child: Container(
+                              width: 8.w,
+                              height: 8.w,
+                              decoration: BoxDecoration(
+                                color: cur
+                                    ? AppColors.white
+                                    : AppColors.gray300,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                  ),
+                  Gap(4.h),
+                  Text(
+                    _steps[i],
+                    style: AppTextStyles.xsRegular(
+                      color: cur ? AppColors.primary : AppColors.textSubTitle,
                     ),
                   ),
-              ],
-            ),
-          );
-        }),
-      ),
-    );
-  }
+                ],
+              ),
+              if (i < _steps.length - 1)
+                Expanded(
+                  child: Container(
+                    height: 1.5,
+                    margin: EdgeInsets.only(bottom: 20.h),
+                    color: done ? AppColors.primary : AppColors.borderDefault,
+                  ),
+                ),
+            ],
+          ),
+        );
+      }),
+    ),
+  );
 }
 
 class _BottomNav extends StatelessWidget {
@@ -482,60 +482,56 @@ class _BottomNav extends StatelessWidget {
   });
   final VoidCallback onContinue, onBack;
   final bool isWide;
-
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.s6,
-        vertical: AppSpacing.s4,
-      ),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        border: Border(top: BorderSide(color: AppColors.borderDefault)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton.icon(
-            onPressed: onBack,
-            icon: Icon(
-              Icons.arrow_back,
-              size: 16.sp,
-              color: AppColors.textSubTitle,
+  Widget build(BuildContext context) => Container(
+    padding: EdgeInsets.symmetric(
+      horizontal: AppSpacing.s6,
+      vertical: AppSpacing.s4,
+    ),
+    decoration: BoxDecoration(
+      color: AppColors.white,
+      border: Border(top: BorderSide(color: AppColors.borderDefault)),
+    ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TextButton.icon(
+          onPressed: onBack,
+          icon: Icon(
+            Icons.arrow_back,
+            size: 16.sp,
+            color: AppColors.textSubTitle,
+          ),
+          label: Text(
+            'Back',
+            style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: onContinue,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            elevation: 0,
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.s6,
+              vertical: AppSpacing.s3,
             ),
-            label: Text(
-              'Back',
-              style: AppTextStyles.mdRegular(color: AppColors.textSubTitle),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(AppRadius.round),
             ),
           ),
-          ElevatedButton.icon(
-            onPressed: onContinue,
-            icon: const SizedBox.shrink(),
-            label: Row(
-              children: [
-                Text(
-                  'Continue',
-                  style: AppTextStyles.lgSemibold(color: AppColors.white),
-                ),
-                SizedBox(width: AppSpacing.s2),
-                Icon(Icons.arrow_forward, size: 16.sp, color: AppColors.white),
-              ],
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              elevation: 0,
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.s6,
-                vertical: AppSpacing.s3,
+          child: Row(
+            children: [
+              Text(
+                'Continue',
+                style: AppTextStyles.lgSemibold(color: AppColors.white),
               ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.round),
-              ),
-            ),
+              SizedBox(width: AppSpacing.s2),
+              Icon(Icons.arrow_forward, size: 16.sp, color: AppColors.white),
+            ],
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

@@ -6,6 +6,7 @@
 // and removing all raw substring(0,2) calls in the UI.
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gen_smile/generated/assets.dart';
 import '../data/models/staff_model.dart';
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
@@ -19,6 +20,7 @@ final _mockStaff = <StaffMember>[
     email: 'smith@clinic.com',
     phone: '+1 (555) 111-2222',
     address: '123 Main Street, New York, NY 10001',
+    avatarAsset: Assets.imagesDoctorMale,
     joinedDate: DateTime(2024, 1, 15),
     status: StaffStatus.active,
     permissions: const StaffPermissions(
@@ -63,6 +65,7 @@ final _mockStaff = <StaffMember>[
     email: 'emily@clinic.com',
     phone: '+1 (555) 222-3333',
     address: '456 Oak Ave, New York, NY 10002',
+    avatarAsset:Assets.imagesAvatarFemale,
     joinedDate: DateTime(2024, 2, 1),
     status: StaffStatus.active,
     permissions: const StaffPermissions(viewPatients: true, editPatients: true),
@@ -82,6 +85,7 @@ final _mockStaff = <StaffMember>[
     email: 'sarah@clinic.com',
     phone: '+1 (555) 333-4444',
     address: '789 Pine St, New York, NY 10003',
+    avatarAsset: Assets.imagesDoctorFemale,
     joinedDate: DateTime(2024, 3, 10),
     status: StaffStatus.active,
     permissions: const StaffPermissions(viewPatients: true),
@@ -101,6 +105,7 @@ final _mockStaff = <StaffMember>[
     email: 'michael@clinic.com',
     phone: '+1 (555) 444-5555',
     address: '321 Elm Rd, New York, NY 10004',
+    avatarAsset: Assets.imagesDoctorMale,
     joinedDate: DateTime(2024, 4, 5),
     status: StaffStatus.pending,
     permissions: const StaffPermissions(),
@@ -120,6 +125,7 @@ final _mockStaff = <StaffMember>[
     email: 'lisa@clinic.com',
     phone: '+1 (555) 555-6666',
     address: '654 Maple Ave, New York, NY 10005',
+    avatarAsset: Assets.imagesDoctorFemale,
     joinedDate: DateTime(2024, 1, 20),
     status: StaffStatus.active,
     permissions: const StaffPermissions(manageBilling: true),
@@ -139,6 +145,7 @@ final _mockStaff = <StaffMember>[
     email: 'james@clinic.com',
     phone: '+1 (555) 666-7777',
     address: '987 Cedar Blvd, New York, NY 10006',
+    avatarAsset: Assets.imagesDoctorMale,
     joinedDate: DateTime(2024, 2, 15),
     status: StaffStatus.active,
     permissions: const StaffPermissions(viewPatients: true),
@@ -158,6 +165,7 @@ final _mockStaff = <StaffMember>[
     email: 'anna@clinic.com',
     phone: '+1 (555) 777-8888',
     address: '147 Birch Lane, New York, NY 10007',
+    avatarAsset: Assets.imagesDoctorFemale,
     joinedDate: DateTime(2024, 5, 1),
     status: StaffStatus.inactive,
     permissions: const StaffPermissions(),
@@ -177,6 +185,7 @@ final _mockStaff = <StaffMember>[
     email: 'david@clinic.com',
     phone: '+1 (555) 888-9999',
     address: '258 Walnut Dr, New York, NY 10008',
+    avatarAsset: Assets.imagesDoctorMale,
     joinedDate: DateTime(2024, 3, 25),
     status: StaffStatus.active,
     permissions: const StaffPermissions(viewPatients: true, editPatients: true),
