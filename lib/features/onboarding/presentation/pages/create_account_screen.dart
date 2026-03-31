@@ -1,6 +1,7 @@
 // lib/features/onboarding/presentation/pages/create_account_screen.dart
-// FIX #1: SvgPicture.asset(Assets.iconsUserEdit01) — SVG not PNG
-// FIX #3: Form always wrapped in white card on BOTH mobile and desktop
+// FIX #1: SvgPicture iconsUserEdit01 above title (not missing)
+// FIX #3: back arrow
+// FIX #7: card on BOTH mobile and desktop
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -85,7 +86,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                 child: Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 520),
-                    // FIX #3: Card on BOTH mobile and desktop
+                    // FIX #7: card on BOTH mobile and desktop
                     child: Container(
                       padding: EdgeInsets.all(AppSpacing.s6),
                       decoration: BoxDecoration(
@@ -97,11 +98,11 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                         key: _formKey,
                         child: Column(
                           children: [
-                            // FIX #1: SVG user-edit icon
+                            // FIX #1: SVG icon above title
                             SvgPicture.asset(
                               Assets.iconsUserEdit01,
-                              width: 56.w,
-                              height: 56.w,
+                              width: 64.w,
+                              height: 64.w,
                               colorFilter: ColorFilter.mode(
                                 AppColors.primary,
                                 BlendMode.srcIn,
@@ -123,35 +124,35 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
                             ),
                             Gap(AppSpacing.s6),
 
-                            _FormField(
+                            _Field(
                               label: 'Full Name',
-                              required: true,
-                              controller: _nameCtrl,
+                              req: true,
+                              ctrl: _nameCtrl,
                               hint: 'Dr. John Doe',
                             ),
                             Gap(AppSpacing.s4),
-                            _FormField(
+                            _Field(
                               label: 'Email Address',
-                              required: true,
-                              controller: _emailCtrl,
+                              req: true,
+                              ctrl: _emailCtrl,
                               hint: 'your.email@example.com',
-                              keyboard: TextInputType.emailAddress,
+                              kb: TextInputType.emailAddress,
                             ),
                             Gap(AppSpacing.s4),
-                            _PasswordField(
+                            _PassField(
                               label: 'Password',
-                              required: true,
-                              controller: _passCtrl,
+                              req: true,
+                              ctrl: _passCtrl,
                               obscure: _obscurePass,
                               onToggle: () =>
                                   setState(() => _obscurePass = !_obscurePass),
                               helper: 'Must be at least 8 characters',
                             ),
                             Gap(AppSpacing.s4),
-                            _PasswordField(
+                            _PassField(
                               label: 'Confirm Password',
-                              required: true,
-                              controller: _confirmCtrl,
+                              req: true,
+                              ctrl: _confirmCtrl,
                               obscure: _obscureConf,
                               onToggle: () =>
                                   setState(() => _obscureConf = !_obscureConf),
@@ -207,6 +208,7 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
               ),
             ),
 
+            // FIX #3: back arrow in bottom nav
             _BottomNav(
               onContinue: _onContinue,
               onBack: () => ref.read(navigatorState.notifier).pop(),
@@ -219,19 +221,20 @@ class _CreateAccountScreenState extends ConsumerState<CreateAccountScreen> {
   }
 }
 
-// ── Shared field widgets ──────────────────────────────────────────────────────
-class _FormField extends StatelessWidget {
-  const _FormField({
+// ── Shared field helpers ──────────────────────────────────────────────────────
+class _Field extends StatelessWidget {
+  const _Field({
     required this.label,
-    required this.controller,
+    required this.ctrl,
     required this.hint,
-    this.required = false,
-    this.keyboard,
+    this.req = false,
+    this.kb,
   });
   final String label, hint;
-  final TextEditingController controller;
-  final bool required;
-  final TextInputType? keyboard;
+  final TextEditingController ctrl;
+  final bool req;
+  final TextInputType? kb;
+
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +244,7 @@ class _FormField extends StatelessWidget {
           style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
           children: [
             TextSpan(text: label),
-            if (required)
+            if (req)
               TextSpan(
                 text: ' *',
                 style: AppTextStyles.mdMedium(color: AppColors.error),
@@ -251,32 +254,31 @@ class _FormField extends StatelessWidget {
       ),
       Gap(4.h),
       TextFormField(
-        controller: controller,
-        keyboardType: keyboard,
+        controller: ctrl,
+        keyboardType: kb,
         style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
-        validator: required
-            ? (v) => (v?.isEmpty ?? true) ? 'Required' : null
-            : null,
+        validator: req ? (v) => (v?.isEmpty ?? true) ? 'Required' : null : null,
         decoration: _deco(hint),
       ),
     ],
   );
 }
 
-class _PasswordField extends StatelessWidget {
-  const _PasswordField({
+class _PassField extends StatelessWidget {
+  const _PassField({
     required this.label,
-    required this.controller,
+    required this.ctrl,
     required this.obscure,
     required this.onToggle,
-    this.required = false,
+    this.req = false,
     this.helper,
   });
   final String label;
-  final TextEditingController controller;
-  final bool obscure, required;
+  final TextEditingController ctrl;
+  final bool obscure, req;
   final VoidCallback onToggle;
   final String? helper;
+
   @override
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,7 +288,7 @@ class _PasswordField extends StatelessWidget {
           style: AppTextStyles.mdMedium(color: AppColors.textPrimary),
           children: [
             TextSpan(text: label),
-            if (required)
+            if (req)
               TextSpan(
                 text: ' *',
                 style: AppTextStyles.mdMedium(color: AppColors.error),
@@ -296,7 +298,7 @@ class _PasswordField extends StatelessWidget {
       ),
       Gap(4.h),
       TextFormField(
-        controller: controller,
+        controller: ctrl,
         obscureText: obscure,
         style: AppTextStyles.mdRegular(color: AppColors.textPrimary),
         decoration: _deco('••••••••').copyWith(
@@ -434,6 +436,7 @@ class _BottomNav extends StatelessWidget {
   });
   final VoidCallback onContinue, onBack;
   final bool isWide;
+
   @override
   Widget build(BuildContext context) {
     if (isWide) {

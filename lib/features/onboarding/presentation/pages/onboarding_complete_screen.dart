@@ -1,6 +1,6 @@
 // lib/features/onboarding/presentation/pages/onboarding_complete_screen.dart
-// FIX #1: SvgPicture.asset(Assets.iconsSuccess) instead of Icon(Icons.check)
-// FIX #3: "Next Steps" block wrapped in a specific white card
+// FIX #1: SvgPicture.asset(Assets.iconsSuccess) — not Icon(Icons.check)
+// FIX #7: Content wrapped in one white card
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -50,7 +50,7 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                     const OnbMobileStepHeader(),
                     Gap(32.h),
 
-                    // FIX #3: Wrap entire content in one specific card
+                    // FIX #7: ONE specific card for entire completion content
                     Container(
                       width: double.infinity,
                       padding: EdgeInsets.all(AppSpacing.s6),
@@ -61,11 +61,11 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                       ),
                       child: Column(
                         children: [
-                          // FIX #1: SVG success image instead of Icon
+                          // FIX #1: SVG success icon
                           SvgPicture.asset(
                             Assets.iconsSuccess,
-                            width: 72.w,
-                            height: 72.w,
+                            width: 80.w,
+                            height: 80.w,
                           ),
                           Gap(20.h),
                           Text(
@@ -87,7 +87,7 @@ class OnboardingCompleteScreen extends ConsumerWidget {
                           ),
                           Gap(28.h),
 
-                          // Next steps inner card
+                          // Next steps inner panel
                           Container(
                             width: double.infinity,
                             padding: EdgeInsets.all(20.w),

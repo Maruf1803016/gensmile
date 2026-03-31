@@ -1,6 +1,11 @@
+// lib/features/auth/presentation/pages/forget_password_screen.dart
+// FIX #2: Image.asset(Assets.imagesPasswordValidation) positioned ABOVE title
+// FIX #3: Back arrow via navigatorState.pop()
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/common/widgets/gen_smile_logo.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -8,8 +13,6 @@ import 'package:gen_smile/core/constant/app_text_styles.dart';
 import 'package:gen_smile/core/constant/app_spacing.dart';
 import 'package:gen_smile/core/states/navigator_state.dart';
 import 'package:gen_smile/generated/assets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 
 class ForgetPasswordScreen extends ConsumerStatefulWidget {
   const ForgetPasswordScreen({super.key});
@@ -39,19 +42,30 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Logo top left
+              // ── Header row: back arrow + logo ────────────────────────
               Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s6,
-                  vertical: AppSpacing.s5,
+                  horizontal: AppSpacing.s4,
+                  vertical: AppSpacing.s4,
                 ),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: const GenSmileLogo(iconSize: 32),
+                child: Row(
+                  children: [
+                    // FIX #3: back arrow
+                    GestureDetector(
+                      onTap: () => ref.read(navigatorState.notifier).pop(),
+                      child: Icon(
+                        Icons.arrow_back,
+                        size: 22.sp,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(width: AppSpacing.s3),
+                    const GenSmileLogo(iconSize: 28),
+                  ],
                 ),
               ),
 
-              // Card
+              // ── Card ─────────────────────────────────────────────────
               Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(
@@ -65,21 +79,24 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.white,
                     borderRadius: BorderRadius.circular(AppRadius.r3),
+                    border: Border.all(color: AppColors.borderDefault),
                   ),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        // Icon
+                        // FIX #2: PNG image ABOVE title (not SVG, no wrong placement)
                         SvgPicture.asset(
-                          Assets.iconsResetPassword,
-                          width: 56.w,
-                          height: 56.w,
+                          Assets.iconsPasswordValidation,
+                          width: 72.w,
+                          height: 72.w,
+                          fit: BoxFit.contain,
                         ),
-                        Gap(AppSpacing.s3),
+                        Gap(AppSpacing.s4),
 
+                        // Title
                         Text(
-                          'Forget password',
+                          'Forgot Password',
                           style: AppTextStyles.h5Bold(
                             color: AppColors.textPrimary,
                           ),
@@ -140,16 +157,13 @@ class _ForgetPasswordScreenState extends ConsumerState<ForgetPasswordScreen> {
                               borderRadius: BorderRadius.circular(AppRadius.r2),
                             ),
                           ),
-                          validator: (val) {
-                            if (val == null || val.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
+                          validator: (v) => (v == null || v.isEmpty)
+                              ? 'Please enter your email'
+                              : null,
                         ),
                         Gap(AppSpacing.s6),
 
-                        // Send reset link button
+                        // Button
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

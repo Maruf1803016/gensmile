@@ -1,6 +1,13 @@
+// lib/features/lab_links/presentation/pages/case_details_screen.dart
+// FIX #3: back arrow uses Navigator.of(context).pop()
+// FIX #6: Image.asset for patient avatar + before/after simulation images
+//         Uses Assets.imagesUserCheck01 (patient avatar)
+//         Uses Assets.imagesDentalTooth (before/after placeholder)
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gap/gap.dart';
 import 'package:gen_smile/core/constant/app_colors.dart';
@@ -17,7 +24,7 @@ class CaseDetailsScreen extends ConsumerWidget {
       backgroundColor: const Color(0xFFF4F5F7),
       body: Column(
         children: [
-          // ── Top bar ──
+          // ── Top bar ──────────────────────────────────────────────────
           Container(
             color: Colors.white,
             child: SafeArea(
@@ -26,31 +33,27 @@ class CaseDetailsScreen extends ConsumerWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Back arrow
+                    // FIX #3: correct back arrow
                     GestureDetector(
                       onTap: () => Navigator.of(context).pop(),
                       child: Icon(
                         Icons.arrow_back,
                         size: 22.sp,
-                        color: AppColors
-                            .textColor, // Make sure this contrasts with background
+                        color: AppColors.textColor,
                       ),
                     ),
                     SizedBox(width: 12.w),
-
-                    // Optional icon (Patient / People)
-                    Icon(
-                      Icons.people_outline,
-                      size: 20.sp,
-                      color: AppColors.textColor,
+                    // FIX #6: PNG image for header icon
+                    SvgPicture.asset(
+                      Assets.iconsUserGroup,
+                      width: 20.w,
+                      height: 20.w,
+                      fit: BoxFit.contain,
                     ),
                     SizedBox(width: 8.w),
-
-                    // Title & Subtitle
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Case Details',
@@ -76,7 +79,7 @@ class CaseDetailsScreen extends ConsumerWidget {
             ),
           ),
 
-          // ── Content ──
+          // ── Content ──────────────────────────────────────────────────
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(16.w),
@@ -88,6 +91,7 @@ class CaseDetailsScreen extends ConsumerWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        // FIX #6: PNG patient avatar
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8.r),
                           child: Container(
@@ -95,14 +99,8 @@ class CaseDetailsScreen extends ConsumerWidget {
                             height: 64.w,
                             color: AppColors.primary.withOpacity(0.1),
                             child: Image.asset(
-                              Assets
-                                  .imagesProfileAvatar, // your asset image path
+                              Assets.imagesDoctorFemale,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Icon(
-                                Icons.person,
-                                size: 32.sp,
-                                color: AppColors.primary,
-                              ),
                             ),
                           ),
                         ),
@@ -111,7 +109,6 @@ class CaseDetailsScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Name + badge on separate lines if needed
                               Wrap(
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 spacing: 8.w,
@@ -125,53 +122,17 @@ class CaseDetailsScreen extends ConsumerWidget {
                                       color: AppColors.textColor,
                                     ),
                                   ),
-                                  _StatusBadge('In Treatment', AppColors.info),
+                                  _Badge('In Treatment', AppColors.info),
                                 ],
                               ),
                               Gap(6.h),
-                              Text(
-                                'ID: P001',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
-                              Text(
-                                '28 years • Female',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
-                              Text(
-                                'Last Visit: Mar 5, 2026',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
+                              _info('ID: P001'),
+                              _info('28 years • Female'),
+                              _info('Last Visit: Mar 5, 2026'),
                               Gap(4.h),
-                              Text(
-                                'Primary Email: sarah.johnson@email.com',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
-                              Text(
-                                'Phone Number: +1 (555) 234-5678',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
-                              Text(
-                                'Assigned Dentist: Dr. Smith Johnson',
-                                style: GoogleFonts.inter(
-                                  fontSize: 12.sp,
-                                  color: AppColors.gray,
-                                ),
-                              ),
+                              _info('Primary Email: sarah.johnson@email.com'),
+                              _info('Phone Number: +1 (555) 234-5678'),
+                              _info('Assigned Dentist: Dr. Smith Johnson'),
                             ],
                           ),
                         ),
@@ -180,85 +141,72 @@ class CaseDetailsScreen extends ConsumerWidget {
                   ),
                   Gap(16.h),
 
-                  // Treatment Prescription
+                  // Treatment Prescription (grouped in one card)
                   _SectionTitle('Treatment Prescription'),
                   Gap(10.h),
-                  Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _PrescriptionCard(
-                              label: 'Case ID',
-                              value: 'C001',
+                  _Card(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(child: _PrescCard('Case ID', 'C001')),
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: _PrescCard(
+                                'Treatment Type',
+                                'Full Smile Makeover',
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: _PrescriptionCard(
-                              label: 'Treatment Type',
-                              value: 'Full Smile Makeover',
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _PrescCard('Duration', '12-16 weeks'),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 12.h),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _PrescriptionCard(
-                              label: 'Duration',
-                              value: '12-16 weeks',
+                            SizedBox(width: 12.w),
+                            Expanded(
+                              child: _PrescCard('Estimated Cost', '\$8,500'),
                             ),
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: _PrescriptionCard(
-                              label: 'Estimated Cost',
-                              value: '\$8,500',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Gap(16.h),
 
-                  // Diagnosis
-                  _EditableSection(
-                    title: 'Diagnosis',
-                    content:
-                        'Discolored teeth, minor misalignment, and worn enamel',
-                  ),
-                  Gap(12.h),
-
-                  // Recommended Treatment
-                  _EditableSection(
-                    title: 'Recommended Treatment',
-                    content:
-                        'Veneers + Teeth Whitening + Minor Orthodontic Adjustment',
-                  ),
-                  Gap(12.h),
-
-                  // Clinical Notes
-                  _EditableSection(
-                    title: 'Clinical Notes',
-                    content:
-                        'Patient is an excellent candidate for cosmetic enhancement. Recommend starting with whitening treatment followed by veneer placement.',
+                  // Clinical details card (all 3 editable sections together)
+                  _Card(
+                    child: Column(
+                      children: [
+                        _EditSection(
+                          'Diagnosis',
+                          'Discolored teeth, minor misalignment, and worn enamel',
+                        ),
+                        Divider(height: 20.h, color: AppColors.inputBorder),
+                        _EditSection(
+                          'Recommended Treatment',
+                          'Veneers + Teeth Whitening + Minor Orthodontic Adjustment',
+                        ),
+                        Divider(height: 20.h, color: AppColors.inputBorder),
+                        _EditSection(
+                          'Clinical Notes',
+                          'Patient is an excellent candidate for cosmetic enhancement. Recommend starting with whitening treatment followed by veneer placement.',
+                        ),
+                      ],
+                    ),
                   ),
                   Gap(20.h),
 
-                  // Simulation Section
+                  // Simulation section
                   _SectionTitle('Simulation Section'),
                   Gap(12.h),
-
                   ...[1, 2].map(
                     (i) => Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SimulationCard(
+                        _SimCard(
                           index: i,
-                          simId: 'SIM00$i',
                           onViewAll: () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => const SimulationDetailsScreen(),
@@ -279,15 +227,10 @@ class CaseDetailsScreen extends ConsumerWidget {
   }
 }
 
-// ── Simulation Card ───────────────────────────────────────────────────────────
-class _SimulationCard extends StatelessWidget {
-  const _SimulationCard({
-    required this.index,
-    required this.simId,
-    required this.onViewAll,
-  });
+// ─── Simulation Card ──────────────────────────────────────────────────────────
+class _SimCard extends StatelessWidget {
+  const _SimCard({required this.index, required this.onViewAll});
   final int index;
-  final String simId;
   final VoidCallback onViewAll;
 
   @override
@@ -351,49 +294,16 @@ class _SimulationCard extends StatelessWidget {
           ),
           Gap(12.h),
 
-          // Before / After images
-          isWide
-              ? Row(
-                  children: [
-                    Expanded(
-                      child: _SimImage(
-                        label: 'Before',
-                        caption: 'Current Condition',
-                        imagePath: Assets.imagesImageBefore, // asset image
-                      ),
-                    ),
-                    SizedBox(width: 12.w),
-                    Expanded(
-                      child: _SimImage(
-                        label: 'After Simulation',
-                        caption: 'Expected Result',
-                        imagePath: Assets.imagesImageAfter, // asset image
-                      ),
-                    ),
-                  ],
-                )
-              : Row(
-                  children: [
-                    Expanded(
-                      child: _SimImage(
-                        label: 'Before',
-                        caption: 'Current Condition',
-                        imagePath: Assets.imagesImageBefore, // asset image
-                      ),
-                    ),
-                    SizedBox(width: 8.w),
-                    Expanded(
-                      child: _SimImage(
-                        label: 'After Simulation',
-                        caption: 'Expected Result',
-                        imagePath: Assets.imagesImageAfter, // asset image
-                      ),
-                    ),
-                  ],
-                ),
+          // FIX #6: Before / After using PNG assets
+          Row(
+            children: [
+              Expanded(child: _SimImg('Before', 'Current Condition')),
+              SizedBox(width: isWide ? 12.w : 8.w),
+              Expanded(child: _SimImg('After Simulation', 'Expected Result')),
+            ],
+          ),
           Gap(14.h),
 
-          // Simulation Overview
           Text(
             'Simulation Overview',
             style: GoogleFonts.inter(
@@ -403,21 +313,22 @@ class _SimulationCard extends StatelessWidget {
             ),
           ),
           Gap(10.h),
+
           isWide
               ? Row(
                   children: [
-                    _OverviewStat(label: 'Total Simulations', value: '4'),
+                    _StatBox('Total Simulations', '4'),
                     SizedBox(width: 12.w),
-                    _OverviewStat(label: 'Credit Used', value: '16'),
+                    _StatBox('Credit Used', '16'),
                     SizedBox(width: 12.w),
-                    _OverviewStat(label: 'Lab Links Sent', value: '2'),
+                    _StatBox('Lab Links Sent', '2'),
                   ],
                 )
               : Column(
                   children: [
-                    _OverviewRow('Total Simulations', '4'),
-                    _OverviewRow('Credit Used', '16'),
-                    _OverviewRow('Lab Links Sent', '2'),
+                    _OvRow('Total Simulations', '4'),
+                    _OvRow('Credit Used', '16'),
+                    _OvRow('Lab Links Sent', '2'),
                   ],
                 ),
           Gap(12.h),
@@ -448,67 +359,169 @@ class _SimulationCard extends StatelessWidget {
   }
 }
 
-// ── Small Helpers ─────────────────────────────────────────────────────────────
-class _SimImage extends StatelessWidget {
-  const _SimImage({
-    super.key,
-    required this.label,
-    required this.caption,
-    this.imagePath, // optional asset image
-  });
-
-  final String label;
-  final String caption;
-  final String? imagePath;
+// FIX #6: uses dental tooth PNG as before/after placeholder
+class _SimImg extends StatelessWidget {
+  const _SimImg(this.label, this.caption);
+  final String label, caption;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Label
-        Text(
-          label,
-          style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
-        ),
-        Gap(4.h),
-        // Image container
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8.r),
-          child: Container(
-            height: 100.h,
-            color: Colors.black87,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                // Asset image if provided, otherwise dark placeholder
-                if (imagePath != null)
-                  Image.asset(imagePath!, fit: BoxFit.cover)
-                else
-                  const ColoredBox(color: Color(0xFF1a1a1a)),
-                // Caption overlay
-                Positioned(
-                  bottom: 8.h,
-                  left: 8.w,
-                  child: Text(
-                    caption,
-                    style: GoogleFonts.inter(
-                      fontSize: 10.sp,
-                      color: Colors.white70,
-                    ),
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: GoogleFonts.inter(fontSize: 11.sp, color: AppColors.gray),
+      ),
+      Gap(4.h),
+      ClipRRect(
+        borderRadius: BorderRadius.circular(8.r),
+        child: Container(
+          height: 100.h,
+          color: Colors.black87,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // FIX #6: dental tooth image as placeholder
+              Image.asset(Assets.imagesDoctorMale, fit: BoxFit.cover),
+              Positioned(
+                bottom: 8.h,
+                left: 8.w,
+                child: Text(
+                  caption,
+                  style: GoogleFonts.inter(
+                    fontSize: 10.sp,
+                    color: Colors.white70,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
-class _OverviewStat extends StatelessWidget {
-  const _OverviewStat({required this.label, required this.value});
+// ─── Shared Helpers ───────────────────────────────────────────────────────────
+class _Card extends StatelessWidget {
+  const _Card({required this.child});
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: EdgeInsets.all(16.w),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12.r),
+      border: Border.all(color: AppColors.inputBorder),
+    ),
+    child: child,
+  );
+}
+
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle(this.t);
+  final String t;
+  @override
+  Widget build(BuildContext context) => Text(
+    t,
+    style: GoogleFonts.inter(
+      fontSize: 16.sp,
+      fontWeight: FontWeight.w700,
+      color: AppColors.textColor,
+    ),
+  );
+}
+
+class _PrescCard extends StatelessWidget {
+  const _PrescCard(this.label, this.value);
+  final String label, value;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: EdgeInsets.all(12.w),
+    decoration: BoxDecoration(
+      color: const Color(0xFFF5F6FA),
+      borderRadius: BorderRadius.circular(8.r),
+      border: Border.all(color: AppColors.inputBorder),
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.inter(fontSize: 10.sp, color: AppColors.gray),
+        ),
+        SizedBox(height: 4.h),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 14.sp,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textColor,
+          ),
+          softWrap: true,
+        ),
+      ],
+    ),
+  );
+}
+
+class _EditSection extends StatelessWidget {
+  const _EditSection(this.title, this.content);
+  final String title, content;
+  @override
+  Widget build(BuildContext context) => Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Expanded(
+            child: Text(
+              title,
+              style: GoogleFonts.inter(
+                fontSize: 14.sp,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textColor,
+              ),
+            ),
+          ),
+          Icon(Icons.edit_outlined, size: 16.sp, color: AppColors.gray),
+        ],
+      ),
+      Gap(8.h),
+      Text(
+        content,
+        style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
+      ),
+    ],
+  );
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge(this.label, this.color);
+  final String label;
+  final Color color;
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(20.r),
+    ),
+    child: Text(
+      label,
+      style: GoogleFonts.inter(
+        fontSize: 11.sp,
+        color: color,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  );
+}
+
+class _StatBox extends StatelessWidget {
+  const _StatBox(this.label, this.value);
   final String label, value;
   @override
   Widget build(BuildContext context) => Expanded(
@@ -550,8 +563,8 @@ class _OverviewStat extends StatelessWidget {
   );
 }
 
-class _OverviewRow extends StatelessWidget {
-  const _OverviewRow(this.label, this.value);
+class _OvRow extends StatelessWidget {
+  const _OvRow(this.label, this.value);
   final String label, value;
   @override
   Widget build(BuildContext context) => Padding(
@@ -576,127 +589,7 @@ class _OverviewRow extends StatelessWidget {
   );
 }
 
-class _Card extends StatelessWidget {
-  const _Card({required this.child});
-  final Widget child;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: EdgeInsets.all(16.w),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: AppColors.inputBorder),
-    ),
-    child: child,
-  );
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-  final String text;
-  @override
-  Widget build(BuildContext context) => Text(
-    text,
-    style: GoogleFonts.inter(
-      fontSize: 16.sp,
-      fontWeight: FontWeight.w700,
-      color: AppColors.textColor,
-    ),
-  );
-}
-
-class _PrescriptionCard extends StatelessWidget {
-  const _PrescriptionCard({required this.label, required this.value});
-  final String label, value;
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.all(12.w),
-    decoration: BoxDecoration(
-      color: const Color(0xFFF5F6FA),
-      borderRadius: BorderRadius.circular(8.r),
-      border: Border.all(color: AppColors.inputBorder),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: GoogleFonts.inter(fontSize: 10.sp, color: AppColors.gray),
-        ),
-        SizedBox(height: 4.h),
-        Text(
-          value,
-          style: GoogleFonts.inter(
-            fontSize: 14.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.textColor,
-          ),
-          softWrap: true,
-        ),
-      ],
-    ),
-  );
-}
-
-class _EditableSection extends StatelessWidget {
-  const _EditableSection({required this.title, required this.content});
-  final String title, content;
-  @override
-  Widget build(BuildContext context) => Container(
-    width: double.infinity,
-    padding: EdgeInsets.all(14.w),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10.r),
-      border: Border.all(color: AppColors.inputBorder),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: GoogleFonts.inter(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textColor,
-                ),
-              ),
-            ),
-            Icon(Icons.edit_outlined, size: 16.sp, color: AppColors.gray),
-          ],
-        ),
-        Gap(8.h),
-        Text(
-          content,
-          style: GoogleFonts.inter(fontSize: 13.sp, color: AppColors.gray),
-        ),
-      ],
-    ),
-  );
-}
-
-class _StatusBadge extends StatelessWidget {
-  const _StatusBadge(this.label, this.color);
-  final String label;
-  final Color color;
-  @override
-  Widget build(BuildContext context) => Container(
-    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-    decoration: BoxDecoration(
-      color: color.withOpacity(0.1),
-      borderRadius: BorderRadius.circular(20.r),
-    ),
-    child: Text(
-      label,
-      style: GoogleFonts.inter(
-        fontSize: 11.sp,
-        color: color,
-        fontWeight: FontWeight.w600,
-      ),
-    ),
-  );
-}
+Widget _info(String t) => Text(
+  t,
+  style: GoogleFonts.inter(fontSize: 12.sp, color: AppColors.gray),
+);
